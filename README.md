@@ -8,13 +8,32 @@ This repo is currently just a test
     source activate pz
     pip install git+https://github.com/dneise/protozfitsreader
 
-The contents of this repo come from
+The contents of this repo come entirely from
 
 http://www.isdc.unige.ch/~lyard/repo/ProtoZFitsReader-0.42.Python3.5.Linux.x86_64.tar.gz
 
-I just updated the setup.py a little to use setuptools instead of distutils, but this has no functional effect.
 
-What is different is that I "patched" the 3 of the so-files like this
+### setup.py
+
+I just updated the setup.py a little to use setuptools instead of distutils.
+The result is that all `*.py` and `*.so` files of this package are installed
+into a folder called "protozfitsreader" inside the "site-packages",
+before the files were directly copied into "site-packages" which worked as well,
+but was a little untidy.
+
+### relative imports
+
+As a result, I had to modify some `import` statement, they were written as
+absolute imports, but now we do relative imports from the "protozfitsreader"
+package.
+
+
+### set RPATH
+
+The main purpose of this was, to deliver "patched" so-files. The so-files
+in the original tar-ball contain absolute RPATHs, which prevent the linker from
+finding the dependencies. Here I simply patched the so-files and added relative
+RPATH like this:
 
     patchelf --set-rpath '$ORIGIN' some-file.so
 
@@ -25,9 +44,11 @@ I patched these files:
  * libZFitsIO.so
 
 
-That's all.
+These are all differences between this repo and the tar-ball.
 
-----
+# Next steps?
 
-I just uploaded the stuff here into this repo, so other people can try it out
-as well.
+At some point I assume we will merge some or all of these modifications
+into the main SVN, but I needed this repo to try the stuff out and also have other people
+try it out.
+

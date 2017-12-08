@@ -3,8 +3,8 @@
 # Zfits/protobuf loader.
 # import protozfitsreader
 import numpy as np
-import rawzfitsreader
-import L0_pb2
+from . import rawzfitsreader
+from . import L0_pb2
 
 
 class ZFile(object):

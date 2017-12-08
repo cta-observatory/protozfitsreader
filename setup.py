@@ -6,7 +6,7 @@ setup(
     description='Basic python bindings for protobuf zfits reader',
     author="Etienne Lyard et al.",
     author_email="etienne.lyard@unige.ch",
-    data_files=[(
+    package_data=[(
         'protozfitsreader', [
             'shared/*.so*',
         ])

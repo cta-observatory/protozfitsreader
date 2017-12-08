@@ -14,9 +14,16 @@ http://www.isdc.unige.ch/~lyard/repo/ProtoZFitsReader-0.42.Python3.5.Linux.x86_6
 
 I just updated the setup.py a little to use setuptools instead of distutils, but this has no functional effect.
 
-What is different is that I "patched" the `rawzfitsreader.cpython-35m-x86_64-linux-gnu.so` like this
+What is different is that I "patched" the 3 of the so-files like this
 
-    patchelf --set-rpath '$ORIGIN' rawzfitsreader.cpython-35m-x86_64-linux-gnu.so
+    patchelf --set-rpath '$ORIGIN' some-file.so
+
+I patched these files:
+
+ * rawzfitsreader.cpython-35m-x86_64-linux-gnu.so
+ * libACTLCore.so
+ * libZFitsIO.so
+
 
 That's all.
 

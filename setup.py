@@ -8,7 +8,7 @@ setup(
     author_email="etienne.lyard@unige.ch",
     data_files=[(
         'protozfitsreader', [
-            'protozfitsreader/*.so*',
+            'shared/*.so*',
         ])
     ],
     install_requires=['numpy', 'protobuf'],

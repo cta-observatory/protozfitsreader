@@ -12,5 +12,5 @@ setup(
         ])
     ],
     install_requires=['numpy', 'protobuf'],
-    py_modules=['CoreMessages_pb2', 'L0_pb2', 'protozfitsreader'],
+    packages=['protzfitsreader'],
 )

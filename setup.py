@@ -1,5 +1,5 @@
 #!/bin/python
-from setuptool import setup
+from setuptools import setup
 setup(
     name='ProtoZFitsReader',
     version='0.41',

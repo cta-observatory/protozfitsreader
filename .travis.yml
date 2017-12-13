@@ -22,4 +22,5 @@ script:
   - python -V
   - python -c "import protozfitsreader"
   - python -c "from protozfitsreader import rawzfitsreader"
+  - python -c "from protozfitsreader import rawzfitsreader; print(rawzfitsreader.__file__)"
 

@@ -16,6 +16,8 @@ install:
   - mkdir somewhere_else
   - cd somewhere_else
   - ls -larth
+  - conda list
+  - conda list | grep libgcc
 
 script:
   - which python

@@ -1,0 +1,24 @@
+install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda env create -f environment.yml
+  - source activate pz
+  - pip install .
+  - mkdir somewhere_else
+  - cd somewhere_else
+  - ls -larth
+
+script:
+  - ldd /home/travis/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader/rawzfitsreader.cpython-35m-x86_64-linux-gnu.so
+  - conda list
+  - conda list | grep libgcc
+  - python -c "import protozfitsreader"
+  - python -c "from protozfitsreader import rawzfitsreader"
+
+

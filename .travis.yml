@@ -15,6 +15,7 @@ install:
   - ls -larth
 
 script:
+  - ldd /home/travis/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader/rawzfitsreader.cpython-35m-x86_64-linux-gnu.so
   - conda list
   - conda list | grep libgcc
   - python -c "import protozfitsreader"

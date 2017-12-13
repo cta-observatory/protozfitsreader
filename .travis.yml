@@ -12,7 +12,6 @@ install:
   - pip install .
   - mkdir somewhere_else
   - cd somewhere_else
-  - ls -larth
 
 script:
   - python -c "import protozfitsreader"

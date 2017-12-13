@@ -18,6 +18,7 @@ install:
   - ls -larth
 
 script:
+  - which python
   - python -c "import protozfitsreader"
   - python -c "from protozfitsreader import rawzfitsreader"
 

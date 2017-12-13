@@ -13,10 +13,10 @@ install:
   - mkdir somewhere_else
   - cd somewhere_else
   - ls -larth
-  - conda list
-  - conda list | grep libgcc
 
 script:
+  - conda list
+  - conda list | grep libgcc
   - python -c "import protozfitsreader"
   - python -c "from protozfitsreader import rawzfitsreader"
 

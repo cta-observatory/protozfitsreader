@@ -1,7 +1,0 @@
-name: pz
-channels:
-- defaults
-dependencies:
-- numpy
-- protobuf
-- libgcc

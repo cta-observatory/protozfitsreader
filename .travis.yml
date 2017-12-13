@@ -12,7 +12,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda env create -f environment.yml python=$TRAVIS_PYTHON_VERSION
+  - conda create -q -n pz python=$TRAVIS_PYTHON_VERSION numpy protobuf
   - source activate pz
   - pip install .
   - mkdir somewhere_else

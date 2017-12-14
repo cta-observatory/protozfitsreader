@@ -70,3 +70,14 @@ def test_rawreader_can_work_with_absolute_path():
 
     event = L0_pb2.CameraEvent()
     event.ParseFromString(raw)
+
+
+def test_rawreader_can_iterate():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        assert event.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE

@@ -1,10 +1,7 @@
 import pytest
-
+import numpy as np
 import pkg_resources
 import os
-import warnings
-
-warnings.simplefilter("ignore")
 
 example_file_path = pkg_resources.resource_filename(
     'protozfitsreader',
@@ -31,6 +28,34 @@ EXPECTED_LOCAL_TIME = [
     1.5094154944452902e+18
 ]
 EXPECTED_GPS_TIME = [0] * EVENTS_IN_EXAMPLE_FILE
+
+
+def to_numpy(a):
+    any_array_type_to_npdtype = {
+        1: 'i1',
+        2: 'u1',
+        3: 'i2',
+        4: 'u2',
+        5: 'i4',
+        6: 'u4',
+        7: 'i8',
+        8: 'u8',
+        9: 'f4',
+        10: 'f8',
+    }
+
+    any_array_type_cannot_convert_exception_text = {
+        0: "This any array has no defined type",
+        11: """I have no idea if the boolean representation
+            of the anyarray is the same as the numpy one"""
+    }
+    if a.type in any_array_type_to_npdtype:
+        return np.frombuffer(
+            a.data, any_array_type_to_npdtype[a.type])
+    else:
+        raise ValueError(
+            "Conversion to NumpyArray failed with error:\n%s",
+            any_array_type_cannot_convert_exception_text[a.type])
 
 
 def test_rawreader_can_work_with_relative_path():

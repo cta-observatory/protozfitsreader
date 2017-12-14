@@ -172,6 +172,7 @@ def test_eventNumber():
     for i in range(rawzfitsreader.getNumRows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
+
         assert event.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
 
 
@@ -299,7 +300,7 @@ def test_trigger_input_traces():
         event.ParseFromString(rawzfitsreader.readEvent())
 
         trigger_input_traces = to_numpy(event.trigger_input_traces)
-        assert trigger_input_traces.shape == (432 * 50, )
+        assert trigger_input_traces.shape == (28800, )
         assert trigger_input_traces.dtype == np.uint8
 
 
@@ -313,7 +314,7 @@ def test_trigger_output_patch7():
         event.ParseFromString(rawzfitsreader.readEvent())
 
         trigger_output_patch7 = to_numpy(event.trigger_output_patch7)
-        assert trigger_output_patch7.shape == (432 * 50, )
+        assert trigger_output_patch7.shape == (2700, )
         assert trigger_output_patch7.dtype == np.uint8
 
 
@@ -327,5 +328,5 @@ def test_trigger_output_patch19():
         event.ParseFromString(rawzfitsreader.readEvent())
 
         trigger_output_patch19 = to_numpy(event.trigger_output_patch19)
-        assert trigger_output_patch19.shape == (432 * 50, )
+        assert trigger_output_patch19.shape == (2700, )
         assert trigger_output_patch19.dtype == np.uint8

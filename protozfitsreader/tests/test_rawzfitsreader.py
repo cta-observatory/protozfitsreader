@@ -108,63 +108,9 @@ def test_rawreader_can_iterate():
         event.ParseFromString(rawzfitsreader.readEvent())
 
 
-def test_event_has_certain_fields():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    '''
-    The L0_pb2.CameraEvent has many fields, and sub fields.
-    However many of them seem to be not used at the moment in SST1M
-    So I check if these fields are non empty, since I have seen them used
-    in code
-
-        event.eventNumber
-        event.telescopeID
-        event.trig.timeSec
-        event.trig.timeNanoSec
-        event.local_time_sec
-        event.local_time_nanosec
-        event.event_type
-        event.eventType
-        event.head.numGainChannels
-        event.hiGain.waveforms
-        event.trigger_input_traces
-        event.trigger_output_patch7
-        event.trigger_output_patch19
-        event.pixels_flags
-    '''
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-
-        assert event.eventNumber is not None
-        assert event.telescopeID is not None
-        assert event.head.numGainChannels is not None
-
-        assert event.local_time_sec is not None
-        assert event.local_time_nanosec is not None
-
-        assert event.trig.timeSec is not None
-        assert event.trig.timeNanoSec is not None
-
-        assert event.event_type is not None
-        assert event.eventType is not None
-
-        assert event.hiGain.waveforms.samples is not None
-        assert event.hiGain.waveforms.baselines is not None
-        assert event.pixels_flags is not None
-
-        assert event.trigger_input_traces is not None
-        assert event.trigger_output_patch7 is not None
-        assert event.trigger_output_patch19 is not None
-
-
-#  from this point on, we test not the interface, but that the values
-#  are roughly what we expect them to be
 #  We know the iteration part works so we do not want to
 # repeat that in every test ... that's boring for you to read
+
 
 def iterate():
     from protozfitsreader import rawzfitsreader
@@ -175,6 +121,41 @@ def iterate():
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
         yield i, event
+
+
+def test_event_has_certain_fields():
+    '''
+    The L0_pb2.CameraEvent has many fields, and sub fields.
+    However many of them seem to be not used at the moment in SST1M
+    So I check if these fields are non empty, since I have seen them used
+    in code
+    '''
+    for i, e in iterate():
+        assert e.eventNumber is not None
+        assert e.telescopeID is not None
+        assert e.head.numGainChannels is not None
+
+        assert e.local_time_sec is not None
+        assert e.local_time_nanosec is not None
+
+        assert e.trig.timeSec is not None
+        assert e.trig.timeNanoSec is not None
+
+        assert e.event_type is not None
+        assert e.eventType is not None
+
+        assert e.hiGain.waveforms.samples is not None
+        assert e.hiGain.waveforms.baselines is not None
+        assert e.pixels_flags is not None
+
+        assert e.trigger_input_traces is not None
+        assert e.trigger_output_patch7 is not None
+        assert e.trigger_output_patch19 is not None
+
+
+#  from this point on, we test not the interface, but that the values
+#  are roughly what we expect them to be
+
 
 
 def test_eventNumber():

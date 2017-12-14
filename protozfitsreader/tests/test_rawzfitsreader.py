@@ -155,6 +155,7 @@ def test_event_has_certain_fields():
         assert event.hiGain.waveforms is not None
         assert event.hiGain.waveforms.baselines is not None
         assert event.pixels_flags is not None
+
         assert event.trigger_input_traces is not None
         assert event.trigger_output_patch7 is not None
         assert event.trigger_output_patch19 is not None
@@ -287,41 +288,22 @@ def test_pixel_flags():
         assert len(pixel_flags) == EXPECTED_NUMBER_OF_PIXELS
         assert pixel_flags.dtype == np.int8
 
-"""
 
-def test_trigger_input_traces():
-    from digicampipe.io.protozfitsreader import ZFile
-    trigger_input_traces = [
-        event.trigger_input_traces
-        for event in ZFile(example_file_path)
-    ]
+def test_trigger_related_arrays():
 
-    for actual in trigger_input_traces:
-        assert actual.dtype == np.uint8
-        assert actual.shape == (432, 50)
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
 
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
 
-def test_trigger_output_patch7():
-    from digicampipe.io.protozfitsreader import ZFile
-    trigger_output_patch7 = [
-        event.trigger_output_patch7
-        for event in ZFile(example_file_path)
-    ]
-
-    for actual in trigger_output_patch7:
-        assert actual.dtype == np.uint8
-        assert actual.shape == (432, 50)
-
-
-def test_trigger_output_patch19():
-    from digicampipe.io.protozfitsreader import ZFile
-    trigger_output_patch19 = [
-        event.trigger_output_patch19
-        for event in ZFile(example_file_path)
-    ]
-
-    for actual in trigger_output_patch19:
-        assert actual.dtype == np.uint8
-        assert actual.shape == (432, 50)
-
-"""
+        for field_under_test in [
+            event.trigger_input_traces,
+            event.trigger_output_patch7,
+            event.trigger_output_patch19,
+        ]:
+            array_under_test = to_numpy(field_under_test)
+            assert array_under_test.shape == (432 * 50, )
+            assert array_under_test.dtype == np.uint8

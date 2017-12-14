@@ -289,8 +289,7 @@ def test_pixel_flags():
         assert pixel_flags.dtype == np.uint16
 
 
-def test_trigger_related_arrays():
-
+def test_trigger_input_traces():
     from protozfitsreader import rawzfitsreader
     from protozfitsreader import L0_pb2
 
@@ -299,11 +298,34 @@ def test_trigger_related_arrays():
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
 
-        for field_under_test in [
-            event.trigger_input_traces,
-            event.trigger_output_patch7,
-            event.trigger_output_patch19,
-        ]:
-            array_under_test = to_numpy(field_under_test)
-            assert array_under_test.shape == (432 * 50, )
-            assert array_under_test.dtype == np.uint8
+        trigger_input_traces = to_numpy(event.trigger_input_traces)
+        assert trigger_input_traces.shape == (432 * 50, )
+        assert trigger_input_traces.dtype == np.uint8
+
+
+def test_trigger_output_patch7():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+
+        trigger_output_patch7 = to_numpy(event.trigger_output_patch7)
+        assert trigger_output_patch7.shape == (432 * 50, )
+        assert trigger_output_patch7.dtype == np.uint8
+
+
+def test_trigger_output_patch19():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+
+        trigger_output_patch19 = to_numpy(event.trigger_output_patch19)
+        assert trigger_output_patch19.shape == (432 * 50, )
+        assert trigger_output_patch19.dtype == np.uint8

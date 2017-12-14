@@ -153,6 +153,7 @@ def test_event_has_certain_fields():
         assert event.eventType is not None
 
         assert event.hiGain.waveforms is not None
+        assert event.hiGain.waveforms.baselines is not None
         assert event.pixels_flags is not None
         assert event.trigger_input_traces is not None
         assert event.trigger_output_patch7 is not None
@@ -251,8 +252,10 @@ def test_waveforms():
         event.ParseFromString(rawzfitsreader.readEvent())
         waveforms = to_numpy(event.hiGain.waveforms)
         N = EXPECTED_NUMBER_OF_PIXELS * EXPECTED_NUMBER_OF_SAMPLES
-        assert len(waveforms) == N
-        assert waveforms.dtype == np.uint16
+        assert waveforms.shape == (N, )
+        assert waveforms.dtype == np.int16
+        assert waveforms.min() == 0
+        assert waveforms.max() == (2**12) - 1
 
 
 def test_pixel_flags():
@@ -269,58 +272,6 @@ def test_pixel_flags():
         assert pixel_flags.dtype == np.int8
 
 """
-
-def test_n_pixel():
-    from digicampipe.io.protozfitsreader import ZFile
-    n_pixel = [
-        event.n_pixels
-        for event in ZFile(example_file_path)
-    ]
-    assert n_pixel == [1296] * EVENTS_IN_EXAMPLE_FILE
-
-
-def test_pixel_flags():
-    from digicampipe.io.protozfitsreader import ZFile
-    pixel_flags = [
-        event.pixel_flags
-        for event in ZFile(example_file_path)
-    ]
-    expected_pixel_flags = [
-        np.ones(1296, dtype=np.bool)
-    ] * EVENTS_IN_EXAMPLE_FILE
-
-    for actual, expected in zip(pixel_flags, expected_pixel_flags):
-        assert (actual == expected).all()
-
-
-
-def test_num_samples():
-    from digicampipe.io.protozfitsreader import ZFile
-    num_samples = [
-        event.num_samples
-        for event in ZFile(example_file_path)
-    ]
-    assert num_samples == [50] * EVENTS_IN_EXAMPLE_FILE
-
-
-def test_adc_samples():
-    from digicampipe.io.protozfitsreader import ZFile
-    adc_samples = [
-        event.adc_samples
-        for event in ZFile(example_file_path)
-    ]
-
-    for actual in adc_samples:
-        assert actual.dtype == np.int16
-        assert actual.shape == (1296, 50)
-
-    adc_samples = np.array(adc_samples)
-
-    # these are 12 bit ADC values, so the range must
-    # can at least be asserted
-    assert adc_samples.min() == 0
-    assert adc_samples.max() == (2**12) - 1
-
 
 def test_trigger_input_traces():
     from digicampipe.io.protozfitsreader import ZFile
@@ -357,23 +308,4 @@ def test_trigger_output_patch19():
         assert actual.dtype == np.uint8
         assert actual.shape == (432, 50)
 
-
-def test_baseline():
-    from digicampipe.io.protozfitsreader import ZFile
-    baseline = [
-        event.baseline
-        for event in ZFile(example_file_path)
-    ]
-
-    for actual in baseline:
-        assert actual.dtype == np.int16
-        assert actual.shape == (1296,)
-
-    baseline = np.array(baseline)
-
-    baseline_deviation_between_events = baseline.std(axis=0)
-    # I don't know if this is a good test, but I assume baseline should
-    # not vary too much between events, so I had a look at these.
-    assert baseline_deviation_between_events.max() < 60
-    assert baseline_deviation_between_events.mean() < 2
 """

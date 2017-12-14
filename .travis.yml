@@ -15,13 +15,6 @@ install:
   - conda create -q -n pz python=$TRAVIS_PYTHON_VERSION numpy protobuf
   - source activate pz
   - pip install .
-  - mkdir somewhere_else
-  - cd somewhere_else
 
 script:
-  - python -V
-  - python -c "import protozfitsreader"
-  - python -c "from protozfitsreader import rawzfitsreader"
-  - python -c "from protozfitsreader import rawzfitsreader; print(rawzfitsreader.__file__)"
-  - cd ..
-  - pytest -vv protozfitsreader
+  - pytest -vv

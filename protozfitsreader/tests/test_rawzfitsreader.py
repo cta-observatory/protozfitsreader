@@ -80,7 +80,6 @@ def test_rawreader_can_iterate():
     for i in range(rawzfitsreader.getNumRows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
 
 
 def test_event_has_certain_fields():
@@ -128,3 +127,196 @@ def test_event_has_certain_fields():
         assert event.trigger_output_patch7 is not None
         assert event.trigger_output_patch19 is not None
         assert event.pixels_flags is not None
+
+
+#  from this point on, we test not the interface, but that the values
+#  are roughly what we expect them to be
+
+def test_eventNumber():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        assert event.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
+
+
+def test_telescopeID():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        assert event.telescopeID == TELESCOPE_ID_IN_EXAMPLE_FILE
+
+
+def test_numGainChannels():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        assert event.numGainChannels == 0
+
+
+def test_local_time():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        local_time = event.local_time_sec * 1e9 + event.local_time_nanosec
+        assert local_time == EXPECTED_LOCAL_TIME[i]
+
+
+def test_trigger_time():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        local_time = event.trig.timeSec * 1e9 + event.trig.timeNanoSec
+        assert local_time == 0
+
+
+def test_event_type():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        assert event.event_type == [1, 1, 1, 1, 1, 8, 1, 1, 1, 1][i]
+
+
+def test_eventType():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        assert event.eventType == [1, 1, 1, 1, 1, 8, 1, 1, 1, 1][i]
+
+
+
+def test_n_pixel():
+    from digicampipe.io.protozfitsreader import ZFile
+    n_pixel = [
+        event.n_pixels
+        for event in ZFile(example_file_path)
+    ]
+    assert n_pixel == [1296] * EVENTS_IN_EXAMPLE_FILE
+
+
+def test_pixel_flags():
+    from digicampipe.io.protozfitsreader import ZFile
+    pixel_flags = [
+        event.pixel_flags
+        for event in ZFile(example_file_path)
+    ]
+    expected_pixel_flags = [
+        np.ones(1296, dtype=np.bool)
+    ] * EVENTS_IN_EXAMPLE_FILE
+
+    for actual, expected in zip(pixel_flags, expected_pixel_flags):
+        assert (actual == expected).all()
+
+
+"""
+
+def test_num_samples():
+    from digicampipe.io.protozfitsreader import ZFile
+    num_samples = [
+        event.num_samples
+        for event in ZFile(example_file_path)
+    ]
+    assert num_samples == [50] * EVENTS_IN_EXAMPLE_FILE
+
+
+def test_adc_samples():
+    from digicampipe.io.protozfitsreader import ZFile
+    adc_samples = [
+        event.adc_samples
+        for event in ZFile(example_file_path)
+    ]
+
+    for actual in adc_samples:
+        assert actual.dtype == np.int16
+        assert actual.shape == (1296, 50)
+
+    adc_samples = np.array(adc_samples)
+
+    # these are 12 bit ADC values, so the range must
+    # can at least be asserted
+    assert adc_samples.min() == 0
+    assert adc_samples.max() == (2**12) - 1
+
+
+def test_trigger_input_traces():
+    from digicampipe.io.protozfitsreader import ZFile
+    trigger_input_traces = [
+        event.trigger_input_traces
+        for event in ZFile(example_file_path)
+    ]
+
+    for actual in trigger_input_traces:
+        assert actual.dtype == np.uint8
+        assert actual.shape == (432, 50)
+
+
+def test_trigger_output_patch7():
+    from digicampipe.io.protozfitsreader import ZFile
+    trigger_output_patch7 = [
+        event.trigger_output_patch7
+        for event in ZFile(example_file_path)
+    ]
+
+    for actual in trigger_output_patch7:
+        assert actual.dtype == np.uint8
+        assert actual.shape == (432, 50)
+
+
+def test_trigger_output_patch19():
+    from digicampipe.io.protozfitsreader import ZFile
+    trigger_output_patch19 = [
+        event.trigger_output_patch19
+        for event in ZFile(example_file_path)
+    ]
+
+    for actual in trigger_output_patch19:
+        assert actual.dtype == np.uint8
+        assert actual.shape == (432, 50)
+
+
+def test_baseline():
+    from digicampipe.io.protozfitsreader import ZFile
+    baseline = [
+        event.baseline
+        for event in ZFile(example_file_path)
+    ]
+
+    for actual in baseline:
+        assert actual.dtype == np.int16
+        assert actual.shape == (1296,)
+
+    baseline = np.array(baseline)
+
+    baseline_deviation_between_events = baseline.std(axis=0)
+    # I don't know if this is a good test, but I assume baseline should
+    # not vary too much between events, so I had a look at these.
+    assert baseline_deviation_between_events.max() < 60
+    assert baseline_deviation_between_events.mean() < 2
+"""

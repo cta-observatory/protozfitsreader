@@ -115,13 +115,17 @@ def test_event_has_certain_fields():
 
         assert event.eventNumber is not None
         assert event.telescopeID is not None
-        assert event.trig.timeSec is not None
-        assert event.trig.timeNanoSec is not None
+        assert event.head.numGainChannels is not None
+
         assert event.local_time_sec is not None
         assert event.local_time_nanosec is not None
+
+        assert event.trig.timeSec is not None
+        assert event.trig.timeNanoSec is not None
+
         assert event.event_type is not None
         assert event.eventType is not None
-        assert event.head.numGainChannels is not None
+
         assert event.hiGain.waveforms is not None
         assert event.trigger_input_traces is not None
         assert event.trigger_output_patch7 is not None

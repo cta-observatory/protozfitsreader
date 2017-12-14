@@ -23,4 +23,6 @@ script:
   - python -c "import protozfitsreader"
   - python -c "from protozfitsreader import rawzfitsreader"
   - python -c "from protozfitsreader import rawzfitsreader; print(rawzfitsreader.__file__)"
+  - ls -larth
+  - ls -larth protozfitsreader
   - pytest -vv protozfitsreader

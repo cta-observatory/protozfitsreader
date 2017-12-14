@@ -162,7 +162,7 @@ def test_numGainChannels():
     for i in range(rawzfitsreader.getNumRows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.numGainChannels == 0
+        assert event.head.numGainChannels == 0
 
 
 def test_local_time():

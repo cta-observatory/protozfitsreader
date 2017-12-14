@@ -28,7 +28,8 @@ EXPECTED_LOCAL_TIME = [
     1.5094154944452902e+18
 ]
 EXPECTED_GPS_TIME = [0] * EVENTS_IN_EXAMPLE_FILE
-
+EXPECTED_NUMBER_OF_PIXELS = 1296
+EXPECTED_NUMBER_OF_SAMPLES = 50
 
 def to_numpy(a):
     any_array_type_to_npdtype = {
@@ -239,6 +240,19 @@ def test_eventType():
         event.ParseFromString(rawzfitsreader.readEvent())
         assert event.eventType == 0
 
+
+def test_waveforms():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+        waveforms = to_numpy(event.hiGain.waveforms)
+        N = EXPECTED_NUMBER_OF_PIXELS * EXPECTED_NUMBER_OF_SAMPLES
+        assert len(waveforms) == N
+        assert waveforms.dtype == np.uint16
 
 """
 

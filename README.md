@@ -1,4 +1,4 @@
-# Protozftisreader
+# Protozftisreader [![Build Status](https://travis-ci.org/dneise/protozfitsreader.svg?branch=master)](https://travis-ci.org/dneise/protozfitsreader)
 
 ## installation:
 

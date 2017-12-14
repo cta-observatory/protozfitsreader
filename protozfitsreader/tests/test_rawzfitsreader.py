@@ -208,9 +208,10 @@ def test_eventType():
     for i in range(rawzfitsreader.getNumRows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.eventType == [1, 1, 1, 1, 1, 8, 1, 1, 1, 1][i]
+        assert event.eventType == 0
 
 
+"""
 
 def test_n_pixel():
     from digicampipe.io.protozfitsreader import ZFile
@@ -235,7 +236,6 @@ def test_pixel_flags():
         assert (actual == expected).all()
 
 
-"""
 
 def test_num_samples():
     from digicampipe.io.protozfitsreader import ZFile

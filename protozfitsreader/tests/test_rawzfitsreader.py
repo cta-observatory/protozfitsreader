@@ -163,8 +163,10 @@ def test_event_has_certain_fields():
 
 #  from this point on, we test not the interface, but that the values
 #  are roughly what we expect them to be
+#  We know the iteration part works so we do not want to
+# repeat that in every test ... that's boring for you to read
 
-def test_eventNumber():
+def iterate():
     from protozfitsreader import rawzfitsreader
     from protozfitsreader import L0_pb2
 
@@ -172,87 +174,49 @@ def test_eventNumber():
     for i in range(rawzfitsreader.getNumRows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
+        yield i, event
 
-        assert event.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
+
+def test_eventNumber():
+    for i, e in iterate():
+        assert e.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
 
 
 def test_telescopeID():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.telescopeID == TELESCOPE_ID_IN_EXAMPLE_FILE
+    for i, e in iterate():
+        assert e.telescopeID == TELESCOPE_ID_IN_EXAMPLE_FILE
 
 
 def test_numGainChannels():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.head.numGainChannels == -1
+    for i, e in iterate():
+        assert e.head.numGainChannels == -1
 
 
 def test_local_time():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        local_time = event.local_time_sec * 1e9 + event.local_time_nanosec
+    for i, e in iterate():
+        local_time = e.local_time_sec * 1e9 + e.local_time_nanosec
         assert local_time == EXPECTED_LOCAL_TIME[i]
 
 
 def test_trigger_time():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        local_time = event.trig.timeSec * 1e9 + event.trig.timeNanoSec
+    for i, e in iterate():
+        local_time = e.trig.timeSec * 1e9 + e.trig.timeNanoSec
         assert local_time == 0
 
 
 def test_event_type():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.event_type == [1, 1, 1, 1, 1, 8, 1, 1, 1, 1][i]
+    for i, e in iterate():
+        assert e.event_type == [1, 1, 1, 1, 1, 8, 1, 1, 1, 1][i]
 
 
 def test_eventType():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        assert event.eventType == 0
+    for i, e in iterate():
+        assert e.eventType == 0
 
 
 def test_samples():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-        samples = to_numpy(event.hiGain.waveforms.samples)
+    for i, e in iterate():
+        samples = to_numpy(e.hiGain.waveforms.samples)
         N = EXPECTED_NUMBER_OF_PIXELS * EXPECTED_NUMBER_OF_SAMPLES
         assert samples.shape == (N, )
         assert samples.dtype == np.int16
@@ -261,15 +225,8 @@ def test_samples():
 
 
 def test_baselines():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-
-        baselines = to_numpy(event.hiGain.waveforms.baselines)
+    for i, e in iterate():
+        baselines = to_numpy(e.hiGain.waveforms.baselines)
         assert baselines.shape == (EXPECTED_NUMBER_OF_PIXELS, )
         assert baselines.dtype == np.int16
         assert baselines.min() >= 0
@@ -277,56 +234,28 @@ def test_baselines():
 
 
 def test_pixel_flags():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-
-        pixel_flags = to_numpy(event.pixels_flags)
+    for i, e in iterate():
+        pixel_flags = to_numpy(e.pixels_flags)
         assert pixel_flags.shape == (EXPECTED_NUMBER_OF_PIXELS, )
         assert pixel_flags.dtype == np.uint16
 
 
 def test_trigger_input_traces():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-
-        trigger_input_traces = to_numpy(event.trigger_input_traces)
+    for i, e in iterate():
+        trigger_input_traces = to_numpy(e.trigger_input_traces)
         assert trigger_input_traces.shape == (28800, )
         assert trigger_input_traces.dtype == np.uint8
 
 
 def test_trigger_output_patch7():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-
-        trigger_output_patch7 = to_numpy(event.trigger_output_patch7)
+    for i, e in iterate():
+        trigger_output_patch7 = to_numpy(e.trigger_output_patch7)
         assert trigger_output_patch7.shape == (2700, )
         assert trigger_output_patch7.dtype == np.uint8
 
 
 def test_trigger_output_patch19():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
-
-        trigger_output_patch19 = to_numpy(event.trigger_output_patch19)
+    for i, e in iterate():
+        trigger_output_patch19 = to_numpy(e.trigger_output_patch19)
         assert trigger_output_patch19.shape == (2700, )
         assert trigger_output_patch19.dtype == np.uint8

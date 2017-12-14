@@ -258,6 +258,22 @@ def test_waveforms():
         assert waveforms.max() == (2**12) - 1
 
 
+def test_baselines():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+
+        baselines = to_numpy(event.hiGain.waveforms.baselines)
+        assert baselines.shape == (EXPECTED_NUMBER_OF_PIXELS, )
+        assert baselines.dtype == np.int16
+        assert baselines.min() == 0
+        assert baselines.max() == (2**12) - 1
+
+
 def test_pixel_flags():
     from protozfitsreader import rawzfitsreader
     from protozfitsreader import L0_pb2

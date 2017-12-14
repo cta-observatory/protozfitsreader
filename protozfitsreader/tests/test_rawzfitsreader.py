@@ -81,3 +81,46 @@ def test_rawreader_can_iterate():
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
         assert event.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
+
+
+def test_event_has_certain_fields():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    '''
+    These fields seem to be non-empty:
+        event.eventNumber
+        event.telescopeID
+        event.trig.timeSec
+        event.trig.timeNanoSec
+        event.local_time_sec
+        event.local_time_nanosec
+        event.event_type
+        event.eventType
+        event.head.numGainChannels
+        event.hiGain.waveforms
+        event.trigger_input_traces
+        event.trigger_output_patch7
+        event.trigger_output_patch19
+        event.pixels_flags
+    '''
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+
+        assert event.eventNumber is not None
+        assert event.telescopeID is not None
+        assert event.trig.timeSec is not None
+        assert event.trig.timeNanoSec is not None
+        assert event.local_time_sec is not None
+        assert event.local_time_nanosec is not None
+        assert event.event_type is not None
+        assert event.eventType is not None
+        assert event.head.numGainChannels is not None
+        assert event.hiGain.waveforms is not None
+        assert event.trigger_input_traces is not None
+        assert event.trigger_output_patch7 is not None
+        assert event.trigger_output_patch19 is not None
+        assert event.pixels_flags is not None

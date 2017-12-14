@@ -152,7 +152,7 @@ def test_event_has_certain_fields():
         assert event.event_type is not None
         assert event.eventType is not None
 
-        assert event.hiGain.waveforms is not None
+        assert event.hiGain.waveforms.samples is not None
         assert event.hiGain.waveforms.baselines is not None
         assert event.pixels_flags is not None
 
@@ -243,7 +243,7 @@ def test_eventType():
         assert event.eventType == 0
 
 
-def test_waveforms():
+def test_samples():
     from protozfitsreader import rawzfitsreader
     from protozfitsreader import L0_pb2
 
@@ -251,12 +251,12 @@ def test_waveforms():
     for i in range(rawzfitsreader.getNumRows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(rawzfitsreader.readEvent())
-        waveforms = to_numpy(event.hiGain.waveforms)
+        samples = to_numpy(event.hiGain.waveforms.samples)
         N = EXPECTED_NUMBER_OF_PIXELS * EXPECTED_NUMBER_OF_SAMPLES
-        assert waveforms.shape == (N, )
-        assert waveforms.dtype == np.int16
-        assert waveforms.min() >= 0
-        assert waveforms.max() <= (2**12) - 1
+        assert samples.shape == (N, )
+        assert samples.dtype == np.int16
+        assert samples.min() >= 0
+        assert samples.max() <= (2**12) - 1
 
 
 def test_baselines():

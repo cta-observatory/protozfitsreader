@@ -7,6 +7,9 @@ setup(
     description='Basic python bindings for protobuf zfits reader',
     author="Etienne Lyard et al.",
     author_email="etienne.lyard@unige.ch",
-    package_data={'protozfitsreader': ['*.so*']},
+    package_data={
+        'protozfitsreader': ['*.so*'],
+        '': ['tests/resources/*'],
+    },
     install_requires=['numpy', 'protobuf'],
 )

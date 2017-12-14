@@ -88,7 +88,11 @@ def test_event_has_certain_fields():
     from protozfitsreader import L0_pb2
 
     '''
-    These fields seem to be non-empty:
+    The L0_pb2.CameraEvent has many fields, and sub fields.
+    However many of them seem to be not used at the moment in SST1M
+    So I check if these fields are non empty, since I have seen them used
+    in code
+
         event.eventNumber
         event.telescopeID
         event.trig.timeSec

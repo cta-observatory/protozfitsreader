@@ -12,22 +12,7 @@ example_file_path = pkg_resources.resource_filename(
     )
 )
 
-FIRST_EVENT_IN_EXAMPLE_FILE = 97750287
-TELESCOPE_ID_IN_EXAMPLE_FILE = 1
 EVENTS_IN_EXAMPLE_FILE = 10
-EXPECTED_LOCAL_TIME = [
-    1.5094154944067896e+18,
-    1.509415494408104e+18,
-    1.509415494408684e+18,
-    1.509415494415717e+18,
-    1.5094154944180828e+18,
-    1.5094154944218719e+18,
-    1.5094154944245553e+18,
-    1.5094154944267853e+18,
-    1.509415494438982e+18,
-    1.5094154944452902e+18
-]
-EXPECTED_GPS_TIME = [0] * EVENTS_IN_EXAMPLE_FILE
 EXPECTED_NUMBER_OF_PIXELS = 1296
 EXPECTED_NUMBER_OF_SAMPLES = 50
 
@@ -157,13 +142,14 @@ def test_event_has_certain_fields():
 #  are roughly what we expect them to be
 
 
-
 def test_eventNumber():
+    FIRST_EVENT_IN_EXAMPLE_FILE = 97750287
     for i, e in iterate():
         assert e.eventNumber == i + FIRST_EVENT_IN_EXAMPLE_FILE
 
 
 def test_telescopeID():
+    TELESCOPE_ID_IN_EXAMPLE_FILE = 1
     for i, e in iterate():
         assert e.telescopeID == TELESCOPE_ID_IN_EXAMPLE_FILE
 
@@ -174,6 +160,19 @@ def test_numGainChannels():
 
 
 def test_local_time():
+    EXPECTED_LOCAL_TIME = [
+        1.5094154944067896e+18,
+        1.509415494408104e+18,
+        1.509415494408684e+18,
+        1.509415494415717e+18,
+        1.5094154944180828e+18,
+        1.5094154944218719e+18,
+        1.5094154944245553e+18,
+        1.5094154944267853e+18,
+        1.509415494438982e+18,
+        1.5094154944452902e+18
+    ]
+
     for i, e in iterate():
         local_time = e.local_time_sec * 1e9 + e.local_time_nanosec
         assert local_time == EXPECTED_LOCAL_TIME[i]

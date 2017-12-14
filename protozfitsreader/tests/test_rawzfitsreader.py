@@ -286,7 +286,7 @@ def test_pixel_flags():
 
         pixel_flags = to_numpy(event.pixels_flags)
         assert len(pixel_flags) == EXPECTED_NUMBER_OF_PIXELS
-        assert pixel_flags.dtype == np.int8
+        assert pixel_flags.dtype == np.uint16
 
 
 def test_trigger_related_arrays():

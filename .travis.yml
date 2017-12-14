@@ -1,3 +1,8 @@
+language: python
+python:
+  # We don't actually use the Travis Python, but this keeps it organized.
+  - "3.5"
+  - "3.6"
 install:
   - sudo apt-get update
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -7,15 +12,15 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda env create -f environment.yml
+  - conda create -q -n pz python=$TRAVIS_PYTHON_VERSION pip numpy protobuf pytest
   - source activate pz
   - pip install .
-  - mkdir somewhere_else
-  - cd somewhere_else
 
 script:
-  - python -c "import protozfitsreader"
-  - python -c "from protozfitsreader import rawzfitsreader"
-  - ldd /home/travis/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader/rawzfitsreader.cpython-35m-x86_64-linux-gnu.so
-
+  - pytest -vv
+  - echo "trying to show, that deinstall works"
+  - cd  /home/travis
+  - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"
+  - pip uninstall protozfitsreader --yes
+  - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"
 

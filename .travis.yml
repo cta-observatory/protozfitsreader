@@ -19,11 +19,8 @@ install:
 script:
   - pytest -vv
   - echo "trying to show, that deinstall works"
-  - mkdir foo
-  - cd foo
-  - python -c "import protozfitsreader; print(protozfitsreader.__file__)"
   - cd  /home/travis
-  - find . | grep "\.so$"
+  - find . | grep "rawzfitsreader*.so"
   - pip uninstall protozfitsreader --yes
-  - find . | grep "\.so$"
+  - find . | grep "rawzfitsreader*.so"
 

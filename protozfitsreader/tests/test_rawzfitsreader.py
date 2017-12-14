@@ -285,7 +285,7 @@ def test_pixel_flags():
         event.ParseFromString(rawzfitsreader.readEvent())
 
         pixel_flags = to_numpy(event.pixels_flags)
-        assert len(pixel_flags) == EXPECTED_NUMBER_OF_PIXELS
+        assert pixel_flags.shape == (EXPECTED_NUMBER_OF_PIXELS, )
         assert pixel_flags.dtype == np.uint16
 
 

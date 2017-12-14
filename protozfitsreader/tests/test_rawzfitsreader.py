@@ -153,10 +153,10 @@ def test_event_has_certain_fields():
         assert event.eventType is not None
 
         assert event.hiGain.waveforms is not None
+        assert event.pixels_flags is not None
         assert event.trigger_input_traces is not None
         assert event.trigger_output_patch7 is not None
         assert event.trigger_output_patch19 is not None
-        assert event.pixels_flags is not None
 
 
 #  from this point on, we test not the interface, but that the values
@@ -253,6 +253,20 @@ def test_waveforms():
         N = EXPECTED_NUMBER_OF_PIXELS * EXPECTED_NUMBER_OF_SAMPLES
         assert len(waveforms) == N
         assert waveforms.dtype == np.uint16
+
+
+def test_pixel_flags():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+
+        pixel_flags = to_numpy(event.pixels_flags)
+        assert len(pixel_flags) == EXPECTED_NUMBER_OF_PIXELS
+        assert pixel_flags.dtype == np.int8
 
 """
 

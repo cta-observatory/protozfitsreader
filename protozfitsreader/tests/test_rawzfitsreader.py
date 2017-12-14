@@ -16,6 +16,7 @@ EVENTS_IN_EXAMPLE_FILE = 10
 EXPECTED_NUMBER_OF_PIXELS = 1296
 EXPECTED_NUMBER_OF_SAMPLES = 50
 
+
 def to_numpy(a):
     any_array_type_to_npdtype = {
         1: 'i1',

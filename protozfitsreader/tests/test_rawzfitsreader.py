@@ -255,8 +255,8 @@ def test_waveforms():
         N = EXPECTED_NUMBER_OF_PIXELS * EXPECTED_NUMBER_OF_SAMPLES
         assert waveforms.shape == (N, )
         assert waveforms.dtype == np.int16
-        assert waveforms.min() == 0
-        assert waveforms.max() == (2**12) - 1
+        assert waveforms.min() >= 0
+        assert waveforms.max() <= (2**12) - 1
 
 
 def test_baselines():
@@ -271,8 +271,8 @@ def test_baselines():
         baselines = to_numpy(event.hiGain.waveforms.baselines)
         assert baselines.shape == (EXPECTED_NUMBER_OF_PIXELS, )
         assert baselines.dtype == np.int16
-        assert baselines.min() == 0
-        assert baselines.max() == (2**12) - 1
+        assert baselines.min() >= 0
+        assert baselines.max() <= (2**12) - 1
 
 
 def test_pixel_flags():

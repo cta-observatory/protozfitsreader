@@ -18,3 +18,9 @@ install:
 
 script:
   - pytest -vv
+  - echo "trying to show, that deinstall works"
+  - cd ..
+  - find . | grep "\.so$"
+  - pip uninstall protozfitsreader --yes
+  - find . | grep "\.so$"
+

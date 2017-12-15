@@ -2,7 +2,7 @@
 
 ## installation:
 
-    conda install numpy protobuf
+    conda install numpy protobuf libgcc
     pip install https://github.com/dneise/protozfitsreader/archive/v0.43.1.tar.gz
 
 The contents of this repo come entirely from: http://www.isdc.unige.ch/~lyard/repo/

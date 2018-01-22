@@ -1,6 +1,4 @@
 #!/bin/python
-
-# This is for a test PR  ..all tests should still work
 from setuptools import setup
 setup(
     name='protozfitsreader',

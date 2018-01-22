@@ -1,9 +1,9 @@
-# Protozftisreader [![Build Status](https://travis-ci.org/dneise/protozfitsreader.svg?branch=master)](https://travis-ci.org/dneise/protozfitsreader)
+# Protozftisreader [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
 ## installation:
 
     conda install numpy protobuf libgcc
-    pip install https://github.com/dneise/protozfitsreader/archive/v0.43.1.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.43.1.tar.gz
 
 The contents of this repo come entirely from: http://www.isdc.unige.ch/~lyard/repo/
 

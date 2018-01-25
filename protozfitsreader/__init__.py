@@ -1,11 +1,8 @@
 #!/bin/env python
-# this code should run in python3.
-# Zfits/protobuf loader.
-# import protozfitsreader
 from os.path import isfile
 import numpy as np
-from protozfitsreader import rawzfitsreader
-from protozfitsreader import L0_pb2
+from . import rawzfitsreader
+from . import L0_pb2
 import warnings
 
 pixel_remap = [

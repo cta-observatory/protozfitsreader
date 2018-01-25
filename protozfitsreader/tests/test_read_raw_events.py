@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 example_file_path = pkg_resources.resource_filename(
-    'digicampipe',
+    'protozfitsreader',
     os.path.join(
         'tests',
         'resources',

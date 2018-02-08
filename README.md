@@ -23,17 +23,7 @@ To use it you'll have to find your `site-packages` folder, e.g. like this:
         '/home/dneise/anaconda3/lib/python3.6',
         '/home/dneise/anaconda3/lib/python3.6/lib-dynload',
         '/home/dneise/anaconda3/lib/python3.6/site-packages',   <----- this one <-----
-        '/home/dneise/fact/smart_fact_crawler',
-        '/home/dneise/fact/shifthelper_deployment/shifthelper',
-        '/home/dneise/sst/ctapipe',
-        '/home/dneise/sst/digicamviewer',
-        '/home/dneise/sst/CTS',
-        '/home/dneise/sst/digicampipe',
-        '/home/dneise/sst/protozfitsreader',
     ]
-    USER_BASE: '/home/dneise/.local' (exists)
-    USER_SITE: '/home/dneise/.local/lib/python3.6/site-packages' (doesn't exist)
-    ENABLE_USER_SITE: True
 
 And then you'll have to (put it in your .bashrc for example)
 

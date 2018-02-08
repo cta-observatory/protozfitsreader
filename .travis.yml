@@ -26,6 +26,7 @@ matrix:
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
         - DYLD_FALLBACK_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader
         - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader
+        - LD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader:$LD_LIBRARY_PATH
     - os: osx
       python: 3.6
       env:
@@ -33,6 +34,7 @@ matrix:
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
         - DYLD_FALLBACK_LIBRARY_PATH=/Users/travis/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader
         - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader
+        - LD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader:$LD_LIBRARY_PATH
 
 install:
   - wget $MINICONDA_URL -O miniconda.sh
@@ -51,6 +53,7 @@ script:
   - ls -larth
   - echo $DYLD_LIBRARY_PATH
   - echo $DYLD_FALLBACK_LIBRARY_PATH
+  - echo $LD_LIBRARY_PATH
   - otool -L protozfitsreader/rawzfitsreader.cpython-35m-darwin.so
   - otool -L protozfitsreader/rawzfitsreader.cpython-36m-darwin.so
   - otool -L protozfitsreader/libACTLCore.dylib

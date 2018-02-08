@@ -240,3 +240,16 @@ def test_trigger_output_patch19():
         trigger_output_patch19 = to_numpy(e.trigger_output_patch19)
         assert trigger_output_patch19.shape == (2700, )
         assert trigger_output_patch19.dtype == np.uint8
+
+
+def test_no_crash_when_iterating_too_far():
+    from protozfitsreader import rawzfitsreader
+    from protozfitsreader import L0_pb2
+
+    # In version 0.43 we got a crash (seg fault or so) when iterating too
+    # far. This test should ensure this behaviour is fixed in 0.44
+
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()+1):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())

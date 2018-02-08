@@ -57,7 +57,7 @@ script:
   - otool -L protozfitsreader/libZFitsIO.dylib
   - otool -L protozfitsreader/libzmq.4.dylib
   - echo "trying to show, that deinstall works"
-  - cd  /home/travis
+  - cd  $HOME
   - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"
   - pip uninstall protozfitsreader --yes
   - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"

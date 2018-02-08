@@ -2,8 +2,43 @@
 
 ## installation:
 
+
+### Linux (with anaconda)
+
     conda install numpy protobuf libgcc
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.43.1.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.0.tar.gz
+
+### OSX (with anaconda)
+
+    conda install numpy protobuf libgcc
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.0.tar.gz
+
+To use it you'll have to find your `site-packages` folder, e.g. like this:
+
+    dneise@lair:~$ python -m site
+    sys.path = [
+        '/home/dneise',
+        '/home/dneise/Downloads/rootfoo/build_root/lib',
+        '/home/dneise/anaconda3/lib/python36.zip',
+        '/home/dneise/anaconda3/lib/python3.6',
+        '/home/dneise/anaconda3/lib/python3.6/lib-dynload',
+        '/home/dneise/anaconda3/lib/python3.6/site-packages',   <----- this one <-----
+        '/home/dneise/fact/smart_fact_crawler',
+        '/home/dneise/fact/shifthelper_deployment/shifthelper',
+        '/home/dneise/sst/ctapipe',
+        '/home/dneise/sst/digicamviewer',
+        '/home/dneise/sst/CTS',
+        '/home/dneise/sst/digicampipe',
+        '/home/dneise/sst/protozfitsreader',
+    ]
+    USER_BASE: '/home/dneise/.local' (exists)
+    USER_SITE: '/home/dneise/.local/lib/python3.6/site-packages' (doesn't exist)
+    ENABLE_USER_SITE: True
+
+And then you'll have to (put it in your .bashrc for example)
+
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
+
 
 The contents of this repo come entirely from: http://www.isdc.unige.ch/~lyard/repo/
 

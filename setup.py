@@ -8,7 +8,7 @@ setup(
     author="Etienne Lyard et al.",
     author_email="etienne.lyard@unige.ch",
     package_data={
-        'protozfitsreader': ['*.so*'],
+        'protozfitsreader': ['*.so*', '*.dylib'],
         '': ['tests/resources/*'],
     },
     install_requires=['numpy', 'protobuf'],

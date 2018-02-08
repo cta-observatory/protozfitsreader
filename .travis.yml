@@ -10,8 +10,20 @@ python:
 matrix:
   include:
     - os: linux
+      python: 3.5
+      env: PYTHON_VERSION=3.5
+      env: MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    - os: linux
+      python: 3.6
+      env: PYTHON_VERSION=3.6
       env: MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     - os: osx
+      python: 3.5
+      env: PYTHON_VERSION=3.5
+      env: MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+    - os: osx
+      python: 3.6
+      env: PYTHON_VERSION=3.6
       env: MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
 
 install:
@@ -22,7 +34,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n pz python=$TRAVIS_PYTHON_VERSION pip numpy protobuf pytest
+  - conda create -q -n pz python=$PYTHON_VERSION pip numpy protobuf pytest
   - source activate pz
   - pip install .
 

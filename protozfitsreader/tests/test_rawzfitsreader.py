@@ -246,10 +246,14 @@ def test_no_crash_when_iterating_too_far():
     from protozfitsreader import rawzfitsreader
     from protozfitsreader import L0_pb2
 
+    rawzfitsreader.open(example_file_path + ':Events')
+    for i in range(rawzfitsreader.getNumRows()):
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(rawzfitsreader.readEvent())
+
+    # At this point we iterated through the entire file.
     # In version 0.43 we got a crash (seg fault or so) when iterating too
     # far. This test should ensure this behaviour is fixed in 0.44
 
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()+1):
-        event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
+    with pytest.raises(EOFError):
+        rawzfitsreader.readEvent()

@@ -1,41 +1,30 @@
 language: generic
-#os:
-#  - linux
-#  - osx
-#python:
-#  # We don't actually use the Travis Python, but this keeps it organized.
-#  - "3.5"
-#  - "3.6"
 
 matrix:
   include:
-    # - os: linux
-    #   python: 3.5
-    #   env:
-    #     - PYTHON_VERSION=3.5
-    #     - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    # - os: linux
-    #   python: 3.6
-    #   env:
-    #     - PYTHON_VERSION=3.6
-    #     - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    - os: linux
+      python: 3.5
+      env:
+        - PYTHON_VERSION=3.5
+        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    - os: linux
+      python: 3.6
+      env:
+        - PYTHON_VERSION=3.6
+        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     - os: osx
       python: 3.5
       env:
 
         - PYTHON_VERSION=3.5
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-        # - DYLD_FALLBACK_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader
         - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader
-        # - LD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader
     - os: osx
       python: 3.6
       env:
         - PYTHON_VERSION=3.6
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-        # - DYLD_FALLBACK_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader
         - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader
-        # - LD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader
 
 install:
   - wget $MINICONDA_URL -O miniconda.sh
@@ -51,22 +40,8 @@ install:
 
 script:
   - pytest -vv
-  - ls -larth
-  - echo $DYLD_LIBRARY_PATH
-  - echo $DYLD_FALLBACK_LIBRARY_PATH
-  - echo $LD_LIBRARY_PATH
-  - ls -larth $LD_LIBRARY_PATH
-  - otool -L protozfitsreader/rawzfitsreader.cpython-35m-darwin.so
-  - otool -L protozfitsreader/rawzfitsreader.cpython-36m-darwin.so
-  - otool -L protozfitsreader/libACTLCore.dylib
-  - otool -L protozfitsreader/libZFitsIO.dylib
-  - otool -L protozfitsreader/libzmq.4.dylib
   - echo "trying to show, that deinstall works"
   - cd  $HOME
   - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"
   - pip uninstall protozfitsreader --yes
   - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"
-
-
-
-

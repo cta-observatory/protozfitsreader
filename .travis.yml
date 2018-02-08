@@ -45,6 +45,8 @@ install:
 script:
   - pytest -vv
   - ls -larth
+  - echo $DYLD_LIBRARY_PATH
+  - echo $DYLD_FALLBACK_LIBRARY_PATH
   - otool -L protozfitsreader/rawzfitsreader.cpython-35m-darwin.so
   - otool -L protozfitsreader/rawzfitsreader.cpython-36m-darwin.so
   - otool -L protozfitsreader/libACTLCore.dylib

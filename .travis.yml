@@ -39,8 +39,8 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - python setup.py test
-  # - pytest -vv
+  ##- python setup.py test
+  - pytest -vv
   - echo "trying to show, that deinstall works"
   - cd  $HOME
   - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"

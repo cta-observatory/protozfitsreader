@@ -34,7 +34,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n pz python=$PYTHON_VERSION pip # numpy protobuf pytest
+  - conda create -q -n pz python=$PYTHON_VERSION pip numpy protobuf # pytest
   - source activate pz
   - pip install -r requirements.txt
 

@@ -15,4 +15,6 @@ setup(
         '': ['tests/resources/*'],
     },
     install_requires=['numpy', 'protobuf'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
 )

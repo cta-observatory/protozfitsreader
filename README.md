@@ -9,13 +9,17 @@ You do not have to use a [conda environment](https://conda.io/docs/user-guide/ta
 
 ### Faster installation?
 
+If you use Anaconda this is not interesting for you.
+
 You can just `pip install` this, but it will use `pip` to install all the dependencies.
 `pip install <some package>` is sometimes much slower than `conda install <some package>`.
-So we recommend to
+
+If you use "miniconda" or if you install this in a fresh conda environment, then
+numpy and protobuf might not be there, so we recommend to
 
     conda install numpy protobuf
 
-if you don't have that already.
+for your convenience.
 
 ### Linux (with anaconda)
 

@@ -34,12 +34,13 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n pz python=$PYTHON_VERSION pip numpy protobuf pytest
+  - conda create -q -n pz python=$PYTHON_VERSION pip # numpy protobuf pytest
   - source activate pz
-  - pip install .
+  - pip install -r requirements.txt
 
 script:
-  - pytest -vv
+  - python setup.py test
+  # - pytest -vv
   - echo "trying to show, that deinstall works"
   - cd  $HOME
   - find . | grep "rawzfitsreader.cpython-35m-x86_64-linux-gnu.so"

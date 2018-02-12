@@ -2,8 +2,75 @@
 
 ## installation:
 
-    conda install numpy protobuf libgcc
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.43.1.tar.gz
+We all use [Anaconda](https://www.anaconda.com/) and this package is tested
+against Anaconda. You can [download anaconda](https://www.anaconda.com/download) for your system for free.
+
+You do not have to use a [conda environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) to use this package. It cleanly installs and uninstalls with [pip](https://docs.python.org/3.6/installing/). If you plan to play around with different versions of this package your might want to use environments though.
+
+### Faster installation?
+
+If you use Anaconda this is not interesting for you.
+
+You can just `pip install` this, but it will use `pip` to install all the dependencies.
+`pip install <some package>` is sometimes much slower than `conda install <some package>`.
+
+If you use "miniconda" or if you install this in a fresh conda environment, then
+numpy and protobuf might not be there, so we recommend to
+
+    conda install numpy protobuf
+
+for your convenience.
+
+### Linux (with anaconda)
+
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.0.tar.gz
+
+### OSX (with anaconda)
+
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.0.tar.gz
+
+To use it you'll have to find your `site-packages` folder, e.g. like this:
+
+    dneise@lair:~$ python -m site
+    sys.path = [
+        '/home/dneise',
+        '/home/dneise/Downloads/rootfoo/build_root/lib',
+        '/home/dneise/anaconda3/lib/python36.zip',
+        '/home/dneise/anaconda3/lib/python3.6',
+        '/home/dneise/anaconda3/lib/python3.6/lib-dynload',
+        '/home/dneise/anaconda3/lib/python3.6/site-packages',   <----- this one <-----
+    ]
+
+And then you'll have to (put it in your .bashrc for example)
+
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
+
+### To developers: No `pip --editable`
+
+This package contains pre-build binaries, which (at the moment) are required to be installed
+into your "site-packages" folder.
+Developers like to install packages they are currently developing like this:
+
+    pip install --editable .
+
+Because then they can modify code and try it out without constant uninstall/install cycles.
+Unfortunately this nice development workcycle is not possible at the moment.
+
+I personally do:
+
+    git clone https://github.com/cta-sst-1m/protozfitsreader
+    pip install protozfitsreader
+    # play around ... modify ...
+    pip uninstall protozfitsreader --yes && pip install protozfitsreader
+    # play around ... modify ...
+    pip uninstall protozfitsreader --yes && pip install protozfitsreader
+    # and so on
+
+The uninstall/install takes 1..2sec ... so it is rather ok... not perfect though.
+
+
+
+# Where does this come from?
 
 The contents of this repo come entirely from: http://www.isdc.unige.ch/~lyard/repo/
 

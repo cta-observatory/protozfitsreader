@@ -170,16 +170,17 @@ class ZFile:
         rawzfitsreader.open(self.fname + ":Events")
         self.numrows = rawzfitsreader.getNumRows()
         self.run_id = 0
-        self.generator = self.__generator()
-
-    def __generator(self):
-        for _ in range(self.numrows):
-            event = L0_pb2.CameraEvent()
-            event.ParseFromString(rawzfitsreader.readEvent())
-            yield Event(event, self.run_id)
 
     def __iter__(self):
-        return self.generator
+        return self
+
+    def __next__(self):
+        event = L0_pb2.CameraEvent()
+        try:
+            event.ParseFromString(rawzfitsreader.readEvent())
+            return Event(event, self.run_id)
+        except EOFError:
+            raise StopIteration
 
     def list_tables(self):
         return rawzfitsreader.listAllTables(self.fname)

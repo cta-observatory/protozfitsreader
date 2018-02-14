@@ -4,6 +4,11 @@ from . import rawzfitsreader
 from . import L0_pb2
 import warnings
 
+from pkg_resources import resource_string
+
+__version__ = resource_string('protozfitsreader', 'VERSION').decode().strip()
+
+
 PATCH_ID_INPUT = [
     204, 216, 180, 192, 229, 241, 205, 217, 254, 266, 230, 242,
     279, 291, 255, 267, 304, 316, 280, 292, 329, 341, 305, 317, 156, 168, 132,

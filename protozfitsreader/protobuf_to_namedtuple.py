@@ -1,6 +1,7 @@
 from enum import Enum
 from collections import namedtuple
 import numpy as np
+from astropy.io import fits
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from . import rawzfitsreader
@@ -10,21 +11,78 @@ from .CoreMessages_pb2 import AnyArray
 
 class File:
     def __init__(self, path):
-        self.path = path
-        rawzfitsreader.open(path+":Events")
+        bintables = detect_bintables(path)
+        for t in bintables:
+            self.__dict__[t.extname] = t
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.__dict__)
+
+
+TableDescription = namedtuple(
+    'TableDescription',
+    [
+        'path',
+        'index',
+        'extname',
+        'pbfhead',
+        'znaxis2',
+        'pb_class_name',
+        'header',
+    ]
+)
+
+
+def detect_bintables(path):
+    fitsfile = fits.open(path)
+    bintables = [
+        TableDescription(
+            path=path,
+            index=hdu_id,
+            extname=hdu.header['EXTNAME'],
+            pbfhead=hdu.header['PBFHEAD'],
+            znaxis2=hdu.header['ZNAXIS2'],
+            pb_class_name=hdu.header['PBFHEAD'].split('.')[-1],
+            header=hdu.header
+        )
+        for hdu_id, hdu in enumerate(fitsfile)
+        if hdu.header['XTENSION'] == 'BINTABLE'
+    ]
+    fitsfile.close()
+    return bintables
+
+
+class Table:
+    last_opened = None
+    '''the rawzfitsreader has a "bug" which is: It cannot have two open
+    hdus. So when the File would open all N tables at construction time,
+    every `rawzfitsreader.readEvent()` would act on the last opened table.
+
+    So the Tables remember which hdu was opened last, and if it was not them.
+    They open it.
+    '''
+
+    def __init__(self, desc):
+        '''
+        desc: TableDescription
+        '''
+        self.desc = desc
+        rawzfitsreader.open(desc.path+":"+desc.extname)
+        Table.last_opened = desc
+        self.pbuf_class = getattr(L0_pb2, desc.pb_class_name)
+        self.header = self.desc.header
 
     def __len__(self):
-        # not sure if (self.path) is needed
-        return rawzfitsreader.getNumRows(self.path)
+        self.desc.znaxis2
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        event = L0_pb2.CameraEvent()
+        row = self.pbuf_class()
         try:
-            event.ParseFromString(rawzfitsreader.readEvent())
-            return make_namedtuple(event)
+            row.ParseFromString(rawzfitsreader.readEvent())
+            return make_namedtuple(row)
         except EOFError:
             raise StopIteration
 

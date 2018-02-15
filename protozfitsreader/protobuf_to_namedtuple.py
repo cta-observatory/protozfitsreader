@@ -1,11 +1,11 @@
 from enum import Enum
 from collections import namedtuple
 import numpy as np
-from protozfitsreader import rawzfitsreader
-from protozfitsreader import L0_pb2
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
-from CoreMessages_pb2 import AnyArray
+from . import rawzfitsreader
+from . import L0_pb2
+from .CoreMessages_pb2 import AnyArray
 
 
 class File:

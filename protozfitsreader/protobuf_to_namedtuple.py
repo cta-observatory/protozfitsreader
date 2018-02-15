@@ -46,7 +46,7 @@ def detect_bintables(path):
             header=hdu.header
         )
         for hdu_id, hdu in enumerate(fitsfile)
-        if hdu.header['XTENSION'] == 'BINTABLE'
+        if 'XTENSION' in hdu.header and hdu.header['XTENSION'] == 'BINTABLE'
     ]
     fitsfile.close()
     return bintables

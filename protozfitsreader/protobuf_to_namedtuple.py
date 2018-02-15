@@ -16,7 +16,10 @@ class File:
             self.__dict__[btd.extname] = Table(btd)
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__)
+        return "%s(%r)" % (
+            self.__class__.__name__,
+            self.__dict__
+        )
 
 
 BinTableDescription = namedtuple(
@@ -88,7 +91,10 @@ class Table:
             raise StopIteration
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.desc)
+        return '{cn}({d.extname}: {d.znaxis2}x{d.pb_class_name})'.format(
+            cn=self.__class__.__name__,
+            d=self.desc
+        )
 
 
 def make_namedtuple(message):

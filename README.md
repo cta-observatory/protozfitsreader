@@ -23,11 +23,11 @@ for your convenience.
 
 ### Linux (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.0.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.1.tar.gz
 
 ### OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.0.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.1.tar.gz
 
 To use it you'll have to find your `site-packages` folder, e.g. like this:
 

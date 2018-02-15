@@ -11,16 +11,16 @@ from .CoreMessages_pb2 import AnyArray
 
 class File:
     def __init__(self, path):
-        bintables = detect_bintables(path)
-        for t in bintables:
-            self.__dict__[t.extname] = t
+        bintable_descriptions = detect_bintables(path)
+        for btd in bintable_descriptions:
+            self.__dict__[btd.extname] = Table(btd)
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
 
 
-TableDescription = namedtuple(
-    'TableDescription',
+BinTableDescription = namedtuple(
+    'BinTableDescription',
     [
         'path',
         'index',
@@ -36,7 +36,7 @@ TableDescription = namedtuple(
 def detect_bintables(path):
     fitsfile = fits.open(path)
     bintables = [
-        TableDescription(
+        BinTableDescription(
             path=path,
             index=hdu_id,
             extname=hdu.header['EXTNAME'],
@@ -64,11 +64,9 @@ class Table:
 
     def __init__(self, desc):
         '''
-        desc: TableDescription
+        desc: BinTableDescription
         '''
         self.desc = desc
-        rawzfitsreader.open(desc.path+":"+desc.extname)
-        Table.last_opened = desc
         self.pbuf_class = getattr(L0_pb2, desc.pb_class_name)
         self.header = self.desc.header
 
@@ -79,12 +77,18 @@ class Table:
         return self
 
     def __next__(self):
+        if not Table.last_opened == self.desc:
+            rawzfitsreader.open(self.desc.path+":"+self.desc.extname)
+            Table.last_opened = self.desc
         row = self.pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent())
             return make_namedtuple(row)
         except EOFError:
             raise StopIteration
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__, self.desc)
 
 
 def make_namedtuple(message):

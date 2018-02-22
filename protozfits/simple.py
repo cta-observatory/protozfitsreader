@@ -56,6 +56,8 @@ def detect_bintables(path):
 
 
 class Table:
+    '''Iterable Table
+    '''
     __last_opened = None
     '''the rawzfitsreader has a "bug" which is: It cannot have two open
     hdus. So when the File would open all N tables at construction time,

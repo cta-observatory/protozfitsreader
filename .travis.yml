@@ -17,13 +17,13 @@ matrix:
       env:
         - PYTHON_VERSION=3.5
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-        - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfitsreader
+        - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.5/site-packages/protozfits
     - os: osx
       python: 3.6
       env:
         - PYTHON_VERSION=3.6
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
-        - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfitsreader
+        - DYLD_LIBRARY_PATH=$HOME/miniconda/envs/pz/lib/python3.6/site-packages/protozfits
 
 install:
   - wget $MINICONDA_URL -O miniconda.sh

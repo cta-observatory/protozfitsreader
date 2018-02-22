@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 example_file_path = pkg_resources.resource_filename(
-    'protozfitsreader',
+    'protozfits',
     os.path.join(
         'tests',
         'resources',
@@ -32,19 +32,19 @@ EXPECTED_GPS_TIME = [0] * EVENTS_IN_EXAMPLE_FILE
 
 
 def test_zfile_raises_on_wrong_path():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     with pytest.raises(FileNotFoundError):
         ZFile('foo.bar')
 
 
 def test_zfile_opens_correct_path():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     ZFile(example_file_path)
 
 
 def test_rawreader_can_work_with_relative_path():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     relative_test_file_path = os.path.relpath(example_file_path)
     rawzfitsreader.open(relative_test_file_path + ':Events')
@@ -56,8 +56,8 @@ def test_rawreader_can_work_with_relative_path():
 
 
 def test_examplefile_has_no_runheader():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':RunHeader')
 
@@ -70,8 +70,8 @@ def test_examplefile_has_no_runheader():
 
 
 def test_rawreader_can_work_with_absolute_path():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':Events')
     raw = rawzfitsreader.readEvent()
@@ -82,14 +82,14 @@ def test_rawreader_can_work_with_absolute_path():
 
 
 def test_can_iterate_over_events():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
 
     for __ in ZFile(example_file_path):
         pass
 
 
 def test_iteration_yield_expected_fields():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
 
     for event in ZFile(example_file_path):
         # we just want to see, that the zfits file has all these
@@ -115,7 +115,7 @@ def test_iteration_yield_expected_fields():
 
 
 def test_event_number():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
 
     event_numbers = [
         event.event_number
@@ -129,7 +129,7 @@ def test_event_number():
 
 
 def test_telescope_ids():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     telescope_ids = [
         event.telescope_id
         for event in ZFile(example_file_path)
@@ -139,7 +139,7 @@ def test_telescope_ids():
 
 
 def test_num_gains():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     num_gains = [
         event.num_gains
         for event in ZFile(example_file_path)
@@ -149,13 +149,13 @@ def test_num_gains():
 
 
 def test_num_channels():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     for event in ZFile(example_file_path):
         assert -1 == event.num_channels
 
 
 def test_n_pixel():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     n_pixel = [
         event.n_pixels
         for event in ZFile(example_file_path)
@@ -164,7 +164,7 @@ def test_n_pixel():
 
 
 def test_pixel_flags():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     pixel_flags = [
         event.pixel_flags
         for event in ZFile(example_file_path)
@@ -178,7 +178,7 @@ def test_pixel_flags():
 
 
 def test_local_time():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     local_time = [
         event.local_time
         for event in ZFile(example_file_path)
@@ -187,7 +187,7 @@ def test_local_time():
 
 
 def test_gps_time():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     gps_time = [
         event.central_event_gps_time
         for event in ZFile(example_file_path)
@@ -196,7 +196,7 @@ def test_gps_time():
 
 
 def test_camera_event_type():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     camera_event_type = [
         event.camera_event_type
         for event in ZFile(example_file_path)
@@ -205,7 +205,7 @@ def test_camera_event_type():
 
 
 def test_array_event_type():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     array_event_type = [
         event.array_event_type
         for event in ZFile(example_file_path)
@@ -214,7 +214,7 @@ def test_array_event_type():
 
 
 def test_num_samples():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     num_samples = [
         event.num_samples
         for event in ZFile(example_file_path)
@@ -223,7 +223,7 @@ def test_num_samples():
 
 
 def test_adc_samples():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     adc_samples = [
         event.adc_samples
         for event in ZFile(example_file_path)
@@ -242,7 +242,7 @@ def test_adc_samples():
 
 
 def test_trigger_input_traces():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     trigger_input_traces = [
         event.trigger_input_traces
         for event in ZFile(example_file_path)
@@ -254,7 +254,7 @@ def test_trigger_input_traces():
 
 
 def test_trigger_output_patch7():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     trigger_output_patch7 = [
         event.trigger_output_patch7
         for event in ZFile(example_file_path)
@@ -266,7 +266,7 @@ def test_trigger_output_patch7():
 
 
 def test_trigger_output_patch19():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     trigger_output_patch19 = [
         event.trigger_output_patch19
         for event in ZFile(example_file_path)
@@ -278,7 +278,7 @@ def test_trigger_output_patch19():
 
 
 def test_baseline():
-    from protozfitsreader import ZFile
+    from protozfits import ZFile
     baseline = [
         event.baseline
         for event in ZFile(example_file_path)

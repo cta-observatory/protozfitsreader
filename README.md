@@ -1,4 +1,4 @@
-# Protozftisreader [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
+# Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
 ## Installation:
 
@@ -59,11 +59,11 @@ Unfortunately this nice development workcycle is not possible at the moment.
 I personally do:
 
     git clone https://github.com/cta-sst-1m/protozfitsreader
-    pip install protozfitsreader
+    pip install protozfits
     # play around ... modify ...
-    pip uninstall protozfitsreader --yes && pip install protozfitsreader
+    pip uninstall protozfits --yes && pip install protozfits
     # play around ... modify ...
-    pip uninstall protozfitsreader --yes && pip install protozfitsreader
+    pip uninstall protozfits --yes && pip install protozfits
     # and so on
 
 The uninstall/install takes 1..2sec ... so it is rather ok... not perfect though.

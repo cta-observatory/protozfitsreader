@@ -4,7 +4,7 @@ import pkg_resources
 import os
 
 example_file_path = pkg_resources.resource_filename(
-    'protozfitsreader',
+    'protozfits',
     os.path.join(
         'tests',
         'resources',
@@ -46,8 +46,8 @@ def to_numpy(a):
 
 
 def test_rawreader_can_work_with_relative_path():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     relative_test_file_path = os.path.relpath(example_file_path)
     rawzfitsreader.open(relative_test_file_path + ':Events')
@@ -59,8 +59,8 @@ def test_rawreader_can_work_with_relative_path():
 
 
 def test_examplefile_has_no_runheader():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':RunHeader')
 
@@ -73,8 +73,8 @@ def test_examplefile_has_no_runheader():
 
 
 def test_rawreader_can_work_with_absolute_path():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':Events')
     raw = rawzfitsreader.readEvent()
@@ -85,8 +85,8 @@ def test_rawreader_can_work_with_absolute_path():
 
 
 def test_rawreader_can_iterate():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':Events')
     for i in range(rawzfitsreader.getNumRows()):
@@ -99,8 +99,8 @@ def test_rawreader_can_iterate():
 
 
 def iterate():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':Events')
     for i in range(rawzfitsreader.getNumRows()):
@@ -243,8 +243,8 @@ def test_trigger_output_patch19():
 
 
 def test_no_crash_when_iterating_too_far():
-    from protozfitsreader import rawzfitsreader
-    from protozfitsreader import L0_pb2
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
 
     rawzfitsreader.open(example_file_path + ':Events')
     for i in range(rawzfitsreader.getNumRows()):

@@ -6,7 +6,7 @@ import warnings
 
 from pkg_resources import resource_string
 
-__version__ = resource_string('protozfitsreader', 'VERSION').decode().strip()
+__version__ = resource_string('protozfits', 'VERSION').decode().strip()
 
 
 PATCH_ID_INPUT = [

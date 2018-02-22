@@ -56,7 +56,7 @@ def detect_bintables(path):
 
 
 class Table:
-    last_opened = None
+    __last_opened = None
     '''the rawzfitsreader has a "bug" which is: It cannot have two open
     hdus. So when the File would open all N tables at construction time,
     every `rawzfitsreader.readEvent()` would act on the last opened table.
@@ -69,21 +69,21 @@ class Table:
         '''
         desc: BinTableDescription
         '''
-        self.desc = desc
-        self.pbuf_class = getattr(L0_pb2, desc.pb_class_name)
-        self.header = self.desc.header
+        self.__desc = desc
+        self.__pbuf_class = getattr(L0_pb2, desc.pb_class_name)
+        self.header = self.__desc.header
 
     def __len__(self):
-        self.desc.znaxis2
+        self.__desc.znaxis2
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if not Table.last_opened == self.desc:
-            rawzfitsreader.open(self.desc.path+":"+self.desc.extname)
-            Table.last_opened = self.desc
-        row = self.pbuf_class()
+        if not Table.__last_opened == self.__desc:
+            rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
+            Table.__last_opened = self.__desc
+        row = self.__pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent())
             return make_namedtuple(row)
@@ -93,7 +93,7 @@ class Table:
     def __repr__(self):
         return '{cn}({d.extname}: {d.znaxis2}x{d.pb_class_name})'.format(
             cn=self.__class__.__name__,
-            d=self.desc
+            d=self.__desc
         )
 
 

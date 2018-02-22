@@ -174,6 +174,7 @@ def any_array_to_numpy(any_array):
         any_array_type_to_numpy_type[any_array.type]
     )
 
+
 if __name__ is '__main__':
     path = 'example_10evts.fits.fz'
     file = File(path)

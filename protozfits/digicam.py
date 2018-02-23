@@ -6,7 +6,7 @@ from .patch_ids import PATCH_ID_INPUT, PATCH_ID_OUTPUT
 
 
 def event_source(path, run_id=0):
-    for event in File(path):
+    for event in File(path).Events:
         yield Event(event, run_id)
 
 

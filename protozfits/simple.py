@@ -79,7 +79,7 @@ class Table:
         return self.__desc.znaxis2
 
     def __iter__(self):
-        rawzfitsreader.rewindTable()
+        rewind_table()
         return self
 
     def __next__(self):
@@ -178,7 +178,17 @@ def any_array_to_numpy(any_array):
     )
 
 
+def rewind_table():
+    # rawzfitsreader.rewindTable() has a bug at the moment,
+    # it always throws a SystemError
+    # we let that one pass
+    try:
+        rawzfitsreader.rewindTable()
+    except SystemError:
+        pass
+
 if __name__ is '__main__':
     path = 'example_10evts.fits.fz'
     file = File(path)
     event = next(file)
+

@@ -79,6 +79,7 @@ class Table:
         return self.__desc.znaxis2
 
     def __iter__(self):
+        rawzfitsreader.rewindTable()
         return self
 
     def __next__(self):

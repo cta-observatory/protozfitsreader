@@ -76,7 +76,7 @@ class Table:
         self.header = self.__desc.header
 
     def __len__(self):
-        self.__desc.znaxis2
+        return self.__desc.znaxis2
 
     def __iter__(self):
         return self

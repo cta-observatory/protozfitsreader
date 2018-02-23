@@ -191,4 +191,3 @@ if __name__ is '__main__':
     path = 'example_10evts.fits.fz'
     file = File(path)
     event = next(file)
-

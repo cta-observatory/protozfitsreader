@@ -1,5 +1,4 @@
 import numpy as np
-
 from .simple import File
 from .patch_ids import PATCH_ID_INPUT, PATCH_ID_OUTPUT
 

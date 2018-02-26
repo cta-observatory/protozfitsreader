@@ -61,4 +61,3 @@ def _prepare_trigger_output(_a):
     _a = _a[..., ::-1]
     _a = _a.reshape(-1, A*B*C).T
     return _a[np.argsort(PATCH_ID_OUTPUT)]
-

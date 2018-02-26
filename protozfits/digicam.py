@@ -1,5 +1,4 @@
 import numpy as np
-from astropy.utils.decorators import lazyproperty
 
 from .simple import File
 from .patch_ids import PATCH_ID_INPUT, PATCH_ID_OUTPUT
@@ -39,18 +38,12 @@ class Event:
             _e.trigger_output_patch19)
         self.trigger_input_traces = _prepare_trigger_input(
             _e.trigger_input_traces)
-
-    @lazyproperty
-    def central_event_gps_time(self):
-        time_second = self._event.trig.timeSec
-        time_nanosecond = self._event.trig.timeNanoSec
-        return time_second * 1E9 + time_nanosecond
-
-    @lazyproperty
-    def local_time(self):
-        time_second = self._event.local_time_sec
-        time_nanosecond = self._event.local_time_nanosec
-        return time_second * 1E9 + time_nanosecond
+        self.central_event_gps_time = (
+            self._event.trig.timeSec * 1e9 + self._event.trig.timeNanoSec
+        )
+        self.local_time = (
+            self._event.local_time_sec * 1e9 + self._event.local_time_nanosec
+        )
 
 
 def _prepare_trigger_input(_a):

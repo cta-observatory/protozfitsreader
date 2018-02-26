@@ -1,6 +1,6 @@
 import numpy as np
 from .simple import File
-from .patch_ids import PATCH_ID_INPUT, PATCH_ID_OUTPUT
+from .patch_ids import PATCH_ID_INPUT_SORT_IDS, PATCH_ID_OUTPUT_SORT_IDS
 
 
 def event_source(path, run_id=0):
@@ -54,7 +54,7 @@ def _prepare_trigger_input(_a):
     _a = _a[..., :cut]
     _a = _a.reshape(_a.shape[0], -1)
     _a = _a.T
-    _a = _a[np.argsort(PATCH_ID_INPUT)]
+    _a = _a[PATCH_ID_INPUT_SORT_IDS]
     return _a
 
 
@@ -64,4 +64,4 @@ def _prepare_trigger_output(_a):
     _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
     _a = _a[..., ::-1]
     _a = _a.reshape(-1, A*B*C).T
-    return _a[np.argsort(PATCH_ID_OUTPUT)]
+    return _a[PATCH_ID_OUTPUT_SORT_IDS]

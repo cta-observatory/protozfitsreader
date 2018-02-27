@@ -6,7 +6,6 @@ from pkg_resources import resource_string
 from astropy.utils.decorators import lazyproperty
 
 from .L0_pb2 import CameraEvent
-from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 from .digicam import _prepare_trigger_input, _prepare_trigger_output
 

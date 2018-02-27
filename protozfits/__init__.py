@@ -5,7 +5,8 @@ import warnings
 from pkg_resources import resource_string
 from astropy.utils.decorators import lazyproperty
 
-from . import L0_pb2
+from .L0_pb2 import CameraEvent
+from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 from .digicam import _prepare_trigger_input, _prepare_trigger_output
 
@@ -26,10 +27,10 @@ class ZFile:
         return self
 
     def __next__(self):
-        event = L0_pb2.CameraEvent()
+        event = CameraEvent()
         try:
             event.ParseFromString(rawzfitsreader.readEvent())
-            return Event(event, self.run_id)
+            return Event(NumpyArrayEvent(event), self.run_id)
         except EOFError:
             raise StopIteration
 
@@ -41,6 +42,21 @@ class ZFile:
         rawzfitsreader.rewindTable()
 
 
+class NumpyArrayEvent:
+    '''this is a **thin** wrapper around CameraEvent
+
+    '''
+    def __init__(self, e: CameraEvent):
+        self.__e = e
+
+    def __getattr__(self, name):
+        value = getattr(self.__e, name)
+        if isinstance(value, AnyArray):
+            return any_array_to_numpy(value)
+        else:
+            return value
+
+
 class Event:
     _sort_ids = None
 
@@ -48,12 +64,11 @@ class Event:
         self.run_id = run_id
         self._event = event
 
-        self.pixel_ids = any_array_to_numpy(
-            self._event.hiGain.waveforms.pixelsIndices)
+        self.pixel_ids = self._event.hiGain.waveforms.pixelsIndices
         if Event._sort_ids is None:
             Event._sort_ids = np.argsort(self.pixel_ids)
         self.n_pixels = len(self.pixel_ids)
-        self._samples = any_array_to_numpy(
+        self._samples = (
             self._event.hiGain.waveforms.samples).reshape(self.n_pixels, -1)
         self.baseline = self.unsorted_baseline[Event._sort_ids]
         self.telescope_id = self._event.telescopeID
@@ -70,21 +85,19 @@ class Event:
         self.num_gains = self._event.num_gains
         self.num_channels = self._event.head.numGainChannels
         self.num_samples = self._samples.shape[1]
-        self.pixel_flags = any_array_to_numpy(
-            self._event.pixels_flags
-        )[Event._sort_ids]
+        self.pixel_flags = self._event.pixels_flags[Event._sort_ids]
         self.adc_samples = self._samples[Event._sort_ids]
         self.trigger_output_patch7 = _prepare_trigger_output(
-            any_array_to_numpy(self._event.trigger_output_patch7))
+            self._event.trigger_output_patch7)
         self.trigger_output_patch19 = _prepare_trigger_output(
-            any_array_to_numpy(self._event.trigger_output_patch19))
+            self._event.trigger_output_patch19)
         self.trigger_input_traces = _prepare_trigger_input(
-            any_array_to_numpy(self._event.trigger_input_traces))
+            self._event.trigger_input_traces)
 
     @lazyproperty
     def unsorted_baseline(self):
         try:
-            return any_array_to_numpy(self._event.hiGain.waveforms.baselines)
+            return self._event.hiGain.waveforms.baselines
         except ValueError:
             warnings.warn((
                 "Could not read `hiGain.waveforms.baselines` for event:{0}"

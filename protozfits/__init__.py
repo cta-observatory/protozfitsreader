@@ -54,8 +54,12 @@ class Event:
         self.baseline = self.unsorted_baseline[self._sort_ids]
         self.telescope_id = self._event.telescopeID
         self.event_number = self._event.eventNumber
-        self.central_event_gps_time = self.__calc_central_event_gps_time()
-        self.local_time = self.__calc_local_time()
+        self.central_event_gps_time = (
+            self._event.trig.timeSec * 1E9 + self._event.trig.timeNanoSec
+        )
+        self.local_time = (
+            self._event.local_time_sec * 1E9 + self._event.local_time_nanosec
+        )
         self.event_number_array = self._event.arrayEvtNum
         self.camera_event_type = self._event.event_type
         self.array_event_type = self._event.eventType
@@ -88,13 +92,3 @@ class Event:
                     len(self.pixel_ids)
                 ) * np.nan
         return self.__unsorted_baseline
-
-    def __calc_central_event_gps_time(self):
-        time_second = self._event.trig.timeSec
-        time_nanosecond = self._event.trig.timeNanoSec
-        return time_second * 1E9 + time_nanosecond
-
-    def __calc_local_time(self):
-        time_second = self._event.local_time_sec
-        time_nanosecond = self._event.local_time_nanosec
-        return time_second * 1E9 + time_nanosecond

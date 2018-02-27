@@ -6,6 +6,7 @@ from pkg_resources import resource_string
 
 from . import L0_pb2
 from .patch_ids import PATCH_ID_INPUT, PATCH_ID_OUTPUT
+from .any_array_to_numpy import any_array_to_numpy
 
 __version__ = resource_string('protozfits', 'VERSION').decode().strip()
 
@@ -47,10 +48,10 @@ class Event:
         _e = self._event                   # just to make lines shorter
         _w = self._event.hiGain.waveforms  # just to make lines shorter
 
-        self.pixel_ids = toNumPyArray(_w.pixelsIndices)
+        self.pixel_ids = any_array_to_numpy(_w.pixelsIndices)
         self._sort_ids = np.argsort(self.pixel_ids)
         self.n_pixels = len(self.pixel_ids)
-        self._samples = toNumPyArray(_w.samples).reshape(self.n_pixels, -1)
+        self._samples = any_array_to_numpy(_w.samples).reshape(self.n_pixels, -1)
         self.baseline = self.unsorted_baseline[self._sort_ids]
         self.telescope_id = _e.telescopeID
         self.event_number = _e.eventNumber
@@ -62,7 +63,7 @@ class Event:
         self.num_gains = _e.num_gains
         self.num_channels = _e.head.numGainChannels
         self.num_samples = self._samples.shape[1]
-        self.pixel_flags = toNumPyArray(_e.pixels_flags)[self._sort_ids]
+        self.pixel_flags = any_array_to_numpy(_e.pixels_flags)[self._sort_ids]
         self.adc_samples = self._samples[self._sort_ids]
         self.trigger_output_patch7 = _prepare_trigger_output(
             _e.trigger_output_patch7)
@@ -75,7 +76,7 @@ class Event:
     def unsorted_baseline(self):
         if not hasattr(self, '__unsorted_baseline'):
             try:
-                self.__unsorted_baseline = toNumPyArray(
+                self.__unsorted_baseline = any_array_to_numpy(
                     self._event.hiGain.waveforms.baselines)
             except ValueError:
                 warnings.warn((
@@ -99,7 +100,7 @@ class Event:
 
 
 def _prepare_trigger_input(_a):
-    _a = toNumPyArray(_a)
+    _a = any_array_to_numpy(_a)
     A, B = 3, 192
     cut = 144
     _a = _a.reshape(-1, A)
@@ -112,40 +113,10 @@ def _prepare_trigger_input(_a):
 
 
 def _prepare_trigger_output(_a):
-    _a = toNumPyArray(_a)
+    _a = any_array_to_numpy(_a)
     A, B, C = 3, 18, 8
 
     _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
     _a = _a[..., ::-1]
     _a = _a.reshape(-1, A*B*C).T
     return _a[np.argsort(PATCH_ID_OUTPUT)]
-
-
-any_array_type_to_npdtype = {
-    1: 'i1',
-    2: 'u1',
-    3: 'i2',
-    4: 'u2',
-    5: 'i4',
-    6: 'u4',
-    7: 'i8',
-    8: 'u8',
-    9: 'f4',
-    10: 'f8',
-}
-
-any_array_type_cannot_convert_exception_text = {
-    0: "This any array has no defined type",
-    11: """I have no idea if the boolean representation
-        of the anyarray is the same as the numpy one"""
-}
-
-
-def toNumPyArray(a):
-    if a.type in any_array_type_to_npdtype:
-        return np.frombuffer(
-            a.data, any_array_type_to_npdtype[a.type])
-    else:
-        raise ValueError(
-            "Conversion to NumpyArray failed with error:\n%s",
-            any_array_type_cannot_convert_exception_text[a.type])

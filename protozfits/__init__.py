@@ -3,6 +3,7 @@ import numpy as np
 from . import rawzfitsreader
 import warnings
 from pkg_resources import resource_string
+from astropy.utils.decorators import lazyproperty
 
 from . import L0_pb2
 from .any_array_to_numpy import any_array_to_numpy
@@ -77,18 +78,14 @@ class Event:
         self.trigger_input_traces = _prepare_trigger_input(
             any_array_to_numpy(self._event.trigger_input_traces))
 
-    @property
+    @lazyproperty
     def unsorted_baseline(self):
-        if not hasattr(self, '__unsorted_baseline'):
-            try:
-                self.__unsorted_baseline = any_array_to_numpy(
-                    self._event.hiGain.waveforms.baselines)
-            except ValueError:
-                warnings.warn((
-                    "Could not read `hiGain.waveforms.baselines` for event:{0}"
-                    "of run_id:{1}".format(self.event_number, self.run_id)
-                    ))
-                self.__unsorted_baseline = np.ones(
-                    len(self.pixel_ids)
-                ) * np.nan
-        return self.__unsorted_baseline
+        try:
+            return any_array_to_numpy(self._event.hiGain.waveforms.baselines)
+        except ValueError:
+            warnings.warn((
+                "Could not read `hiGain.waveforms.baselines` for event:{0}"
+                "of run_id:{1}".format(self.event_number, self.run_id)
+                ))
+            return np.ones(len(self.pixel_ids)) * np.nan
+

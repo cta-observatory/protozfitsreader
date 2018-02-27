@@ -42,17 +42,20 @@ class ZFile:
 
 
 class Event:
+    _sort_ids = None
+
     def __init__(self, event, run_id):
         self.run_id = run_id
         self._event = event
 
         self.pixel_ids = any_array_to_numpy(
             self._event.hiGain.waveforms.pixelsIndices)
-        self._sort_ids = np.argsort(self.pixel_ids)
+        if Event._sort_ids is None:
+            Event._sort_ids = np.argsort(self.pixel_ids)
         self.n_pixels = len(self.pixel_ids)
         self._samples = any_array_to_numpy(
             self._event.hiGain.waveforms.samples).reshape(self.n_pixels, -1)
-        self.baseline = self.unsorted_baseline[self._sort_ids]
+        self.baseline = self.unsorted_baseline[Event._sort_ids]
         self.telescope_id = self._event.telescopeID
         self.event_number = self._event.eventNumber
         self.central_event_gps_time = (
@@ -69,8 +72,8 @@ class Event:
         self.num_samples = self._samples.shape[1]
         self.pixel_flags = any_array_to_numpy(
             self._event.pixels_flags
-        )[self._sort_ids]
-        self.adc_samples = self._samples[self._sort_ids]
+        )[Event._sort_ids]
+        self.adc_samples = self._samples[Event._sort_ids]
         self.trigger_output_patch7 = _prepare_trigger_output(
             any_array_to_numpy(self._event.trigger_output_patch7))
         self.trigger_output_patch19 = _prepare_trigger_output(
@@ -88,4 +91,3 @@ class Event:
                 "of run_id:{1}".format(self.event_number, self.run_id)
                 ))
             return np.ones(len(self.pixel_ids)) * np.nan
-

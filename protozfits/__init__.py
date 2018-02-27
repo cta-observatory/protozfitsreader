@@ -45,32 +45,33 @@ class Event:
         self.run_id = run_id
         self._event = event
 
-        _e = self._event                   # just to make lines shorter
-        _w = self._event.hiGain.waveforms  # just to make lines shorter
-
-        self.pixel_ids = any_array_to_numpy(_w.pixelsIndices)
+        self.pixel_ids = any_array_to_numpy(
+            self._event.hiGain.waveforms.pixelsIndices)
         self._sort_ids = np.argsort(self.pixel_ids)
         self.n_pixels = len(self.pixel_ids)
-        self._samples = any_array_to_numpy(_w.samples).reshape(self.n_pixels, -1)
+        self._samples = any_array_to_numpy(
+            self._event.hiGain.waveforms.samples).reshape(self.n_pixels, -1)
         self.baseline = self.unsorted_baseline[self._sort_ids]
-        self.telescope_id = _e.telescopeID
-        self.event_number = _e.eventNumber
+        self.telescope_id = self._event.telescopeID
+        self.event_number = self._event.eventNumber
         self.central_event_gps_time = self.__calc_central_event_gps_time()
         self.local_time = self.__calc_local_time()
-        self.event_number_array = _e.arrayEvtNum
-        self.camera_event_type = _e.event_type
-        self.array_event_type = _e.eventType
-        self.num_gains = _e.num_gains
-        self.num_channels = _e.head.numGainChannels
+        self.event_number_array = self._event.arrayEvtNum
+        self.camera_event_type = self._event.event_type
+        self.array_event_type = self._event.eventType
+        self.num_gains = self._event.num_gains
+        self.num_channels = self._event.head.numGainChannels
         self.num_samples = self._samples.shape[1]
-        self.pixel_flags = any_array_to_numpy(_e.pixels_flags)[self._sort_ids]
+        self.pixel_flags = any_array_to_numpy(
+            self._event.pixels_flags
+        )[self._sort_ids]
         self.adc_samples = self._samples[self._sort_ids]
         self.trigger_output_patch7 = _prepare_trigger_output(
-            any_array_to_numpy(_e.trigger_output_patch7))
+            any_array_to_numpy(self._event.trigger_output_patch7))
         self.trigger_output_patch19 = _prepare_trigger_output(
-            any_array_to_numpy(_e.trigger_output_patch19))
+            any_array_to_numpy(self._event.trigger_output_patch19))
         self.trigger_input_traces = _prepare_trigger_input(
-            any_array_to_numpy(_e.trigger_input_traces))
+            any_array_to_numpy(self._event.trigger_input_traces))
 
     @property
     def unsorted_baseline(self):

@@ -5,8 +5,8 @@ import warnings
 from pkg_resources import resource_string
 
 from . import L0_pb2
-from .patch_ids import PATCH_ID_INPUT, PATCH_ID_OUTPUT
 from .any_array_to_numpy import any_array_to_numpy
+from .digicam import _prepare_trigger_input, _prepare_trigger_output
 
 __version__ = resource_string('protozfits', 'VERSION').decode().strip()
 
@@ -66,11 +66,11 @@ class Event:
         self.pixel_flags = any_array_to_numpy(_e.pixels_flags)[self._sort_ids]
         self.adc_samples = self._samples[self._sort_ids]
         self.trigger_output_patch7 = _prepare_trigger_output(
-            _e.trigger_output_patch7)
+            any_array_to_numpy(_e.trigger_output_patch7))
         self.trigger_output_patch19 = _prepare_trigger_output(
-            _e.trigger_output_patch19)
+            any_array_to_numpy(_e.trigger_output_patch19))
         self.trigger_input_traces = _prepare_trigger_input(
-            _e.trigger_input_traces)
+            any_array_to_numpy(_e.trigger_input_traces))
 
     @property
     def unsorted_baseline(self):
@@ -97,26 +97,3 @@ class Event:
         time_second = self._event.local_time_sec
         time_nanosecond = self._event.local_time_nanosec
         return time_second * 1E9 + time_nanosecond
-
-
-def _prepare_trigger_input(_a):
-    _a = any_array_to_numpy(_a)
-    A, B = 3, 192
-    cut = 144
-    _a = _a.reshape(-1, A)
-    _a = _a.reshape(-1, A, B)
-    _a = _a[..., :cut]
-    _a = _a.reshape(_a.shape[0], -1)
-    _a = _a.T
-    _a = _a[np.argsort(PATCH_ID_INPUT)]
-    return _a
-
-
-def _prepare_trigger_output(_a):
-    _a = any_array_to_numpy(_a)
-    A, B, C = 3, 18, 8
-
-    _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
-    _a = _a[..., ::-1]
-    _a = _a.reshape(-1, A*B*C).T
-    return _a[np.argsort(PATCH_ID_OUTPUT)]

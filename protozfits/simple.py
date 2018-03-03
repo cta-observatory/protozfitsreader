@@ -95,7 +95,7 @@ class Table:
             raise StopIteration
 
     def __repr__(self):
-        return '{cn}({d.extname}: {d.znaxis2}x{d.pb_class_name})'.format(
+        return '{cn}({d.znaxis2}x{d.pb_class_name})'.format(
             cn=self.__class__.__name__,
             d=self.__desc
         )

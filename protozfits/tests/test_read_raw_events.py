@@ -32,14 +32,14 @@ EXPECTED_GPS_TIME = [0] * EVENTS_IN_EXAMPLE_FILE
 
 
 def test_zfile_raises_on_wrong_path():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     with pytest.raises(FileNotFoundError):
-        ZFile('foo.bar')
+        DigicamFile('foo.bar')
 
 
 def test_zfile_opens_correct_path():
-    from protozfits import ZFile
-    ZFile(example_file_path)
+    from protozfits import DigicamFile
+    DigicamFile(example_file_path)
 
 
 def test_rawreader_can_work_with_relative_path():
@@ -82,16 +82,16 @@ def test_rawreader_can_work_with_absolute_path():
 
 
 def test_can_iterate_over_events():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
 
-    for __ in ZFile(example_file_path):
+    for __ in DigicamFile(example_file_path):
         pass
 
 
 def test_iteration_yield_expected_fields():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
 
-    for event in ZFile(example_file_path):
+    for event in DigicamFile(example_file_path):
         # we just want to see, that the zfits file has all these
         # fields and we can access them
         event.telescope_id
@@ -115,11 +115,11 @@ def test_iteration_yield_expected_fields():
 
 
 def test_event_number():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
 
     event_numbers = [
         event.event_number
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     expected_event_numbers = [
         FIRST_EVENT_IN_EXAMPLE_FILE + i
@@ -129,45 +129,45 @@ def test_event_number():
 
 
 def test_telescope_ids():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     telescope_ids = [
         event.telescope_id
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     expected_ids = [TELESCOPE_ID_IN_EXAMPLE_FILE] * EVENTS_IN_EXAMPLE_FILE
     assert telescope_ids == expected_ids
 
 
 def test_num_gains():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     num_gains = [
         event.num_gains
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     expected_num_gains = [0] * EVENTS_IN_EXAMPLE_FILE
     assert num_gains == expected_num_gains
 
 
 def test_num_channels():
-    from protozfits import ZFile
-    for event in ZFile(example_file_path):
+    from protozfits import DigicamFile
+    for event in DigicamFile(example_file_path):
         assert -1 == event.num_channels
 
 
 def test_n_pixel():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     n_pixel = [
         event.n_pixels
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     assert n_pixel == [1296] * EVENTS_IN_EXAMPLE_FILE
 
 
 def test_pixel_flags():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     pixel_flags = [
         event.pixel_flags
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     expected_pixel_flags = [
         np.ones(1296, dtype=np.bool)
@@ -178,55 +178,55 @@ def test_pixel_flags():
 
 
 def test_local_time():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     local_time = [
         event.local_time
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     assert local_time == EXPECTED_LOCAL_TIME
 
 
 def test_gps_time():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     gps_time = [
         event.central_event_gps_time
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     assert gps_time == EXPECTED_GPS_TIME
 
 
 def test_camera_event_type():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     camera_event_type = [
         event.camera_event_type
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     assert camera_event_type == [1, 1, 1, 1, 1, 8, 1, 1, 1, 1]
 
 
 def test_array_event_type():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     array_event_type = [
         event.array_event_type
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     assert array_event_type == [0] * EVENTS_IN_EXAMPLE_FILE
 
 
 def test_num_samples():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     num_samples = [
         event.num_samples
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
     assert num_samples == [50] * EVENTS_IN_EXAMPLE_FILE
 
 
 def test_adc_samples():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     adc_samples = [
         event.adc_samples
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
 
     for actual in adc_samples:
@@ -242,10 +242,10 @@ def test_adc_samples():
 
 
 def test_trigger_input_traces():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     trigger_input_traces = [
         event.trigger_input_traces
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
 
     for actual in trigger_input_traces:
@@ -254,10 +254,10 @@ def test_trigger_input_traces():
 
 
 def test_trigger_output_patch7():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     trigger_output_patch7 = [
         event.trigger_output_patch7
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
 
     for actual in trigger_output_patch7:
@@ -266,10 +266,10 @@ def test_trigger_output_patch7():
 
 
 def test_trigger_output_patch19():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     trigger_output_patch19 = [
         event.trigger_output_patch19
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
 
     for actual in trigger_output_patch19:
@@ -278,10 +278,10 @@ def test_trigger_output_patch19():
 
 
 def test_baseline():
-    from protozfits import ZFile
+    from protozfits import DigicamFile
     baseline = [
         event.baseline
-        for event in ZFile(example_file_path)
+        for event in DigicamFile(example_file_path)
     ]
 
     for actual in baseline:

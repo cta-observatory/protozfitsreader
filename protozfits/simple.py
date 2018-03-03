@@ -1,5 +1,6 @@
 from enum import Enum
 from collections import namedtuple
+import numpy as np
 from astropy.io import fits
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
@@ -125,13 +126,38 @@ messages = set([
     if isinstance(getattr(L0_pb2, name), GeneratedProtocolMessageType)
 ])
 
-named_tuples = {
-    m: namedtuple(
+def namedtuple_repr2(self):
+    '''a nicer repr for big namedtuples containing big numpy arrays'''
+    old_print_options = np.get_printoptions()
+    np.set_printoptions(precision=3, threshold=50, edgeitems=2)
+    delim = '\n    '
+    s = self.__class__.__name__ + '(' + delim
+
+    s += delim.join([
+        '{0}={1}'.format(
+            key,
+            repr(
+                getattr(self, key)
+            ).replace('\n', delim)
+        )
+        for key in self._fields
+    ])
+    s += ')'
+    np.set_printoptions(**old_print_options)
+    return s
+
+
+
+def nt(m):
+    '''create namedtuple class from protobuf.message type'''
+    _nt = namedtuple(
         m.__name__,
         list(m.DESCRIPTOR.fields_by_name)
     )
-    for m in messages
-}
+    _nt.__repr__ = namedtuple_repr2
+    return _nt
+
+named_tuples = {m: nt(m) for m in messages}
 
 enum_types = {}
 for m in messages:

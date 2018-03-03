@@ -1,7 +1,5 @@
 from os.path import isfile
 from pkg_resources import resource_string
-import warnings
-import numpy as np
 
 from . import rawzfitsreader
 from .L0_pb2 import CameraEvent
@@ -37,5 +35,3 @@ class ZFile:
     def rewind_table(self):
         # Rewind the current reader. Go to the beginning of the table.
         rawzfitsreader.rewindTable()
-
-

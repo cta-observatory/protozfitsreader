@@ -1,9 +1,12 @@
+import warnings
 import numpy as np
+from astropy.utils.decorators import lazyproperty
+
+from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from .simple import File
 from .patch_ids import PATCH_ID_INPUT_SORT_IDS, PATCH_ID_OUTPUT_SORT_IDS
-from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
-from astropy.utils.decorators import lazyproperty
 from .any_array_to_numpy import any_array_to_numpy
+
 
 def event_source(path, run_id=0):
     for event in File(path).Events:
@@ -17,7 +20,7 @@ class Event:
         if type(type(event)) is GeneratedProtocolMessageType:
             trafo = any_array_to_numpy
         else:
-            trafo = lambda val: val
+            trafo = no_trafo
 
         self.run_id = run_id
         self._event = event
@@ -66,6 +69,7 @@ class Event:
                 ))
             return np.ones(len(self.pixel_ids)) * np.nan
 
+
 def _prepare_trigger_input(_a):
     A, B = 3, 192
     cut = 144
@@ -85,3 +89,7 @@ def _prepare_trigger_output(_a):
     _a = _a[..., ::-1]
     _a = _a.reshape(-1, A*B*C).T
     return _a[PATCH_ID_OUTPUT_SORT_IDS]
+
+
+def no_trafo(value):
+    return value

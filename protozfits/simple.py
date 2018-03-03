@@ -11,10 +11,10 @@ from .any_array_to_numpy import any_array_to_numpy
 
 
 class File:
-    def __init__(self, path):
+    def __init__(self, path, pure_protobuf=False):
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
-            self.__dict__[btd.extname] = Table(btd)
+            self.__dict__[btd.extname] = Table(btd, pure_protobuf)
 
     def __repr__(self):
         return "%s(%r)" % (
@@ -68,13 +68,14 @@ class Table:
     They open it.
     '''
 
-    def __init__(self, desc):
+    def __init__(self, desc, pure_protobuf=False):
         '''
         desc: BinTableDescription
         '''
         self.__desc = desc
         self.__pbuf_class = getattr(L0_pb2, desc.pb_class_name)
         self.header = self.__desc.header
+        self.pure_protobuf = pure_protobuf
 
     def __len__(self):
         return self.__desc.znaxis2
@@ -90,7 +91,10 @@ class Table:
         row = self.__pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent())
-            return make_namedtuple(row)
+            if not self.pure_protobuf:
+                return make_namedtuple(row)
+            else:
+                return row
         except EOFError:
             raise StopIteration
 

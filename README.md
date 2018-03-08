@@ -1,4 +1,152 @@
-# Protozftisreader [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
+# Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
+
+
+## Usage example:
+
+
+
+If you are just starting with proto-z-fits files and would like to explore the file contents, try this:
+
+### Open a file
+```python
+>>> from protozfits import SimpleFile
+>>> example_path = 'protozfits/tests/resources/example_100evts.fits.fz'
+>>> file = SimpleFile(example_path)
+>>> file
+File({'Events': Table(100xCameraEvent)})
+```
+
+From this we learn, the `file` contains a single `Table` named `Events` which
+contains 100 rows of type `CameraEvent`. There might be more tables with
+other types of rows in other files.
+
+### Table header
+
+`fits.fz` files are still normal [FITS files](https://fits.gsfc.nasa.gov/) and
+each Table in the file corresponds to a so called "BINTABLE" extension, which has a
+header. You can access this header like this:
+```python
+>>> file.Events
+Table(100xCameraEvent)
+>>> file.Events.header
+# this is just a sulection of all the contents of the header
+XTENSION= 'BINTABLE'           / binary table extension
+BITPIX  =                    8 / 8-bit bytes
+NAXIS   =                    2 / 2-dimensional binary table
+NAXIS1  =                  192 / width of table in bytes
+NAXIS2  =                    1 / number of rows in table
+TFIELDS =                   12 / number of fields in each row
+EXTNAME = 'Events'             / name of extension table
+CHECKSUM= 'BnaGDmS9BmYGBmY9'   / Checksum for the whole HDU
+DATASUM = '1046602664'         / Checksum for the data block
+DATE    = '2017-10-31T02:04:55' / File creation date
+ORIGIN  = 'CTA'                / Institution that wrote the file
+WORKPKG = 'ACTL'               / Workpackage that wrote the file
+DATEEND = '1970-01-01T00:00:00' / File closing date
+PBFHEAD = 'DataModel.CameraEvent' / Written message name
+CREATOR = 'N4ACTL2IO14ProtobufZOFitsE' / Class that wrote this file
+COMPILED= 'Oct 26 2017 16:02:50' / Compile time
+TIMESYS = 'UTC'                / Time system
+>>> file.Events.header['DATE']
+'2017-10-31T02:04:55'
+>>> type(file.Events.header)
+<class 'astropy.io.fits.header.Header'>
+```
+The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers).
+
+### Getting an event
+
+There is no random access to events, like this:
+
+    event_17 = file.Events[17]  # <<--- this does not work, yet.
+
+To get an event you'll iterate over the `Table`:
+```python
+for event in file.Events:
+    # do something with the event
+    pass
+```
+
+For now, I will just get the next event
+```python
+>>> event = next(file.Events)
+>>> type(event)
+<class 'protozfits.simple.CameraEvent'>
+>>> event._fields
+('telescopeID', 'dateMJD', 'eventType', 'eventNumber', 'arrayEvtNum', 'hiGain', 'loGain', 'trig', 'head', 'muon', 'geometry', 'hilo_offset', 'hilo_scale', 'cameraCounters', 'moduleStatus', 'pixelPresence', 'acquisitionMode', 'uctsDataPresence', 'uctsData', 'tibDataPresence', 'tibData', 'swatDataPresence', 'swatData', 'chipsFlags', 'firstCapacitorIds', 'drsTagsHiGain', 'drsTagsLoGain', 'local_time_nanosec', 'local_time_sec', 'pixels_flags', 'trigger_map', 'event_type', 'trigger_input_traces', 'trigger_output_patch7', 'trigger_output_patch19', 'trigger_output_muon', 'gps_status', 'time_utc', 'time_ns', 'time_s', 'flags', 'ssc', 'pkt_len', 'muon_tag', 'trpdm', 'pdmdt', 'pdmt', 'daqtime', 'ptm', 'trpxlid', 'pdmdac', 'pdmpc', 'pdmhi', 'pdmlo', 'daqmode', 'varsamp', 'pdmsum', 'pdmsumsq', 'pulser', 'ftimeoffset', 'ftimestamp', 'num_gains')
+>>> event.hiGain.waveforms.samples
+array([241, 245, 248, ..., 218, 214, 215], dtype=int16)
+>>>
+```
+
+`event` supports tab-completion, which I regard as very important while exploring.
+It is implemented using [`collections.namedtuple`](https://docs.python.org/3.6/library/collections.html#collections.namedtuple).
+I tried to create a useful string represenation, it is very long, yes ... but I
+hope you can still enjoy it:
+```python
+>>> event
+CameraEvent(
+    telescopeID=1
+    dateMJD=0.0
+    eventType=<eventType.NONE: 0>
+    eventNumber=97750287
+    arrayEvtNum=0
+    hiGain=PixelsChannel(
+        waveforms=WaveFormData(
+            samples=array([241, 245, ..., 214, 215], dtype=int16)
+            pixelsIndices=array([425, 461, ..., 727, 728], dtype=uint16)
+            firstSplIdx=array([], dtype=float64)
+            num_samples=0
+            baselines=array([232, 245, ..., 279, 220], dtype=int16)
+            peak_time_pos=array([], dtype=float64)
+            time_over_threshold=array([], dtype=float64))
+        integrals=IntegralData(
+            gains=array([], dtype=float64)
+            maximumTimes=array([], dtype=float64)
+            tailTimes=array([], dtype=float64)
+            raiseTimes=array([], dtype=float64)
+            pixelsIndices=array([], dtype=float64)
+            firstSplIdx=array([], dtype=float64)))
+# [...]
+```
+
+### Isn't this a little slow?
+
+Well, indeed, converting the original google protobuf instances into namedtuples full of
+"useful" Python values takes time. And in case you for example know exactly what you want
+from the file, then you can get a speed up doing it like this:
+```python
+>>> from protozfits import SimpleFile
+>>> file = SimpleFile(example_path, pure_protobuf=True)
+>>> event = next(file.Events)
+>>> type(event)
+<class 'L0_pb2.CameraEvent'>
+```
+
+Now iterating over the file is much faster then before. But you have no
+tab-completion and some contents are useless for you, but some are just fine:
+```python
+>>> event.eventNumber
+97750288   # <--- just fine
+>>> event.hiGain.waveforms.samples
+
+type: S16
+data: "\362\000\355\000 ... "   # <---- goes on "forever" .. utterly useless
+>>> type(event.hiGain.waveforms.samples)
+<class 'CoreMessages_pb2.AnyArray'>
+```
+You can convert these `AnyArray`s into numpy arrays like this:
+```python
+>>> from protozfits import any_array_to_numpy
+>>> any_array_to_numpy(event.hiGain.waveforms.samples)
+array([242, 237, 234, ..., 218, 225, 229], dtype=int16)
+```
+
+So ... I hope based on this little example you can implement your own reader,
+which is optimized for your telescope.
+
+If you have questions, please open an issue or a pull request to improve this documentation.
+
 
 ## Installation:
 
@@ -9,11 +157,11 @@ You do not have to use a [conda environment](https://conda.io/docs/user-guide/ta
 
 ### Linux (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.2.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.3.tar.gz
 
 ### OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.2.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.3.tar.gz
 
 To use it you'll have to find your `site-packages` folder, e.g. like this:
 
@@ -59,11 +207,11 @@ Unfortunately this nice development workcycle is not possible at the moment.
 I personally do:
 
     git clone https://github.com/cta-sst-1m/protozfitsreader
-    pip install protozfitsreader
+    pip install protozfits
     # play around ... modify ...
-    pip uninstall protozfitsreader --yes && pip install protozfitsreader
+    pip uninstall protozfits --yes && pip install protozfits
     # play around ... modify ...
-    pip uninstall protozfitsreader --yes && pip install protozfitsreader
+    pip uninstall protozfits --yes && pip install protozfits
     # and so on
 
 The uninstall/install takes 1..2sec ... so it is rather ok... not perfect though.
@@ -73,7 +221,3 @@ The uninstall/install takes 1..2sec ... so it is rather ok... not perfect though
 
 The contents of this repo are based tar-balls thankfully generated by E. Lyard.
 The [difference is explained](patching_so_files.md) on a seprate page.
-
-## Usage example:
-
- ... to come soon.

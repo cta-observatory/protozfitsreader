@@ -33,8 +33,9 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n pz python=$PYTHON_VERSION pip numpy protobuf astropy # pytest
+  - conda create -q -n pz python=$PYTHON_VERSION pip numpy # pytest
   - source activate pz
+  - conda install protobuf astropy
   - pip install -r requirements.txt
   - pip install pytest
 

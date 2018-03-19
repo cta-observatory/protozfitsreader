@@ -10,49 +10,35 @@ If you are just starting with proto-z-fits files and would like to explore the f
 ### Open a file
 ```python
 >>> from protozfits import SimpleFile
->>> example_path = 'protozfits/tests/resources/example_100evts.fits.fz'
+>>> example_path = 'protozfits/tests/resources/example_9evts_NectarCAM.fits.fz'
 >>> file = SimpleFile(example_path)
 >>> file
-File({'Events': Table(100xCameraEvent)})
+File({
+    'RunHeader': Table(1xCameraRunHeader),
+    'Events': Table(9xCameraEvent)
+})
 ```
 
 From this we learn, the `file` contains a single `Table` named `Events` which
 contains 100 rows of type `CameraEvent`. There might be more tables with
 other types of rows in other files.
 
-### Table header
+### RunHeader
 
-`fits.fz` files are still normal [FITS files](https://fits.gsfc.nasa.gov/) and
-each Table in the file corresponds to a so called "BINTABLE" extension, which has a
-header. You can access this header like this:
+Even though there is usually **only one** run header per file, technically
+this single run header is stored in a Table. This table could contain multiple
+"rows" and to me it is not clear what this would mean... but technically it is
+possible.
+
+At the moment I would recommend getting the run header out of the file
+we opened above like this:
+
 ```python
->>> file.Events
-Table(100xCameraEvent)
->>> file.Events.header
-# this is just a sulection of all the contents of the header
-XTENSION= 'BINTABLE'           / binary table extension
-BITPIX  =                    8 / 8-bit bytes
-NAXIS   =                    2 / 2-dimensional binary table
-NAXIS1  =                  192 / width of table in bytes
-NAXIS2  =                    1 / number of rows in table
-TFIELDS =                   12 / number of fields in each row
-EXTNAME = 'Events'             / name of extension table
-CHECKSUM= 'BnaGDmS9BmYGBmY9'   / Checksum for the whole HDU
-DATASUM = '1046602664'         / Checksum for the data block
-DATE    = '2017-10-31T02:04:55' / File creation date
-ORIGIN  = 'CTA'                / Institution that wrote the file
-WORKPKG = 'ACTL'               / Workpackage that wrote the file
-DATEEND = '1970-01-01T00:00:00' / File closing date
-PBFHEAD = 'DataModel.CameraEvent' / Written message name
-CREATOR = 'N4ACTL2IO14ProtobufZOFitsE' / Class that wrote this file
-COMPILED= 'Oct 26 2017 16:02:50' / Compile time
-TIMESYS = 'UTC'                / Time system
->>> file.Events.header['DATE']
-'2017-10-31T02:04:55'
->>> type(file.Events.header)
-<class 'astropy.io.fits.header.Header'>
+>>> # because we do not know what to do, if there are 2 run headers
+>>> assert len(file.RunHeader) == 1
+>>> # Tables need to be iterated over ... next gives the next row ...
+>>> header = next(file.RunHeader)
 ```
-The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers).
 
 ### Getting an event
 
@@ -109,6 +95,40 @@ CameraEvent(
             firstSplIdx=array([], dtype=float64)))
 # [...]
 ```
+
+### Table header
+
+`fits.fz` files are still normal [FITS files](https://fits.gsfc.nasa.gov/) and
+each Table in the file corresponds to a so called "BINTABLE" extension, which has a
+header. You can access this header like this:
+```python
+>>> file.Events
+Table(100xCameraEvent)
+>>> file.Events.header
+# this is just a sulection of all the contents of the header
+XTENSION= 'BINTABLE'           / binary table extension
+BITPIX  =                    8 / 8-bit bytes
+NAXIS   =                    2 / 2-dimensional binary table
+NAXIS1  =                  192 / width of table in bytes
+NAXIS2  =                    1 / number of rows in table
+TFIELDS =                   12 / number of fields in each row
+EXTNAME = 'Events'             / name of extension table
+CHECKSUM= 'BnaGDmS9BmYGBmY9'   / Checksum for the whole HDU
+DATASUM = '1046602664'         / Checksum for the data block
+DATE    = '2017-10-31T02:04:55' / File creation date
+ORIGIN  = 'CTA'                / Institution that wrote the file
+WORKPKG = 'ACTL'               / Workpackage that wrote the file
+DATEEND = '1970-01-01T00:00:00' / File closing date
+PBFHEAD = 'DataModel.CameraEvent' / Written message name
+CREATOR = 'N4ACTL2IO14ProtobufZOFitsE' / Class that wrote this file
+COMPILED= 'Oct 26 2017 16:02:50' / Compile time
+TIMESYS = 'UTC'                / Time system
+>>> file.Events.header['DATE']
+'2017-10-31T02:04:55'
+>>> type(file.Events.header)
+<class 'astropy.io.fits.header.Header'>
+```
+The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers).
 
 ### Isn't this a little slow?
 

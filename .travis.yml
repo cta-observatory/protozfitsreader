@@ -6,12 +6,12 @@ matrix:
       python: 3.5
       env:
         - PYTHON_VERSION=3.5
-        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-4.3.21-Linux-x86_64.sh
     - os: linux
       python: 3.6
       env:
         - PYTHON_VERSION=3.6
-        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-4.3.21-Linux-x86_64.sh
     - os: osx
       python: 3.5
       env:
@@ -33,8 +33,9 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create -q -n pz python=$PYTHON_VERSION pip numpy protobuf astropy # pytest
+  - conda create -q -n pz python=$PYTHON_VERSION pip numpy # pytest
   - source activate pz
+  - conda install protobuf astropy
   - pip install -r requirements.txt
   - pip install pytest
 

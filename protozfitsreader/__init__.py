@@ -250,27 +250,32 @@ class Event:
 
 
 def _prepare_trigger_input(_a):
-    _a = toNumPyArray(_a)
-    A, B = 3, 192
-    cut = 144
-    _a = _a.reshape(-1, A)
-    _a = _a.reshape(-1, A, B)
-    _a = _a[..., :cut]
-    _a = _a.reshape(_a.shape[0], -1)
-    _a = _a.T
-    _a = _a[np.argsort(PATCH_ID_INPUT)]
-    return _a
+    try:
+        _a = toNumPyArray(_a)
+        A, B = 3, 192
+        cut = 144
+        _a = _a.reshape(-1, A)
+        _a = _a.reshape(-1, A, B)
+        _a = _a[..., :cut]
+        _a = _a.reshape(_a.shape[0], -1)
+        _a = _a.T
+        _a = _a[np.argsort(PATCH_ID_INPUT)]
+        return _a
+    except ValueError:
+        return np.zeros((432, 50)) * np.nan
 
 
 def _prepare_trigger_output(_a):
-    _a = toNumPyArray(_a)
-    A, B, C = 3, 18, 8
+    try:
+        _a = toNumPyArray(_a)
+        A, B, C = 3, 18, 8
 
-    _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
-    _a = _a[..., ::-1]
-    _a = _a.reshape(-1, A*B*C).T
-    return _a[np.argsort(PATCH_ID_OUTPUT)]
-
+        _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
+        _a = _a[..., ::-1]
+        _a = _a.reshape(-1, A*B*C).T
+        return _a[np.argsort(PATCH_ID_OUTPUT)]
+    except ValueError:
+        return np.zeros((432, 50)) * np.nan
 
 any_array_type_to_npdtype = {
     1: 'i1',

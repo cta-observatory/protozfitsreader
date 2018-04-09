@@ -215,12 +215,31 @@ class Event:
         self.num_samples = self._samples.shape[1]
         self.pixel_flags = toNumPyArray(_e.pixels_flags)[self._sort_ids]
         self.adc_samples = self._samples[self._sort_ids]
-        self.trigger_output_patch7 = _prepare_trigger_output(
-            _e.trigger_output_patch7)
-        self.trigger_output_patch19 = _prepare_trigger_output(
-            _e.trigger_output_patch19)
-        self.trigger_input_traces = _prepare_trigger_input(
-            _e.trigger_input_traces)
+
+        try:
+            self.trigger_output_patch7 = _prepare_trigger_output(
+                _e.trigger_output_patch7)
+        except ValueError:
+            warnings.warn('trigger_output_patch7 does not exist: --> nan')
+            self.trigger_output_patch7 = np.zeros(
+                (432, self.num_samples)) * np.nan
+
+        try:
+            self.trigger_output_patch19 = _prepare_trigger_output(
+                _e.trigger_output_patch19)
+        except ValueError:
+            warnings.warn('trigger_output_patch19 does not exist: --> nan')
+            self.trigger_output_patch19 = np.zeros(
+                (432, self.num_samples)) * np.nan
+
+        try:
+            self.trigger_input_traces = _prepare_trigger_input(
+                _e.trigger_input_traces)
+        except ValueError:
+            warnings.warn('trigger_input_traces does not exist: --> nan')
+            self.trigger_input_traces = np.zeros(
+                (432, self.num_samples)) * np.nan
+
 
     @property
     def unsorted_baseline(self):
@@ -250,32 +269,26 @@ class Event:
 
 
 def _prepare_trigger_input(_a):
-    try:
-        _a = toNumPyArray(_a)
-        A, B = 3, 192
-        cut = 144
-        _a = _a.reshape(-1, A)
-        _a = _a.reshape(-1, A, B)
-        _a = _a[..., :cut]
-        _a = _a.reshape(_a.shape[0], -1)
-        _a = _a.T
-        _a = _a[np.argsort(PATCH_ID_INPUT)]
-        return _a
-    except ValueError:
-        return np.zeros((432, 50)) * np.nan
+    _a = toNumPyArray(_a)
+    A, B = 3, 192
+    cut = 144
+    _a = _a.reshape(-1, A)
+    _a = _a.reshape(-1, A, B)
+    _a = _a[..., :cut]
+    _a = _a.reshape(_a.shape[0], -1)
+    _a = _a.T
+    _a = _a[np.argsort(PATCH_ID_INPUT)]
+    return _a
 
 
 def _prepare_trigger_output(_a):
-    try:
-        _a = toNumPyArray(_a)
-        A, B, C = 3, 18, 8
+    _a = toNumPyArray(_a)
+    A, B, C = 3, 18, 8
 
-        _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
-        _a = _a[..., ::-1]
-        _a = _a.reshape(-1, A*B*C).T
-        return _a[np.argsort(PATCH_ID_OUTPUT)]
-    except ValueError:
-        return np.zeros((432, 50)) * np.nan
+    _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
+    _a = _a[..., ::-1]
+    _a = _a.reshape(-1, A*B*C).T
+    return _a[np.argsort(PATCH_ID_OUTPUT)]
 
 any_array_type_to_npdtype = {
     1: 'i1',

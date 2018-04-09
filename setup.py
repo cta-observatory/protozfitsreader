@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='protozfitsreader',
     packages=['protozfitsreader'],
-    version='0.44.1a0',
+    version='0.44.1b0',
     description='Basic python bindings for protobuf zfits reader',
     author="Etienne Lyard et al.",
     author_email="etienne.lyard@unige.ch",

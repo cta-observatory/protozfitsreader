@@ -209,7 +209,7 @@ But `pip install <some package>` is sometimes much slower than `conda install <s
 Two of the requirements of this package are `numpy` and `protobuf`.
 We think installing them with `pip` is very slow, so we recommend to
 
-    conda install numpy protobuf
+    conda install numpy protobuf astropy
 
 before `pip`-installing this package for your convenience.
 

@@ -213,6 +213,8 @@ We think installing them with `pip` is very slow, so we recommend to
 
 before `pip`-installing this package for your convenience.
 
+[![asciicast_install](https://asciinema.org/a/177170.png)](https://asciinema.org/a/177170)
+
 ### To developers: No `pip --editable`
 
 This package contains pre-build binaries, which (at the moment) are required to be installed

@@ -112,12 +112,13 @@ class Table:
         row = self.__pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent())
-            if not self.pure_protobuf:
-                return make_namedtuple(row)
-            else:
-                return row
         except EOFError:
             raise StopIteration
+
+        if not self.pure_protobuf:
+            return make_namedtuple(row)
+        else:
+            return row
 
     def __repr__(self):
         return '{cn}({d.znaxis2}x{d.pb_class_name})'.format(

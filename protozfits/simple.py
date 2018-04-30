@@ -1,5 +1,6 @@
 from enum import Enum
 from collections import namedtuple
+from warnings import warn
 import numpy as np
 from astropy.io import fits
 
@@ -11,7 +12,17 @@ from .any_array_to_numpy import any_array_to_numpy
 
 
 class File:
+    instances = 0
+
     def __init__(self, path, pure_protobuf=False):
+        File.instances += 1
+        if File.instances > 1:
+            warn('''\
+        Multiple open zfits files at the same time are not supported.
+        Reading from mutliple open tables at the same time will reset these
+        tables continously and you will read always the same events.
+        ''')
+        Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
             self.__dict__[btd.extname] = Table(btd, pure_protobuf)
@@ -22,6 +33,17 @@ class File:
             self.__dict__
         )
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        self.close()
+
+    def close(self):
+        File.instances = 0
+
+    def __del__(self):
+        self.close()
 
 BinTableDescription = namedtuple(
     'BinTableDescription',
@@ -81,7 +103,6 @@ class Table:
         return self.__desc.znaxis2
 
     def __iter__(self):
-        rewind_table()
         return self
 
     def __next__(self):

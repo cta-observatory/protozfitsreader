@@ -45,6 +45,7 @@ class File:
     def __del__(self):
         self.close()
 
+
 BinTableDescription = namedtuple(
     'BinTableDescription',
     [
@@ -152,6 +153,7 @@ messages = set([
     if isinstance(getattr(L0_pb2, name), GeneratedProtocolMessageType)
 ])
 
+
 def namedtuple_repr2(self):
     '''a nicer repr for big namedtuples containing big numpy arrays'''
     old_print_options = np.get_printoptions()
@@ -173,7 +175,6 @@ def namedtuple_repr2(self):
     return s
 
 
-
 def nt(m):
     '''create namedtuple class from protobuf.message type'''
     _nt = namedtuple(
@@ -182,6 +183,7 @@ def nt(m):
     )
     _nt.__repr__ = namedtuple_repr2
     return _nt
+
 
 named_tuples = {m: nt(m) for m in messages}
 

@@ -40,7 +40,7 @@ class File:
         self.close()
 
     def close(self):
-        File.instances = 0
+        File.instances -= 1
 
     def __del__(self):
         self.close()

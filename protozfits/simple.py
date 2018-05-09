@@ -5,11 +5,12 @@ from astropy.io import fits
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from . import rawzfitsreader
-from . import L0_pb2
-from . import R1_pb2
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 
+
+from . import L0_pb2
+from . import R1_pb2
 pb2_modules = {
     'R1': R1_pb2,
     'L0': L0_pb2,
@@ -161,7 +162,6 @@ def namedtuple_repr2(self):
     return s
 
 
-
 def nt(m):
     '''create namedtuple class from protobuf.message type'''
     _nt = namedtuple(
@@ -175,15 +175,8 @@ named_tuples = {m: nt(m) for m in messages}
 
 enum_types = {}
 for m in messages:
-    d = m.DESCRIPTOR
-    for field in d.fields:
-        if field.enum_type is not None:
-            et = field.enum_type
-            enum = Enum(
-                field.name,
-                zip(et.values_by_name, et.values_by_number)
-            )
-            enum_types[(m, field.name)] = enum
+    enum = make_enum_from_message(m)
+    enum_types[(m, enum.__name__)] = enum
 
 
 def rewind_table():
@@ -194,3 +187,15 @@ def rewind_table():
         rawzfitsreader.rewindTable()
     except SystemError:
         pass
+
+
+def make_enum_from_message(m):
+    d = m.DESCRIPTOR
+    for field in d.fields:
+        if field.enum_type is not None:
+            et = field.enum_type
+            return Enum(
+                field.name,
+                zip(et.values_by_name, et.values_by_number)
+            )
+

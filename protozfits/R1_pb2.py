@@ -13,10 +13,10 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-from . from . import CoreMessages_pb2
-from . from . import R1_LSTCam_pb2
-from . from . import R1_NectarCam_pb2
-from . from . import R1_DigiCam_pb2
+from . import CoreMessages_pb2
+from . import R1_LSTCam_pb2
+from . import R1_NectarCam_pb2
+from . import R1_DigiCam_pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(

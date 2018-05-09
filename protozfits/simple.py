@@ -6,6 +6,7 @@ from astropy.io import fits
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from . import rawzfitsreader
 from . import L0_pb2
+from . import R1_pb2
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 

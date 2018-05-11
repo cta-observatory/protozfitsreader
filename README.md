@@ -178,11 +178,11 @@ You do not have to use a [conda environment](https://conda.io/docs/user-guide/ta
 
 ### Linux (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.4.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.0.tar.gz
 
 ### OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v0.44.4.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.0.tar.gz
 
 To use it you'll have to find your `site-packages` folder, e.g. like this:
 

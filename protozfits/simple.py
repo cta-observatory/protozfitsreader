@@ -11,6 +11,7 @@ from .any_array_to_numpy import any_array_to_numpy
 
 from . import L0_pb2
 from . import R1_pb2
+
 pb2_modules = {
     'R1': R1_pb2,
     'L0': L0_pb2,
@@ -133,50 +134,46 @@ def message_getitem(msg, name):
         value = make_namedtuple(value)
     return value
 
-messages = set()
-for module in pb2_modules.values():
-    for name in dir(module):
-        thing = getattr(module, name)
-        if isinstance(thing, GeneratedProtocolMessageType):
-            messages.add(thing)
+
+def collect_messages_from_pb2_modules(pb2_modules):
+    messages = set()
+    for module in pb2_modules.values():
+        for name in dir(module):
+            thing = getattr(module, name)
+            if isinstance(thing, GeneratedProtocolMessageType):
+                messages.add(thing)
 
 
-def namedtuple_repr2(self):
-    '''a nicer repr for big namedtuples containing big numpy arrays'''
-    old_print_options = np.get_printoptions()
-    np.set_printoptions(precision=3, threshold=50, edgeitems=2)
-    delim = '\n    '
-    s = self.__class__.__name__ + '(' + delim
-
-    s += delim.join([
-        '{0}={1}'.format(
-            key,
-            repr(
-                getattr(self, key)
-            ).replace('\n', delim)
-        )
-        for key in self._fields
-    ])
-    s += ')'
-    np.set_printoptions(**old_print_options)
-    return s
-
-
-def nt(m):
-    '''create namedtuple class from protobuf.message type'''
+def create_named_tuple_from_message(message):
     _nt = namedtuple(
-        m.__name__,
-        list(m.DESCRIPTOR.fields_by_name)
+        message.__name__,
+        list(message.DESCRIPTOR.fields_by_name)
     )
-    _nt.__repr__ = namedtuple_repr2
+
+    def namedtuple_repr(self):
+        '''a nicer repr for big namedtuples containing big numpy arrays'''
+        old_print_options = np.get_printoptions()
+        np.set_printoptions(precision=3, threshold=50, edgeitems=2)
+        delim = '\n    '
+        s = self.__class__.__name__ + '(' + delim
+
+        s += delim.join([
+            '{0}={1}'.format(
+                key,
+                repr(
+                    getattr(self, key)
+                ).replace('\n', delim)
+            )
+            for key in self._fields
+        ])
+        s += ')'
+        np.set_printoptions(**old_print_options)
+        return s
+
+    _nt.__repr__ = namedtuple_repr
     return _nt
 
-named_tuples = {m: nt(m) for m in messages}
 
-enum_types = {}
-for m in messages:
-    enum = make_enum_from_message(m)
-    enum_types[(m, enum.__name__)] = enum
 
 
 def rewind_table():
@@ -189,6 +186,24 @@ def rewind_table():
         pass
 
 
+
+def collect_namedtuples():
+    messages = collect_messages_from_pb2_modules()
+    return make_namedtuples_from_messages(messages)
+
+
+def make_namedtuples_from_messages(messages):
+    named_tuples = {m: nt(m) for m in messages}
+    return named_tuples
+
+
+def make_enum_types_from_messages(messages):
+    enum_types = {}
+    for m in messages:
+        enum = make_enum_from_message(m)
+        enum_types[(m, enum.__name__)] = enum
+
+
 def make_enum_from_message(m):
     d = m.DESCRIPTOR
     for field in d.fields:
@@ -198,4 +213,3 @@ def make_enum_from_message(m):
                 field.name,
                 zip(et.values_by_name, et.values_by_number)
             )
-

@@ -5,9 +5,28 @@ from astropy.io import fits
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from . import rawzfitsreader
-from . import L0_pb2
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
+
+
+from . import L0_pb2
+from . import R1_pb2
+from . import R1_LSTCam_pb2
+from . import R1_NectarCam_pb2
+from . import R1_DigiCam_pb2
+
+pb2_modules = {
+    'L0': L0_pb2,
+    'R1': R1_pb2,
+    'R1_DigiCam': R1_DigiCam_pb2,
+    'R1_NectarCam': R1_NectarCam_pb2,
+    'R1_LSTCam': R1_LSTCam_pb2,
+}
+
+
+def get_class_from_PBFHEAD(pbfhead):
+    module_name, class_name = pbfhead.split('.')
+    return getattr(pb2_modules[module_name], class_name)
 
 
 class File:
@@ -31,7 +50,6 @@ BinTableDescription = namedtuple(
         'extname',
         'pbfhead',
         'znaxis2',
-        'pb_class_name',
         'header',
     ]
 )
@@ -46,7 +64,6 @@ def detect_bintables(path):
             extname=hdu.header['EXTNAME'],
             pbfhead=hdu.header['PBFHEAD'],
             znaxis2=hdu.header['ZNAXIS2'],
-            pb_class_name=hdu.header['PBFHEAD'].split('.')[-1],
             header=hdu.header
         )
         for hdu_id, hdu in enumerate(fitsfile)
@@ -73,7 +90,7 @@ class Table:
         desc: BinTableDescription
         '''
         self.__desc = desc
-        self.__pbuf_class = getattr(L0_pb2, desc.pb_class_name)
+        self.__pbuf_class = get_class_from_PBFHEAD(desc.pbfhead)
         self.header = self.__desc.header
         self.pure_protobuf = pure_protobuf
 
@@ -99,7 +116,7 @@ class Table:
             raise StopIteration
 
     def __repr__(self):
-        return '{cn}({d.znaxis2}x{d.pb_class_name})'.format(
+        return '{cn}({d.znaxis2}x{d.pbfhead})'.format(
             cn=self.__class__.__name__,
             d=self.__desc
         )
@@ -124,11 +141,13 @@ def message_getitem(msg, name):
     return value
 
 
-messages = set([
-    getattr(L0_pb2, name)
-    for name in dir(L0_pb2)
-    if isinstance(getattr(L0_pb2, name), GeneratedProtocolMessageType)
-])
+messages = set()
+for module in pb2_modules.values():
+    for name in dir(module):
+        thing = getattr(module, name)
+        if isinstance(thing, GeneratedProtocolMessageType):
+            messages.add(thing)
+
 
 def namedtuple_repr2(self):
     '''a nicer repr for big namedtuples containing big numpy arrays'''
@@ -149,7 +168,6 @@ def namedtuple_repr2(self):
     s += ')'
     np.set_printoptions(**old_print_options)
     return s
-
 
 
 def nt(m):

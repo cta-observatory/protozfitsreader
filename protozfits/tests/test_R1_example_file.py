@@ -15,7 +15,8 @@ example_file_path = pkg_resources.resource_filename(
 
 def test_can_open_file():
     from protozfits import SimpleFile
-    SimpleFile(example_file_path)
+    f = SimpleFile(example_file_path)
+    f.close()
 
 
 def test_can_iterate_over_events_and_run_header():
@@ -30,3 +31,11 @@ def test_can_iterate_over_events_and_run_header():
         assert event.pixel_status.shape == (14,)
         assert event.lstcam.first_capacitor_id.shape == (16,)
         assert event.lstcam.counters.shape == (44,)
+    f.close()
+
+def test_event_ids():
+    from protozfits import SimpleFile
+    with SimpleFile(example_file_path) as f:
+        event_ids = [e.event_id for e in f.Events]
+
+    assert (np.array(event_ids) == 1 + np.arange(len(event_ids))).all()

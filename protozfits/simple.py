@@ -1,5 +1,6 @@
 from enum import Enum
 from collections import namedtuple
+from warnings import warn
 import numpy as np
 from astropy.io import fits
 
@@ -30,7 +31,17 @@ def get_class_from_PBFHEAD(pbfhead):
 
 
 class File:
+    instances = 0
+
     def __init__(self, path, pure_protobuf=False):
+        File.instances += 1
+        if File.instances > 1:
+            warn('''\
+        Multiple open zfits files at the same time are not supported.
+        Reading from mutliple open tables at the same time will reset these
+        tables continously and you will read always the same events.
+        ''')
+        Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
             self.__dict__[btd.extname] = Table(btd, pure_protobuf)
@@ -40,6 +51,18 @@ class File:
             self.__class__.__name__,
             self.__dict__
         )
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        self.close()
+
+    def close(self):
+        File.instances -= 1
+
+    def __del__(self):
+        self.close()
 
 
 BinTableDescription = namedtuple(
@@ -98,7 +121,6 @@ class Table:
         return self.__desc.znaxis2
 
     def __iter__(self):
-        rewind_table()
         return self
 
     def __next__(self):
@@ -108,12 +130,13 @@ class Table:
         row = self.__pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent())
-            if not self.pure_protobuf:
-                return make_namedtuple(row)
-            else:
-                return row
         except EOFError:
             raise StopIteration
+
+        if not self.pure_protobuf:
+            return make_namedtuple(row)
+        else:
+            return row
 
     def __repr__(self):
         return '{cn}({d.znaxis2}x{d.pbfhead})'.format(
@@ -149,6 +172,7 @@ for module in pb2_modules.values():
             messages.add(thing)
 
 
+
 def namedtuple_repr2(self):
     '''a nicer repr for big namedtuples containing big numpy arrays'''
     old_print_options = np.get_printoptions()
@@ -178,6 +202,7 @@ def nt(m):
     )
     _nt.__repr__ = namedtuple_repr2
     return _nt
+
 
 named_tuples = {m: nt(m) for m in messages}
 

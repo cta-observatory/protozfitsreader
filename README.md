@@ -3,6 +3,7 @@
 
 ## Usage example:
 
+**Note**: At the moment multiple open files at the same time are not supported.
 
 
 If you are just starting with proto-z-fits files and would like to explore the file contents, try this:

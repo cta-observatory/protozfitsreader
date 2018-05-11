@@ -214,7 +214,6 @@ def message_getitem(
         value = enum_types[(msg.__class__, name)](value)
     elif type(value) in named_tuples:
         value = make_namedtuple(value)
-    print(type(value), name)
     return value
 
 

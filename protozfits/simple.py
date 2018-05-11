@@ -11,10 +11,16 @@ from .any_array_to_numpy import any_array_to_numpy
 
 from . import L0_pb2
 from . import R1_pb2
+from . import R1_LSTCam_pb2
+from . import R1_NectarCam_pb2
+from . import R1_DigiCam_pb2
 
 pb2_modules = {
-    'R1': R1_pb2,
     'L0': L0_pb2,
+    'R1': R1_pb2,
+    'R1_DigiCam': R1_DigiCam_pb2,
+    'R1_NectarCam': R1_NectarCam_pb2,
+    'R1_LSTCam': R1_LSTCam_pb2,
 }
 
 
@@ -116,32 +122,14 @@ class Table:
         )
 
 
-def make_namedtuple(message):
-    namedtuple_class = named_tuples[message.__class__]
-    return namedtuple_class._make(
-        message_getitem(message, name)
-        for name in namedtuple_class._fields
-    )
-
-
-def message_getitem(msg, name):
-    value = msg.__getattribute__(name)
-    if isinstance(value, AnyArray):
-        value = any_array_to_numpy(value)
-    elif (msg.__class__, name) in enum_types:
-        value = enum_types[(msg.__class__, name)](value)
-    elif type(value) in named_tuples:
-        value = make_namedtuple(value)
-    return value
-
-
-def collect_messages_from_pb2_modules(pb2_modules):
+def collect_messages_from_pb2_modules(pb2_modules=pb2_modules):
     messages = set()
     for module in pb2_modules.values():
         for name in dir(module):
             thing = getattr(module, name)
             if isinstance(thing, GeneratedProtocolMessageType):
                 messages.add(thing)
+    return messages
 
 
 def create_named_tuple_from_message(message):
@@ -174,17 +162,9 @@ def create_named_tuple_from_message(message):
     return _nt
 
 
-
-
-def rewind_table():
-    # rawzfitsreader.rewindTable() has a bug at the moment,
-    # it always throws a SystemError
-    # we let that one pass
-    try:
-        rawzfitsreader.rewindTable()
-    except SystemError:
-        pass
-
+def make_namedtuples_from_messages(messages):
+    named_tuples = {m: create_named_tuple_from_message(m) for m in messages}
+    return named_tuples
 
 
 def collect_namedtuples():
@@ -192,16 +172,22 @@ def collect_namedtuples():
     return make_namedtuples_from_messages(messages)
 
 
-def make_namedtuples_from_messages(messages):
-    named_tuples = {m: nt(m) for m in messages}
-    return named_tuples
+def make_namedtuple(message):
+    named_tuples = collect_namedtuples()
+    namedtuple_class = named_tuples[message.__class__]
+    return namedtuple_class._make(
+        message_getitem(message, name)
+        for name in namedtuple_class._fields
+    )
 
 
-def make_enum_types_from_messages(messages):
+def make_enum_types_from_messages(messages=collect_messages_from_pb2_modules()):
     enum_types = {}
     for m in messages:
         enum = make_enum_from_message(m)
-        enum_types[(m, enum.__name__)] = enum
+        if enum is not None:
+            enum_types[(m, enum.__name__)] = enum
+    return enum_types
 
 
 def make_enum_from_message(m):
@@ -213,3 +199,30 @@ def make_enum_from_message(m):
                 field.name,
                 zip(et.values_by_name, et.values_by_number)
             )
+
+
+def message_getitem(
+    msg,
+    name,
+    enum_types=make_enum_types_from_messages(),
+    named_tuples=collect_namedtuples(),
+):
+    value = msg.__getattribute__(name)
+    if isinstance(value, AnyArray):
+        value = any_array_to_numpy(value)
+    elif (msg.__class__, name) in enum_types:
+        value = enum_types[(msg.__class__, name)](value)
+    elif type(value) in named_tuples:
+        value = make_namedtuple(value)
+    print(type(value), name)
+    return value
+
+
+def rewind_table():
+    # rawzfitsreader.rewindTable() has a bug at the moment,
+    # it always throws a SystemError
+    # we let that one pass
+    try:
+        rawzfitsreader.rewindTable()
+    except SystemError:
+        pass

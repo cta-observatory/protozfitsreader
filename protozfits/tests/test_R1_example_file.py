@@ -14,13 +14,13 @@ example_file_path = pkg_resources.resource_filename(
 
 
 def test_can_open_file():
-    from protozfits import SimpleFile
-    SimpleFile(example_file_path)
+    from protozfits import File
+    File(example_file_path)
 
 
 def test_can_iterate_over_events_and_run_header():
-    from protozfits import SimpleFile
-    f = SimpleFile(example_file_path)
+    from protozfits import File
+    f = File(example_file_path)
 
     camera_config = next(f.CameraConfig)
     assert (camera_config.expected_pixels_id == np.arange(14)).all()

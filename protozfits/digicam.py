@@ -77,12 +77,30 @@ class Event:
         self.pixel_flags = trafo(
             self._event.pixels_flags)[Event._sort_ids]
         self.adc_samples = self._samples[Event._sort_ids]
-        self.trigger_output_patch7 = _prepare_trigger_output(
-            trafo(self._event.trigger_output_patch7))
-        self.trigger_output_patch19 = _prepare_trigger_output(
-            trafo(self._event.trigger_output_patch19))
-        self.trigger_input_traces = _prepare_trigger_input(
-            trafo(self._event.trigger_input_traces))
+
+        try:
+            self.trigger_output_patch7 = _prepare_trigger_output(
+                trafo(self._event.trigger_output_patch7))
+        except ValueError:
+            warnings.warn('trigger_output_patch7 does not exist: --> nan')
+            self.trigger_output_patch7 = np.zeros(
+                (432, self.num_samples)) * np.nan
+
+        try:
+            self.trigger_output_patch19 = _prepare_trigger_output(
+                trafo(self._event.trigger_output_patch19))
+        except ValueError:
+            warnings.warn('trigger_output_patch19 does not exist: --> nan')
+            self.trigger_output_patch19 = np.zeros(
+                (432, self.num_samples)) * np.nan
+
+        try:
+            self.trigger_input_traces = _prepare_trigger_input(
+                trafo(self._event.trigger_input_traces))
+        except ValueError:
+            warnings.warn('trigger_input_traces does not exist: --> nan')
+            self.trigger_input_traces = np.zeros(
+                (432, self.num_samples)) * np.nan
 
     @lazyproperty
     def unsorted_baseline(self):

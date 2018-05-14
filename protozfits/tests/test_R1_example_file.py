@@ -20,7 +20,26 @@ def test_open_example_LST_R1_file():
     f.close()
 
 
-def test_can_iterate_over_events():
+def test_can_open_a_second_time():
+    f = SimpleFile(example_file_path)
+    print('open worked', flush=True)
+    f.close()
+
+
+def test_can_print_events_table():
+    f = SimpleFile(example_file_path)
+    print(f.Events)
+    f.close()
+
+
+def test_can_iterate_over_events_std_form():
+    f = SimpleFile(example_file_path)
+    for event in f.Events:
+        pass
+    f.close()
+
+
+def test_can_iterate_over_events__with_form():
     with SimpleFile(example_file_path) as f:
         for event in f.Events:
             pass

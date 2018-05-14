@@ -44,6 +44,7 @@ def to_numpy(a):
             "Conversion to NumpyArray failed with error:\n%s",
             any_array_type_cannot_convert_exception_text[a.type])
 
+"""
 
 def test_rawreader_can_work_with_relative_path():
     from protozfits import rawzfitsreader
@@ -57,7 +58,6 @@ def test_rawreader_can_work_with_relative_path():
     event = L0_pb2.CameraEvent()
     event.ParseFromString(raw)
 
-"""
 def test_examplefile_has_no_runheader():
     from protozfits import rawzfitsreader
     from protozfits import L0_pb2

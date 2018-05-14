@@ -20,6 +20,12 @@ def test_open_example_LST_R1_file():
     f.close()
 
 
+def test_can_iterate_over_events():
+    with SimpleFile(example_file_path) as f:
+        for event in f.Events:
+            pass
+
+
 def test_can_iterate_over_events_and_run_header():
 
     with SimpleFile(example_file_path) as f:

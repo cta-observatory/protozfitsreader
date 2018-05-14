@@ -78,26 +78,26 @@ class Event:
             self._event.pixels_flags)[Event._sort_ids]
         self.adc_samples = self._samples[Event._sort_ids]
 
-        try:
-            self.trigger_output_patch7 = _prepare_trigger_output(
-                trafo(self._event.trigger_output_patch7))
-        except ValueError:
+        top7 = trafo(self._event.trigger_output_patch7)
+        if len(top7) > 0:
+            self.trigger_output_patch7 = _prepare_trigger_output(top7)
+        else:
             warnings.warn('trigger_output_patch7 does not exist: --> nan')
             self.trigger_output_patch7 = np.zeros(
                 (432, self.num_samples)) * np.nan
 
-        try:
-            self.trigger_output_patch19 = _prepare_trigger_output(
-                trafo(self._event.trigger_output_patch19))
-        except ValueError:
+        top19 = trafo(self._event.trigger_output_patch19)
+        if len(top19) > 0:
+            self.trigger_output_patch19 = _prepare_trigger_output(top19)
+        else:
             warnings.warn('trigger_output_patch19 does not exist: --> nan')
             self.trigger_output_patch19 = np.zeros(
                 (432, self.num_samples)) * np.nan
 
-        try:
-            self.trigger_input_traces = _prepare_trigger_input(
-                trafo(self._event.trigger_input_traces))
-        except ValueError:
+        tit = trafo(self._event.trigger_input_traces)
+        if len(tit) > 0:
+            self.trigger_input_traces = _prepare_trigger_input(tit)
+        else:
             warnings.warn('trigger_input_traces does not exist: --> nan')
             self.trigger_input_traces = np.zeros(
                 (432, self.num_samples)) * np.nan
@@ -128,7 +128,6 @@ def _prepare_trigger_input(_a):
 
 def _prepare_trigger_output(_a):
     A, B, C = 3, 18, 8
-
     _a = np.unpackbits(_a.reshape(-1, A, B, 1), axis=-1)
     _a = _a[..., ::-1]
     _a = _a.reshape(-1, A*B*C).T

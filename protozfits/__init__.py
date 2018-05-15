@@ -1,3 +1,5 @@
+from . import rawzfitsreader
+
 from pkg_resources import resource_string
 from enum import Enum
 from collections import namedtuple
@@ -6,7 +8,6 @@ import numpy as np
 from astropy.io import fits
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
-from . import rawzfitsreader
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 

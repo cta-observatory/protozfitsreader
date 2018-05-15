@@ -1,8 +1,8 @@
 from pkg_resources import resource_string
 
-# imports formerly done in digicam.py
+# this import is *not* needed here, but we get a SegFault! on MAC OSX
+# when we do not import it here. I have no idea why.
 from . import rawzfitsreader
-# end of imports from digicam.py
 
 from .simple import File as SimpleFile
 from .any_array_to_numpy import any_array_to_numpy

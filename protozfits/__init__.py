@@ -2,7 +2,6 @@ from pkg_resources import resource_string
 
 # imports formerly done in digicam.py
 from . import rawzfitsreader
-from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 # end of imports from digicam.py
 
 from .simple import File as SimpleFile

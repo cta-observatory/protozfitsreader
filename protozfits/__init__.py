@@ -181,7 +181,6 @@ for module in pb2_modules.values():
             messages.add(thing)
 
 
-
 def namedtuple_repr2(self):
     '''a nicer repr for big namedtuples containing big numpy arrays'''
     old_print_options = np.get_printoptions()

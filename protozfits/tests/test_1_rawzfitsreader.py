@@ -45,6 +45,40 @@ def to_numpy(a):
             any_array_type_cannot_convert_exception_text[a.type])
 
 
+def test_import_only():
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
+
+
+def test_import_and_open():
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
+
+    relative_test_file_path = os.path.relpath(example_file_path)
+    rawzfitsreader.open(relative_test_file_path + ':Events')
+
+
+def test_import_open_and_read():
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
+
+    relative_test_file_path = os.path.relpath(example_file_path)
+    rawzfitsreader.open(relative_test_file_path + ':Events')
+    raw = rawzfitsreader.readEvent()
+
+
+def test_import_open_read_and_parse():
+    from protozfits import rawzfitsreader
+    from protozfits import L0_pb2
+
+    relative_test_file_path = os.path.relpath(example_file_path)
+    rawzfitsreader.open(relative_test_file_path + ':Events')
+    raw = rawzfitsreader.readEvent()
+
+    event = L0_pb2.CameraEvent()
+    event.ParseFromString(raw)
+
+
 def test_rawreader_can_work_with_relative_path():
     from protozfits import rawzfitsreader
     from protozfits import L0_pb2
@@ -57,7 +91,8 @@ def test_rawreader_can_work_with_relative_path():
     event = L0_pb2.CameraEvent()
     event.ParseFromString(raw)
 
-"""
+
+@pytest.mark.skip(reason="This is currently SegFaulting")
 def test_examplefile_has_no_runheader():
     from protozfits import rawzfitsreader
     from protozfits import L0_pb2
@@ -70,7 +105,7 @@ def test_examplefile_has_no_runheader():
     header = L0_pb2.CameraRunHeader()
     with pytest.raises(TypeError):
         header.ParseFromString(raw)
-"""
+
 
 def test_rawreader_can_work_with_absolute_path():
     from protozfits import rawzfitsreader

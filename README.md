@@ -10,13 +10,13 @@ If you are just starting with proto-z-fits files and would like to explore the f
 
 ### Open a file
 ```python
->>> from protozfits import SimpleFile
+>>> from protozfits import File
 >>> example_path = 'protozfits/tests/resources/example_9evts_NectarCAM.fits.fz'
->>> file = SimpleFile(example_path)
+>>> file = File(example_path)
 >>> file
 File({
-    'RunHeader': Table(1xCameraRunHeader),
-    'Events': Table(9xCameraEvent)
+    'RunHeader': Table(1xDataModel.CameraRunHeader),
+    'Events': Table(9xDataModel.CameraEvent)
 })
 ```
 
@@ -58,7 +58,7 @@ For now, I will just get the next event
 ```python
 >>> event = next(file.Events)
 >>> type(event)
-<class 'protozfits.simple.CameraEvent'>
+<class 'protozfits.CameraEvent'>
 >>> event._fields
 ('telescopeID', 'dateMJD', 'eventType', 'eventNumber', 'arrayEvtNum', 'hiGain', 'loGain', 'trig', 'head', 'muon', 'geometry', 'hilo_offset', 'hilo_scale', 'cameraCounters', 'moduleStatus', 'pixelPresence', 'acquisitionMode', 'uctsDataPresence', 'uctsData', 'tibDataPresence', 'tibData', 'swatDataPresence', 'swatData', 'chipsFlags', 'firstCapacitorIds', 'drsTagsHiGain', 'drsTagsLoGain', 'local_time_nanosec', 'local_time_sec', 'pixels_flags', 'trigger_map', 'event_type', 'trigger_input_traces', 'trigger_output_patch7', 'trigger_output_patch19', 'trigger_output_muon', 'gps_status', 'time_utc', 'time_ns', 'time_s', 'flags', 'ssc', 'pkt_len', 'muon_tag', 'trpdm', 'pdmdt', 'pdmt', 'daqtime', 'ptm', 'trpxlid', 'pdmdac', 'pdmpc', 'pdmhi', 'pdmlo', 'daqmode', 'varsamp', 'pdmsum', 'pdmsumsq', 'pulser', 'ftimeoffset', 'ftimestamp', 'num_gains')
 >>> event.hiGain.waveforms.samples
@@ -104,7 +104,7 @@ each Table in the file corresponds to a so called "BINTABLE" extension, which ha
 header. You can access this header like this:
 ```python
 >>> file.Events
-Table(100xCameraEvent)
+Table(100xDataModel.CameraEvent)
 >>> file.Events.header
 # this is just a sulection of all the contents of the header
 XTENSION= 'BINTABLE'           / binary table extension
@@ -137,8 +137,8 @@ Well, indeed, converting the original google protobuf instances into namedtuples
 "useful" Python values takes time. And in case you for example know exactly what you want
 from the file, then you can get a speed up doing it like this:
 ```python
->>> from protozfits import SimpleFile
->>> file = SimpleFile(example_path, pure_protobuf=True)
+>>> from protozfits import File
+>>> file = File(example_path, pure_protobuf=True)
 >>> event = next(file.Events)
 >>> type(event)
 <class 'L0_pb2.CameraEvent'>
@@ -178,11 +178,11 @@ You do not have to use a [conda environment](https://conda.io/docs/user-guide/ta
 
 ### Linux (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.0.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
 
 ### OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.0.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
 
 To use it you'll have to find your `site-packages` folder, e.g. like this:
 
@@ -213,9 +213,6 @@ We think installing them with `pip` is very slow, so we recommend to
     conda install numpy protobuf astropy
 
 before `pip`-installing this package for your convenience.
-
-[!<img src="https://asciinema.org/a/177170.png" width="300">](https://asciinema.org/a/177170?speed=2.5)
-[!<img src="https://asciinema.org/a/177171.png" width="300">](https://asciinema.org/a/177171?speed=2.5)
 
 ### To developers: No `pip --editable`
 

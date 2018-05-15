@@ -8,8 +8,8 @@ from astropy.io import fits
 # Beware:
 #     for some reason rawzfitsreader needs to be imported before
 #     GeneratedProtocolMessageType
-from . import rawzfitsreader
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
+from . import rawzfitsreader
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 

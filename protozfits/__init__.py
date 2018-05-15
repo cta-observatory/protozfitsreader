@@ -1,3 +1,4 @@
+from pkg_resources import resource_string
 from enum import Enum
 from collections import namedtuple
 from warnings import warn
@@ -15,6 +16,14 @@ from . import R1_pb2
 from . import R1_LSTCam_pb2
 from . import R1_NectarCam_pb2
 from . import R1_DigiCam_pb2
+
+__version__ = resource_string('protozfits', 'VERSION').decode().strip()
+
+__all__ = [
+    'File',
+    'make_namedtuple',
+    'any_array_to_numpy',
+]
 
 pb2_modules = {
     'L0': L0_pb2,

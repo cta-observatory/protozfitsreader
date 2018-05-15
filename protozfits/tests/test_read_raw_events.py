@@ -42,45 +42,6 @@ def test_zfile_opens_correct_path():
     DigicamFile(example_file_path)
 
 
-def test_rawreader_can_work_with_relative_path():
-    from protozfits import rawzfitsreader
-    from protozfits import L0_pb2
-
-    relative_test_file_path = os.path.relpath(example_file_path)
-    rawzfitsreader.open(relative_test_file_path + ':Events')
-    raw = rawzfitsreader.readEvent()
-    assert rawzfitsreader.getNumRows() == EVENTS_IN_EXAMPLE_FILE
-
-    event = L0_pb2.CameraEvent()
-    event.ParseFromString(raw)
-
-"""
-def test_examplefile_has_no_runheader():
-    from protozfits import rawzfitsreader
-    from protozfits import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':RunHeader')
-
-    raw = rawzfitsreader.readEvent()
-    assert raw < 0
-
-    header = L0_pb2.CameraRunHeader()
-    with pytest.raises(TypeError):
-        header.ParseFromString(raw)
-"""
-
-def test_rawreader_can_work_with_absolute_path():
-    from protozfits import rawzfitsreader
-    from protozfits import L0_pb2
-
-    rawzfitsreader.open(example_file_path + ':Events')
-    raw = rawzfitsreader.readEvent()
-    assert rawzfitsreader.getNumRows() == EVENTS_IN_EXAMPLE_FILE
-
-    event = L0_pb2.CameraEvent()
-    event.ParseFromString(raw)
-
-
 def test_can_iterate_over_events():
     from protozfits import DigicamFile
 

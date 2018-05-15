@@ -5,6 +5,9 @@ from warnings import warn
 import numpy as np
 from astropy.io import fits
 
+# Beware:
+#     for some reason rawzfitsreader needs to be imported before
+#     GeneratedProtocolMessageType
 from . import rawzfitsreader
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from .CoreMessages_pb2 import AnyArray

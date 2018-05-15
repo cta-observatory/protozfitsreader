@@ -1,4 +1,5 @@
 from pkg_resources import resource_string
+import digicam
 from .simple import File as SimpleFile
 from .any_array_to_numpy import any_array_to_numpy
 from .simple import make_namedtuple

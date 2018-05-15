@@ -9,7 +9,7 @@
 If you are just starting with proto-z-fits files and would like to explore the file contents, try this:
 
 ### Open a file
-```python
+```
 >>> from protozfits import File
 >>> example_path = 'protozfits/tests/resources/example_9evts_NectarCAM.fits.fz'
 >>> file = File(example_path)
@@ -34,7 +34,7 @@ possible.
 At the moment I would recommend getting the run header out of the file
 we opened above like this:
 
-```python
+```
 >>> # because we do not know what to do, if there are 2 run headers
 >>> assert len(file.RunHeader) == 1
 >>> # Tables need to be iterated over ... next gives the next row ...
@@ -55,7 +55,7 @@ for event in file.Events:
 ```
 
 For now, I will just get the next event
-```python
+```
 >>> event = next(file.Events)
 >>> type(event)
 <class 'protozfits.CameraEvent'>
@@ -70,7 +70,7 @@ array([241, 245, 248, ..., 218, 214, 215], dtype=int16)
 It is implemented using [`collections.namedtuple`](https://docs.python.org/3.6/library/collections.html#collections.namedtuple).
 I tried to create a useful string represenation, it is very long, yes ... but I
 hope you can still enjoy it:
-```python
+```
 >>> event
 CameraEvent(
     telescopeID=1
@@ -102,7 +102,7 @@ CameraEvent(
 `fits.fz` files are still normal [FITS files](https://fits.gsfc.nasa.gov/) and
 each Table in the file corresponds to a so called "BINTABLE" extension, which has a
 header. You can access this header like this:
-```python
+```
 >>> file.Events
 Table(100xDataModel.CameraEvent)
 >>> file.Events.header
@@ -136,7 +136,7 @@ The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/
 Well, indeed, converting the original google protobuf instances into namedtuples full of
 "useful" Python values takes time. And in case you for example know exactly what you want
 from the file, then you can get a speed up doing it like this:
-```python
+```
 >>> from protozfits import File
 >>> file = File(example_path, pure_protobuf=True)
 >>> event = next(file.Events)
@@ -146,7 +146,7 @@ from the file, then you can get a speed up doing it like this:
 
 Now iterating over the file is much faster then before. But you have no
 tab-completion and some contents are useless for you, but some are just fine:
-```python
+```
 >>> event.eventNumber
 97750288   # <--- just fine
 >>> event.hiGain.waveforms.samples
@@ -157,7 +157,7 @@ data: "\362\000\355\000 ... "   # <---- goes on "forever" .. utterly useless
 <class 'CoreMessages_pb2.AnyArray'>
 ```
 You can convert these `AnyArray`s into numpy arrays like this:
-```python
+```
 >>> from protozfits import any_array_to_numpy
 >>> any_array_to_numpy(event.hiGain.waveforms.samples)
 array([242, 237, 234, ..., 218, 225, 229], dtype=int16)

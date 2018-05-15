@@ -2,7 +2,7 @@ import numpy as np
 import pkg_resources
 import os
 
-from protozfits import SimpleFile
+from protozfits import File
 
 example_file_path = pkg_resources.resource_filename(
     'protozfits',
@@ -16,7 +16,7 @@ example_file_path = pkg_resources.resource_filename(
 
 def test_can_iterate_over_events_and_run_header():
 
-    with SimpleFile(example_file_path) as f:
+    with File(example_file_path) as f:
 
         camera_config = next(f.CameraConfig)
         assert (camera_config.expected_pixels_id == np.arange(14)).all()

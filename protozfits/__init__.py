@@ -3,8 +3,6 @@ from pkg_resources import resource_string
 # imports formerly done in digicam.py
 from . import rawzfitsreader
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
-from .patch_ids import PATCH_ID_INPUT_SORT_IDS, PATCH_ID_OUTPUT_SORT_IDS
-from .L0_pb2 import CameraEvent
 # end of imports from digicam.py
 
 from .simple import File as SimpleFile

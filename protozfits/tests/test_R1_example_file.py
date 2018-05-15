@@ -43,7 +43,8 @@ all_test_resources = sorted(glob(glob_path))
 
 
 def test_can_open_and_get_an_event_from_all_test_resources():
+    print()
     for path in all_test_resources:
         with File(path) as f:
             event = next(f.Events)
-            print(event)
+        print(path, len(str(event)))

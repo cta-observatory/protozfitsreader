@@ -30,7 +30,7 @@ __all__ = [
 
 pb2_modules = {
     'L0': L0_pb2,
-    'DataModel': L0_pb2,
+#    'DataModel': L0_pb2,
     'R1': R1_pb2,
     'R1_DigiCam': R1_DigiCam_pb2,
     'R1_NectarCam': R1_NectarCam_pb2,
@@ -239,3 +239,38 @@ def rewind_table():
         rawzfitsreader.rewindTable()
     except SystemError:
         pass
+
+klasses = {}
+
+
+def message_to_class(msg):
+    d = msg.DESCRIPTOR
+
+    def __init__(self, message):
+        self._message = message
+
+    fields = {}
+
+    for fd in d.fields:
+        if fd.message_type is not None:
+            if fd.message_type.name == 'AnyArray':
+                def convert_any_array(self):
+                    return any_array_to_numpy(getattr(self._message, fd.name))
+                fields[fd.name] = convert_any_array
+            else:
+                def wrap_in_class(self):
+                    klass = klasses[fd.message_type.name]
+                    return klass(self._message)
+                fields[fd.name] = wrap_in_class
+        else:
+            def return_normal_field(self):
+                return getattr(self._message, fd.name)
+            fields[fd.name] = return_normal_field
+
+    return type(d.name, (object, ), fields)
+
+for module in pb2_modules.values():
+    for name in dir(module):
+        thing = getattr(module, name)
+        if isinstance(thing, GeneratedProtocolMessageType):
+            klasses[thing.DESCRIPTOR.full_name] = message_to_class(thing)

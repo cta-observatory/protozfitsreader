@@ -30,7 +30,7 @@ __all__ = [
 
 pb2_modules = {
     'L0': L0_pb2,
-#    'DataModel': L0_pb2,
+    'DataModel': L0_pb2,
     'R1': R1_pb2,
     'R1_DigiCam': R1_DigiCam_pb2,
     'R1_NectarCam': R1_NectarCam_pb2,

@@ -56,6 +56,18 @@ def make_return_normal_field(fd):
     return return_normal_field
 
 
+def make_return_enum_field(field):
+    et = field.enum_type
+    enum = Enum(
+        field.name,
+        zip(et.values_by_name, et.values_by_number)
+    )
+
+    def return_enum_field(self):
+        return enum(getattr(self._message, field.name))
+    return return_enum_field
+
+
 def make__repr__(msg):
     fields = [n for n in msg.DESCRIPTOR.fields_by_name]
 
@@ -92,7 +104,9 @@ def message_to_class(msg):
     fields['__repr__'] = make__repr__(msg)
 
     for fd in d.fields:
-        if fd.message_type is not None:
+        if fd.enum_type is not None:
+            fields[fd.name] = property(fget=make_return_enum_field(fd))
+        elif fd.message_type is not None:
             if fd.message_type.name == 'AnyArray':
                 fields[fd.name] = property(fget=make_convert_any_array(fd))
             else:
@@ -231,24 +245,3 @@ class Table:
             cn=self.__class__.__name__,
             d=self.__desc
         )
-
-
-messages = []
-for module in pb2_modules:
-    for name in dir(module):
-        thing = getattr(module, name)
-        if isinstance(thing, GeneratedProtocolMessageType):
-            messages.append(thing)
-
-
-enum_types = {}
-for m in messages:
-    d = m.DESCRIPTOR
-    for field in d.fields:
-        if field.enum_type is not None:
-            et = field.enum_type
-            enum = Enum(
-                field.name,
-                zip(et.values_by_name, et.values_by_number)
-            )
-            enum_types[(m, field.name)] = enum

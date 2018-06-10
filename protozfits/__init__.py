@@ -250,6 +250,35 @@ def rewind_table():
 klasses = {}
 
 
+def make_convert_any_array(fd):
+    def convert_any_array(self):
+        return any_array_to_numpy(getattr(self._message, fd.name))
+    return convert_any_array
+
+
+def make_wrap_in_class(fd):
+    def wrap_in_class(self):
+        klass = klasses[fd.message_type.full_name]
+        return klass(getattr(self._message, fd.name))
+    return wrap_in_class
+
+
+def make_return_normal_field(fd):
+    def return_normal_field(self):
+        return getattr(self._message, fd.name)
+    return return_normal_field
+
+
+def make__repr__(msg):
+    back_part = '(' + ', '.join(
+        [n+'={'+n+'}' for n in msg.DESCRIPTOR.fields_by_name]
+    ) + ')'
+
+    def _my_repr_(self):
+        return self.__class__.__name__ + back_part.format(self.__dict__)
+    return _my_repr_
+
+
 def message_to_class(msg):
     d = msg.DESCRIPTOR
     fields = {}
@@ -257,24 +286,19 @@ def message_to_class(msg):
     def __init__(self, message):
         self._message = message
     fields['__init__'] = __init__
+    fields['DESCRIPTOR'] = d
+    fields['__repr__'] = make__repr__(msg)
 
     for fd in d.fields:
         if fd.message_type is not None:
             if fd.message_type.name == 'AnyArray':
-                def convert_any_array(self):
-                    return any_array_to_numpy(getattr(self._message, fd.name))
-                fields[fd.name] = convert_any_array
+                fields[fd.name] = property(fget=make_convert_any_array(fd))
             else:
-                def wrap_in_class(self):
-                    klass = klasses[fd.message_type.name]
-                    return klass(self._message)
-                fields[fd.name] = wrap_in_class
+                fields[fd.name] = property(fget=make_wrap_in_class(fd))
         else:
-            def return_normal_field(self):
-                return getattr(self._message, fd.name)
-            fields[fd.name] = return_normal_field
+            fields[fd.name] = property(fget=make_return_normal_field(fd))
 
-    return type(d.name, (object, ), fields)
+    return type(d.full_name, (object, ), fields)
 
 for module in pb2_modules:
     for name in dir(module):

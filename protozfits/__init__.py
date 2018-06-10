@@ -192,39 +192,6 @@ for module in pb2_modules:
             messages.append(thing)
 
 
-def namedtuple_repr2(self):
-    '''a nicer repr for big namedtuples containing big numpy arrays'''
-    old_print_options = np.get_printoptions()
-    np.set_printoptions(precision=3, threshold=50, edgeitems=2)
-    delim = '\n    '
-    s = self.__class__.__name__ + '(' + delim
-
-    s += delim.join([
-        '{0}={1}'.format(
-            key,
-            repr(
-                getattr(self, key)
-            ).replace('\n', delim)
-        )
-        for key in self._fields
-    ])
-    s += ')'
-    np.set_printoptions(**old_print_options)
-    return s
-
-
-def nt(m):
-    '''create namedtuple class from protobuf.message type'''
-    _nt = namedtuple(
-        m.__name__,
-        list(m.DESCRIPTOR.fields_by_name)
-    )
-    _nt.__repr__ = namedtuple_repr2
-    return _nt
-
-
-named_tuples = {m: nt(m) for m in messages}
-
 enum_types = {}
 for m in messages:
     d = m.DESCRIPTOR
@@ -270,13 +237,29 @@ def make_return_normal_field(fd):
 
 
 def make__repr__(msg):
-    back_part = '(' + ', '.join(
-        [n+'={'+n+'}' for n in msg.DESCRIPTOR.fields_by_name]
-    ) + ')'
+    fields = [n for n in msg.DESCRIPTOR.fields_by_name]
 
-    def _my_repr_(self):
-        return self.__class__.__name__ + back_part.format(self.__dict__)
-    return _my_repr_
+    def nice_repr(self):
+        '''a nicer repr for messages containing big numpy arrays'''
+        old_print_options = np.get_printoptions()
+        np.set_printoptions(precision=3, threshold=50, edgeitems=2)
+        delim = '\n    '
+        s = self.__class__.__name__ + '(' + delim
+
+        s += delim.join([
+            '{0}={1}'.format(
+                key,
+                repr(
+                    getattr(self, key)
+                ).replace('\n', delim)
+            )
+            for key in fields
+        ])
+        s += ')'
+        np.set_printoptions(**old_print_options)
+        return s
+
+    return nice_repr
 
 
 def message_to_class(msg):

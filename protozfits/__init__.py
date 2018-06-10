@@ -28,19 +28,26 @@ __all__ = [
     'any_array_to_numpy',
 ]
 
-pb2_modules = {
-    'L0': L0_pb2,
-    'DataModel': L0_pb2,
-    'R1': R1_pb2,
-    'R1_DigiCam': R1_DigiCam_pb2,
-    'R1_NectarCam': R1_NectarCam_pb2,
-    'R1_LSTCam': R1_LSTCam_pb2,
-}
+pb2_modules = [
+    L0_pb2,
+    R1_pb2,
+    R1_DigiCam_pb2,
+    R1_NectarCam_pb2,
+    R1_LSTCam_pb2,
+]
 
 
 def get_class_from_PBFHEAD(pbfhead):
-    module_name, class_name = pbfhead.split('.')
-    return getattr(pb2_modules[module_name], class_name)
+    package, msg_name = pbfhead.split('.')
+    for module in pb2_modules:
+        if module.DESCRIPTOR.package == package:
+            try:
+                return getattr(module, msg_name)
+            except Exception as e:
+                print(e)
+    raise KeyError('Could not find {} in package: {}'.format(
+        msg_name, package)
+    )
 
 
 class File:
@@ -177,12 +184,12 @@ def message_getitem(msg, name):
     return value
 
 
-messages = set()
-for module in pb2_modules.values():
+messages = []
+for module in pb2_modules:
     for name in dir(module):
         thing = getattr(module, name)
         if isinstance(thing, GeneratedProtocolMessageType):
-            messages.add(thing)
+            messages.append(thing)
 
 
 def namedtuple_repr2(self):
@@ -245,11 +252,11 @@ klasses = {}
 
 def message_to_class(msg):
     d = msg.DESCRIPTOR
+    fields = {}
 
     def __init__(self, message):
         self._message = message
-
-    fields = {}
+    fields['__init__'] = __init__
 
     for fd in d.fields:
         if fd.message_type is not None:
@@ -269,7 +276,7 @@ def message_to_class(msg):
 
     return type(d.name, (object, ), fields)
 
-for module in pb2_modules.values():
+for module in pb2_modules:
     for name in dir(module):
         thing = getattr(module, name)
         if isinstance(thing, GeneratedProtocolMessageType):

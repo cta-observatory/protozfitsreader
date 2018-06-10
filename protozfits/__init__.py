@@ -90,7 +90,6 @@ def message_to_class(msg):
     def __init__(self, message):
         self._message = message
     fields['__init__'] = __init__
-    fields['DESCRIPTOR'] = d
     fields['__repr__'] = make__repr__(msg)
 
     for fd in d.fields:

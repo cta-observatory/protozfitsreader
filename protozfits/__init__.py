@@ -127,7 +127,7 @@ def get_class_from_PBFHEAD(pbfhead):
 class File:
     instances = 0
 
-    def __init__(self, path, pure_protobuf=False):
+    def __init__(self, path):
         File.instances += 1
         if File.instances > 1:
             warn('''\
@@ -138,7 +138,7 @@ class File:
         Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
-            self.__dict__[btd.extname] = Table(btd, pure_protobuf)
+            self.__dict__[btd.extname] = Table(btd)
 
     def __repr__(self):
         return "%s(%r)" % (

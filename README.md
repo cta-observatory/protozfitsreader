@@ -20,9 +20,9 @@ File({
 })
 ```
 
-From this we learn, the `file` contains a single `Table` named `Events` which
-contains 100 rows of type `CameraEvent`. There might be more tables with
-other types of rows in other files.
+From this we learn, the `file` contains two `Table` named `RunHeader` and `Events` which
+contains 9 rows of type `CameraEvent`. There might be more tables with
+other types of rows in other files. For instance LST has its `RunHeader` called `CameraConfig`.
 
 ### RunHeader
 
@@ -32,7 +32,7 @@ this single run header is stored in a Table. This table could contain multiple
 possible.
 
 At the moment I would recommend getting the run header out of the file
-we opened above like this:
+we opened above like this (replace RunHeader with CameraConfig for LST data):
 
 ```
 >>> # because we do not know what to do, if there are 2 run headers
@@ -64,6 +64,49 @@ For now, I will just get the next event
 >>> event.hiGain.waveforms.samples
 array([241, 245, 248, ..., 218, 214, 215], dtype=int16)
 >>>
+```
+
+An LST event will look something like so:
+```
+>>> event = next(file.Events)
+>>> event
+CameraEvent(
+    configuration_id=1
+    event_id=1
+    tel_event_id=1
+    trigger_time_s=0
+    trigger_time_qns=0
+    trigger_type=0
+    waveform=array([  0,   0, ..., 288, 263], dtype=uint16)
+    pixel_status=array([ 0,  0,  0,  0,  0,  0,  0, 12, 12, 12, 12, 12, 12, 12], dtype=uint8)
+    ped_id=0
+    nectarcam=NectarCamEvent(
+        module_status=array([], dtype=float64)
+        extdevices_presence=0
+        tib_data=array([], dtype=float64)
+        cdts_data=array([], dtype=float64)
+        swat_data=array([], dtype=float64)
+        counters=array([], dtype=float64))
+    lstcam=LstCamEvent(
+        module_status=array([0, 1], dtype=uint8)
+        extdevices_presence=0
+        tib_data=array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=uint8)
+        cdts_data=array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+               0, 0, 0, 0, 0, 0, 0, 0], dtype=uint8)
+        swat_data=array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+               0, 0, 0, 0], dtype=uint8)
+        counters=array([  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+                 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+                 0,   0,   1,   0,   0,   0,  31,   0,   0,   0, 243, 170, 204,
+                 0,   0,   0,   0,   0], dtype=uint8)
+        chips_flags=array([    0,     0,     0,     0,     0,     0,     0,     0, 61440,
+                 245, 61440,   250, 61440,   253, 61440,   249], dtype=uint16)
+        first_capacitor_id=array([    0,     0,     0,     0,     0,     0,     0,     0, 61440,
+                 251, 61440,   251, 61440,   241, 61440,   245], dtype=uint16)
+        drs_tag_status=array([ 0, 12], dtype=uint8)
+        drs_tag=array([   0,    0, ..., 2021, 2360], dtype=uint16))
+    digicam=DigiCamEvent(
+        ))
 ```
 
 `event` supports tab-completion, which I regard as very important while exploring.

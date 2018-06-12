@@ -107,6 +107,8 @@ CameraEvent(
         drs_tag=array([   0,    0, ..., 2021, 2360], dtype=uint16))
     digicam=DigiCamEvent(
         ))
+>>> event.waveform
+array([  0,   0,   0, ..., 292, 288, 263], dtype=uint16)
 ```
 
 `event` supports tab-completion, which I regard as very important while exploring.

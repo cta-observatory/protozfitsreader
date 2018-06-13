@@ -104,9 +104,10 @@ class Event:
 
     @lazyproperty
     def unsorted_baseline(self):
-        try:
-            return any_array_to_numpy(self._event.hiGain.waveforms.baselines)
-        except ValueError:
+        result = any_array_to_numpy(self._event.hiGain.waveforms.baselines)
+        if len(result) > 0:
+            return result
+        else:
             warnings.warn((
                 "Could not read `hiGain.waveforms.baselines` for event:{0}"
                 "of run_id:{1}".format(self.event_number, self.run_id)

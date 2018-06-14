@@ -59,9 +59,9 @@ class Event:
         self._samples = (
             trafo(self._event.hiGain.waveforms.samples)
         ).reshape(self.n_pixels, -1)
+        self.event_number = self._event.eventNumber
         self.baseline = self.unsorted_baseline[Event._sort_ids]
         self.telescope_id = self._event.telescopeID
-        self.event_number = self._event.eventNumber
         self.central_event_gps_time = (
             self._event.trig.timeSec * 1E9 + self._event.trig.timeNanoSec
         )

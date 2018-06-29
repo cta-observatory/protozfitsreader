@@ -48,12 +48,6 @@ class File:
 
     def __init__(self, path, pure_protobuf=False):
         File.instances += 1
-        if File.instances > 1:
-            warn('''\
-        Multiple open zfits files at the same time are not supported.
-        Reading from mutliple open tables at the same time will reset these
-        tables continously and you will read always the same events.
-        ''')
         Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
@@ -129,7 +123,8 @@ class Table:
         self.__pbuf_class = get_class_from_PBFHEAD(desc.pbfhead)
         self.header = self.__desc.header
         self.pure_protobuf = pure_protobuf
-
+        self.__file_id = rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
+        
     def __len__(self):
         return self.__desc.znaxis2
 
@@ -137,12 +132,9 @@ class Table:
         return self
 
     def __next__(self):
-        if not Table.__last_opened == self.__desc:
-            rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
-            Table.__last_opened = self.__desc
         row = self.__pbuf_class()
         try:
-            row.ParseFromString(rawzfitsreader.readEvent())
+            row.ParseFromString(rawzfitsreader.readEvent(self.__file_id))
         except EOFError:
             raise StopIteration
 

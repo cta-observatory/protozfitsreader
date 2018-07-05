@@ -42,7 +42,6 @@ def get_class_from_PBFHEAD(pbfhead):
     module_name, class_name = pbfhead.split('.')
     return getattr(pb2_modules[module_name], class_name)
 
-
 class File:
     instances = 0
 
@@ -221,6 +220,52 @@ for m in messages:
                 zip(et.values_by_name, et.values_by_number)
             )
             enum_types[(m, field.name)] = enum
+
+
+class MultiZFitsFiles:
+    
+    def __init__(self, path):
+        self._paths=path.split(':')
+        self._files = {}
+        self._eof = {}
+        self._events = {}
+        
+        for path in self._paths:
+            self._files[path] = File(path).Events
+            self._eof[path] = False
+            try:
+                self._events[path] = next(self._files[path]) 
+            except EOFError:
+                self.__eof[path] = True
+                
+    def next_event(self):
+        #check for the minimal event id
+        min_event_id = -1; 
+        min_path=""
+        for path in self._paths:
+            if self._eof[path] == True:
+                continue
+            
+            if min_event_id == -1:
+                min_event_id = self._events[path].event_id
+                min_path=path
+                
+            if min_event_id > self._events[path].event_id:
+                min_event_id = self._events[path].event_id
+                min_path=path
+        
+        if min_event_id == -1:
+            raise eofError 
+        
+        #return the minimal event id
+        to_return = self._events[min_path]
+        try:
+            self._events[min_path] = next(self._files[min_path])
+        except EOFError:
+            self.__eof[min_path] = True
+            
+        return to_return;
+        
 
 
 def rewind_table():

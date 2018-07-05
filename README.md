@@ -141,6 +141,20 @@ CameraEvent(
             firstSplIdx=array([], dtype=float64)))
 # [...]
 ```
+### Table header
+Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field. 
+For this use the MultiZFitsFiles class, still from protozfits. The syntax is currently a little bit different than for the single file reading. For instance the following code reads two files in parallel:
+```
+>>> from protozfits import MultiZFitsFiles
+>>> multi_files = MultiZFitsFiles('/local/etienne/streamer1_20180427_000.fits.fz:/local/etienne/streamer1_20180427_001.fits.fz')
+>>> event = multi_files.next_event()
+>>> event.event_id
+1
+>>> event = multi_files.next_event()
+>>> event.event_id
+2
+
+```
 
 ### Table header
 

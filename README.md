@@ -244,6 +244,24 @@ And then you'll have to (put it in your .bashrc for example)
 
     export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
 
+### Most common issues and possible remedies
+
+- Missing GLIBC version, message along the lines of:
+
+    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20' not found 
+
+Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly. 
+Solution: add <path_to_anaconda>/envs/<your_environment_name>/lib/ to your LD_LIBRARY_PATH
+
+- Cannot import _message, message along the lines of:
+
+    from google.protobuf.pyext import _message
+    ImportError: cannot import name '_message' 
+
+Caused by missing protobuf for python (or badly installed). 
+Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it, 
+or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version. 
+In my case the conda install did not work (no idea why), while the pip one did. 
 ### Miniconda & Faster installation?
 
 If you use **Ana**conda this is not interesting for you, but if you use **Mini**conda,

@@ -143,7 +143,8 @@ CameraEvent(
 ```
 ### Multiple input files reading in parallel
 Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field. 
-For this use the MultiZFitsFiles class, still from protozfits. The syntax is currently a little bit different than for the single file reading. For instance the following code reads two files in parallel:
+For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the 
+same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
 ```
 >>> from protozfits import MultiZFitsFiles
 >>> multi_files = MultiZFitsFiles('/local/etienne/streamer1_20180427_000.fits.fz:/local/etienne/streamer1_20180427_001.fits.fz')
@@ -153,6 +154,13 @@ For this use the MultiZFitsFiles class, still from protozfits. The syntax is cur
 >>> event = multi_files.next_event()
 >>> event.event_id
 2
+>>> for i_evt, event in enumerate(multi_files):
+>>>    print(event.event_id)
+3
+4
+5
+6
+...
 
 ```
 

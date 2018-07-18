@@ -141,6 +141,28 @@ CameraEvent(
             firstSplIdx=array([], dtype=float64)))
 # [...]
 ```
+### Multiple input files reading in parallel
+Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field. 
+For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the 
+same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
+```
+>>> from protozfits import MultiZFitsFiles
+>>> multi_files = MultiZFitsFiles('/local/etienne/streamer1_20180427_000.fits.fz:/local/etienne/streamer1_20180427_001.fits.fz')
+>>> event = multi_files.next_event()
+>>> event.event_id
+1
+>>> event = multi_files.next_event()
+>>> event.event_id
+2
+>>> for i_evt, event in enumerate(multi_files):
+>>>    print(event.event_id)
+3
+4
+5
+6
+...
+
+```
 
 ### Table header
 
@@ -244,6 +266,24 @@ And then you'll have to (put it in your .bashrc for example)
 
     export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
 
+### Most common issues and possible remedies
+
+- Missing GLIBC version, message along the lines of:
+
+    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20' not found 
+
+Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly. 
+Solution: add <path_to_anaconda>/envs/<your_environment_name>/lib/ to your LD_LIBRARY_PATH
+
+- Cannot import _message, message along the lines of:
+
+    from google.protobuf.pyext import _message
+    ImportError: cannot import name '_message' 
+
+Caused by missing protobuf for python (or badly installed). 
+Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it, 
+or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version. 
+In my case the conda install did not work (no idea why), while the pip one did. 
 ### Miniconda & Faster installation?
 
 If you use **Ana**conda this is not interesting for you, but if you use **Mini**conda,

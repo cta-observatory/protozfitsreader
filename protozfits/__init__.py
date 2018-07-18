@@ -42,18 +42,11 @@ def get_class_from_PBFHEAD(pbfhead):
     module_name, class_name = pbfhead.split('.')
     return getattr(pb2_modules[module_name], class_name)
 
-
 class File:
     instances = 0
 
     def __init__(self, path, pure_protobuf=False):
         File.instances += 1
-        if File.instances > 1:
-            warn('''\
-        Multiple open zfits files at the same time are not supported.
-        Reading from mutliple open tables at the same time will reset these
-        tables continously and you will read always the same events.
-        ''')
         Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
@@ -129,23 +122,24 @@ class Table:
         self.__pbuf_class = get_class_from_PBFHEAD(desc.pbfhead)
         self.header = self.__desc.header
         self.pure_protobuf = pure_protobuf
-
+        self.__file_id = rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
+        
     def __len__(self):
         return self.__desc.znaxis2
 
     def __iter__(self):
         return self
 
+#FIXME There is a bug here. For some reason, the EOFError raised by readEvent
+#is first a system error here, and triggers an EOFError only later on
+#I am catching everything now to discard the EOFError
     def __next__(self):
-        if not Table.__last_opened == self.__desc:
-            rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
-            Table.__last_opened = self.__desc
         row = self.__pbuf_class()
         try:
-            row.ParseFromString(rawzfitsreader.readEvent())
-        except EOFError:
+            row.ParseFromString(rawzfitsreader.readEvent(self.__file_id))
+        except: #Exception as e: #EOFError:
             raise StopIteration
-
+            
         if not self.pure_protobuf:
             return make_namedtuple(row)
         else:
@@ -229,6 +223,66 @@ for m in messages:
                 zip(et.values_by_name, et.values_by_number)
             )
             enum_types[(m, field.name)] = enum
+
+
+class MultiZFitsFiles:
+    
+    def __init__(self, path):
+        self._paths=path.split(':')
+        self._files = {}
+        self._eof = {}
+        self._events = {}
+        
+        for path in self._paths:
+            self._files[path] = File(path).Events
+            self._eof[path] = False
+            try:
+                self._events[path] = next(self._files[path]) 
+            except StopIteration:
+                self.__eof[path] = True
+                
+                        
+    def __len__(self):
+        total_length=0
+        for table in self._events:
+            total_length += table.__desc.znaxis2
+            
+        return total_length
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.next_event();
+                
+    def next_event(self):
+        #check for the minimal event id
+        min_event_id = -1; 
+        min_path=""
+        for path in self._paths:
+            if self._eof[path] == True:
+                continue
+            
+            if min_event_id == -1:
+                min_event_id = self._events[path].event_id
+                min_path=path
+                
+            if min_event_id > self._events[path].event_id:
+                min_event_id = self._events[path].event_id
+                min_path=path
+        
+        if min_event_id == -1:
+            raise StopIteration 
+        
+        #return the minimal event id
+        to_return = self._events[min_path]
+        try:
+            self._events[min_path] = next(self._files[min_path])
+        except StopIteration:
+            self._eof[min_path] = True
+            
+        return to_return;
+        
 
 
 def rewind_table():

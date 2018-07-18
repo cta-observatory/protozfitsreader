@@ -20,7 +20,7 @@ from . import CoreMessages_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='L0.proto',
   package='DataModel',
-  serialized_pb=_b('\n\x08L0.proto\x12\tDataModel\x1a\x12\x43oreMessages.proto\"\xa8\x02\n\x0cWaveFormData\x12$\n\x07samples\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rpixelsIndices\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x66irstSplIdx\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x16\n\x0bnum_samples\x18\x04 \x01(\x07:\x01\x30\x12&\n\tbaselines\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rpeak_time_pos\x18\x32 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x30\n\x13time_over_threshold\x18\x33 \x01(\x0b\x32\x13.DataModel.AnyArray\"\x84\x02\n\x0cIntegralData\x12\"\n\x05gains\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12)\n\x0cmaximumTimes\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\ttailTimes\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\'\n\nraiseTimes\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rpixelsIndices\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x66irstSplIdx\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\"g\n\rPixelsChannel\x12*\n\twaveforms\x18\x01 \x01(\x0b\x32\x17.DataModel.WaveFormData\x12*\n\tintegrals\x18\x02 \x01(\x0b\x32\x17.DataModel.IntegralData\"7\n\x0e\x43\x61meraCounters\x12%\n\x08\x63ounters\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"3\n\x0cModuleStatus\x12#\n\x06status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"6\n\rPixelPresence\x12%\n\x08presence\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"-\n\x08UCTSdata\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\",\n\x07TIBdata\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"-\n\x08SWATdata\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"/\n\nChipsFlags\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"6\n\x11\x46irstCapacitorIds\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"D\n\x07\x44rsTags\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x16\n\x0bnum_samples\x18\x02 \x01(\x07:\x01\x30\"k\n\rCameraTrigger\x12\x16\n\x0btelescopeID\x18\x01 \x01(\x0f:\x01\x30\x12\x12\n\x07timeSec\x18\x02 \x01(\x10:\x01\x30\x12\x16\n\x0btimeNanoSec\x18\x03 \x01(\x10:\x01\x30\x12\x16\n\x0b\x65ventNumber\x18\x04 \x01(\x07:\x01\x30\"f\n\x0c\x41rrayTrigger\x12\x16\n\x0b\x61rrayEvtNum\x18\x01 \x01(\x07:\x01\x30\x12\x13\n\x0bnum_cameras\x18\x02 \x01(\x07\x12)\n\x07\x63\x61meras\x18\x03 \x03(\x0b\x32\x18.DataModel.CameraTrigger\"\xbf\x01\n\x17nectarcam_specific_head\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x19\n\x11\x63\x61mtoactl_version\x18\x02 \x01(\t\x12\x18\n\x10\x61\x63quisition_mode\x18\x03 \x01(\r\x12\x13\n\x0bnum_modules\x18\x04 \x01(\r\x12\x30\n\x13\x65xpected_modules_id\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x06 \x01(\r\"\xbf\x01\n\x14lstcam_specific_head\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x19\n\x11\x63\x61mtoactl_version\x18\x02 \x01(\t\x12\x13\n\x0bnum_modules\x18\x03 \x01(\r\x12\x30\n\x13\x65xpected_modules_id\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x05 \x01(\r\x12\x1b\n\x13pre_proc_algorithms\x18\x06 \x01(\r\"\xeb\x06\n\x0f\x43\x61meraRunHeader\x12\x17\n\x0btelescopeID\x18\x01 \x01(\x0f:\x02-1\x12\x14\n\trunNumber\x18\x02 \x01(\x07:\x01\x30\x12\x12\n\x07\x64\x61teMJD\x18\x03 \x01(\x07:\x01\x30\x12\x16\n\x0btimeNanoSec\x18\x04 \x01(\x06:\x01\x30\x12;\n\x0cimgReducMode\x18\x05 \x01(\x0e\x32\x17.DataModel.ImgReducMode:\x0cNO_IMG_REDUC\x12=\n\revtsReducMode\x18\x06 \x01(\x0e\x32\x18.DataModel.EvtsReducMode:\x0cNO_EVT_REDUC\x12\x15\n\tnumTraces\x18\x07 \x01(\x0f:\x02-1\x12\x1b\n\x0fnumGainChannels\x18\x08 \x01(\x0f:\x02-1\x12\x1b\n\x0fintegWindowSize\x18\t \x01(\x0f:\x02-1\x12\x1a\n\x0eintegThreshold\x18\n \x01(\x0f:\x02-1\x12\x1d\n\x11zeroSuppThreshold\x18\x0b \x01(\x0f:\x02-1\x12\x10\n\x04\x61\x64\x63s\x18\x14 \x01(\x0f:\x02-1\x12\x14\n\x08triggers\x18\x15 \x01(\x0f:\x02-1\x12\x13\n\x07\x61\x64\x63\x62its\x18\x16 \x01(\x0f:\x02-1\x12\x15\n\tsumlength\x18\x17 \x01(\x0f:\x02-1\x12\x17\n\x0b\x62lprecision\x18\x18 \x01(\x0f:\x02-1\x12\x17\n\x0bmastercards\x18\x19 \x01(\x0f:\x02-1\x12\x18\n\x0ctriggercards\x18\x1a \x01(\x0f:\x02-1\x12\x14\n\x08\x61\x64\x63\x63\x61rds\x18\x1b \x01(\x0f:\x02-1\x12\x10\n\x04gpss\x18\x1c \x01(\x0f:\x02-1\x12\x15\n\x0ctelescope_id\x18\x80\x04 \x01(\r\x12\x12\n\tcs_serial\x18\x81\x04 \x01(\t\x12\x0f\n\x06run_id\x18\x82\x04 \x01(\x06\x12\r\n\x04\x64\x61te\x18\x83\x04 \x01(\x06\x12\x13\n\nnum_pixels\x18\x84\x04 \x01(\r\x12\x14\n\x0bnum_samples\x18\x85\x04 \x01(\r\x12\x30\n\x12\x65xpected_pixels_id\x18\x86\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x12\x64\x61ta_model_version\x18\x87\x04 \x01(\t\x12\x36\n\tnectarcam\x18\x88\x04 \x01(\x0b\x32\".DataModel.nectarcam_specific_head\x12\x30\n\x06lstcam\x18\x89\x04 \x01(\x0b\x32\x1f.DataModel.lstcam_specific_head\"/\n\x0c\x43ircleParams\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01r\x18\x03 \x01(\x01\"J\n\x0e\x43\x61meraLocation\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01z\x18\x03 \x01(\x01\x12\n\n\x02\x61z\x18\x04 \x01(\x01\x12\x0b\n\x03\x61lt\x18\x05 \x01(\x01\"\xaf\x02\n\x0e\x43\x61meraGeometry\x12\x12\n\nnum_pixels\x18\x01 \x01(\x05\x12%\n\x08pixels_x\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pixels_y\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pixels_r\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x10\n\x08rotation\x18\x05 \x01(\x01\x12\x12\n\nfoc_length\x18\x06 \x01(\x01\x12\x13\n\x0bnum_mirrors\x18\x07 \x01(\x05\x12\x13\n\x0bmirror_area\x18\x08 \x01(\x01\x12+\n\x08pointing\x18\t \x01(\x0b\x32\x19.DataModel.CameraLocation\x12\x17\n\x0fsample_duration\x18\n \x01(\x01\"\xaa\x03\n\x13lstcam_specific_evt\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\r\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x63hips_flags\x18\x07 \x01(\x0b\x32\x13.DataModel.AnyArray\x12/\n\x12\x66irst_capacitor_id\x18\x08 \x01(\x0b\x32\x13.DataModel.AnyArray\x12+\n\x0e\x64rs_tag_status\x18\t \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64rs_tag\x18\n \x01(\x0b\x32\x13.DataModel.AnyArray\"\xff\x01\n\x16nectarcam_specific_evt\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\r\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\"\xd4\x13\n\x0b\x43\x61meraEvent\x12\x17\n\x0btelescopeID\x18\x01 \x01(\x0f:\x02-1\x12\x12\n\x07\x64\x61teMJD\x18\x02 \x01(\x01:\x01\x30\x12-\n\teventType\x18\x03 \x01(\x0e\x32\x14.DataModel.EventType:\x04NONE\x12\x16\n\x0b\x65ventNumber\x18\x04 \x01(\x07:\x01\x30\x12\x16\n\x0b\x61rrayEvtNum\x18\x05 \x01(\x07:\x01\x30\x12(\n\x06hiGain\x18\x06 \x01(\x0b\x32\x18.DataModel.PixelsChannel\x12(\n\x06loGain\x18\x07 \x01(\x0b\x32\x18.DataModel.PixelsChannel\x12&\n\x04trig\x18\x08 \x01(\x0b\x32\x18.DataModel.CameraTrigger\x12(\n\x04head\x18\t \x01(\x0b\x32\x1a.DataModel.CameraRunHeader\x12%\n\x04muon\x18\n \x01(\x0b\x32\x17.DataModel.CircleParams\x12+\n\x08geometry\x18\x0b \x01(\x0b\x32\x19.DataModel.CameraGeometry\x12\x13\n\x0bhilo_offset\x18\x0c \x01(\x0f\x12\x12\n\nhilo_scale\x18\r \x01(\x0f\x12\x31\n\x0e\x63\x61meraCounters\x18\x0e \x01(\x0b\x32\x19.DataModel.CameraCounters\x12-\n\x0cmoduleStatus\x18\x0f \x01(\x0b\x32\x17.DataModel.ModuleStatus\x12/\n\rpixelPresence\x18\x10 \x01(\x0b\x32\x18.DataModel.PixelPresence\x12\x33\n\x0f\x61\x63quisitionMode\x18\x11 \x01(\x0e\x32\x1a.DataModel.AcquisitionMode\x12\x18\n\x10uctsDataPresence\x18\x12 \x01(\x08\x12%\n\x08uctsData\x18\x13 \x01(\x0b\x32\x13.DataModel.UCTSdata\x12\x17\n\x0ftibDataPresence\x18\x14 \x01(\x08\x12#\n\x07tibData\x18\x15 \x01(\x0b\x32\x12.DataModel.TIBdata\x12\x18\n\x10swatDataPresence\x18\x16 \x01(\x08\x12%\n\x08swatData\x18\x17 \x01(\x0b\x32\x13.DataModel.SWATdata\x12)\n\nchipsFlags\x18\x19 \x01(\x0b\x32\x15.DataModel.ChipsFlags\x12\x37\n\x11\x66irstCapacitorIds\x18\x1a \x01(\x0b\x32\x1c.DataModel.FirstCapacitorIds\x12)\n\rdrsTagsHiGain\x18\x1b \x01(\x0b\x32\x12.DataModel.DrsTags\x12)\n\rdrsTagsLoGain\x18\x1c \x01(\x0b\x32\x12.DataModel.DrsTags\x12\x1a\n\x12local_time_nanosec\x18\x1e \x01(\x06\x12\x16\n\x0elocal_time_sec\x18\x1f \x01(\x06\x12)\n\x0cpixels_flags\x18  \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0btrigger_map\x18! \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nevent_type\x18\" \x01(\x07\x12\x31\n\x14trigger_input_traces\x18# \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x32\n\x15trigger_output_patch7\x18$ \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x33\n\x16trigger_output_patch19\x18% \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x30\n\x13trigger_output_muon\x18& \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\ngps_status\x18\x33 \x01(\x08\x12%\n\x08time_utc\x18\x34 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0f\n\x07time_ns\x18\x35 \x01(\x07\x12\x0e\n\x06time_s\x18\x36 \x01(\x07\x12\r\n\x05\x66lags\x18\x37 \x01(\x07\x12\x0b\n\x03ssc\x18\x38 \x01(\x07\x12\x0f\n\x07pkt_len\x18\x39 \x01(\x07\x12\x10\n\x08muon_tag\x18: \x01(\x08\x12\"\n\x05trpdm\x18; \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmdt\x18< \x01(\x0b\x32\x13.DataModel.AnyArray\x12!\n\x04pdmt\x18= \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64\x61qtime\x18> \x01(\x0b\x32\x13.DataModel.AnyArray\x12 \n\x03ptm\x18? \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07trpxlid\x18@ \x01(\x0b\x32\x13.DataModel.AnyArray\x12#\n\x06pdmdac\x18\x41 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmpc\x18\x42 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmhi\x18\x43 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmlo\x18\x44 \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64\x61qmode\x18\x45 \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07varsamp\x18\x46 \x01(\x0b\x32\x13.DataModel.AnyArray\x12#\n\x06pdmsum\x18G \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pdmsumsq\x18H \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0e\n\x06pulser\x18P \x01(\x02\x12(\n\x0b\x66timeoffset\x18Q \x01(\x0b\x32\x13.DataModel.AnyArray\x12\'\n\nftimestamp\x18R \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0f\n\x06run_id\x18\x80\x04 \x01(\x06\x12\x11\n\x08\x65vent_id\x18\x81\x04 \x01(\x06\x12\x15\n\x0ctel_event_id\x18\x82\x04 \x01(\x06\x12\x17\n\x0etrigger_time_s\x18\x83\x04 \x01(\x07\x12\x19\n\x10trigger_time_qns\x18\x84\x04 \x01(\x07\x12\x15\n\x0ctrigger_type\x18\x85\x04 \x01(\r\x12&\n\x08waveform\x18\x86\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\x0cpixel_status\x18\x87\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x13\n\nped_sub_id\x18\x88\x04 \x01(\x06\x12\x35\n\tnectarcam\x18\x89\x04 \x01(\x0b\x32!.DataModel.nectarcam_specific_evt\x12/\n\x06lstcam\x18\x8a\x04 \x01(\x0b\x32\x1e.DataModel.lstcam_specific_evt\x12\x12\n\tnum_gains\x18\x80\x08 \x01(\x07\"\x1d\n\rPacketLibData\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"i\n\x0cShowerParams\x12\x0f\n\x07\x61zimuth\x18\x01 \x01(\x02\x12\x10\n\x08\x61ltitude\x18\x02 \x01(\x02\x12\x11\n\tstart_alt\x18\x03 \x01(\x02\x12\x0f\n\x07max_alt\x18\x04 \x01(\x02\x12\x12\n\nch_max_alt\x18\x05 \x01(\x02\"\x8a\x01\n\x14MCCalibrationChannel\x12!\n\x04gain\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pedestal\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0bpulse_shape\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\"\xcd\x01\n\rMCCalibration\x12\x14\n\x0ctelescope_id\x18\x01 \x01(\x07\x12\x30\n\x07hi_gain\x18\x02 \x01(\x0b\x32\x1f.DataModel.MCCalibrationChannel\x12\x30\n\x07lo_gain\x18\x03 \x01(\x0b\x32\x1f.DataModel.MCCalibrationChannel\x12*\n\rbroken_pixels\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x16\n\x0eref_pulse_step\x18\x05 \x01(\x01\"\x96\x01\n\nArrayEvent\x12,\n\x0btriggerData\x18\x01 \x01(\x0b\x32\x17.DataModel.ArrayTrigger\x12*\n\ncameraData\x18\x02 \x03(\x0b\x32\x16.DataModel.CameraEvent\x12.\n\rshower_params\x18\x03 \x01(\x0b\x32\x17.DataModel.ShowerParams*[\n\x0cImgReducMode\x12\x10\n\x0cNO_IMG_REDUC\x10\x00\x12\x0e\n\nZERO_SUPPR\x10\x01\x12\x0f\n\x0bINTEGRATION\x10\x02\x12\x18\n\x14INTEG_AND_ZERO_SUPPR\x10\x03*]\n\rEvtsReducMode\x12\x10\n\x0cNO_EVT_REDUC\x10\x00\x12\x14\n\x10TIME_COINCIDENCE\x10\x01\x12\x10\n\x0cIMAGE_PARAMS\x10\x02\x12\x12\n\x0eHIGH_LEVEL_ANA\x10\x03*C\n\tEventType\x12\x08\n\x04NONE\x10\x00\x12\x0c\n\x08PHYSICAL\x10\x01\x12\x0c\n\x08PEDESTAL\x10\x02\x12\x10\n\x0cLIGHT_PULSER\x10\x03*\x90\x01\n\x0f\x41\x63quisitionMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0f\n\tDAQCHARGE\x10\xe0\xdd\x03\x12\x11\n\x0b\x44\x41QCHARGE_T\x10\xe1\xdd\x03\x12\x0f\n\tDAQSAMPLE\x10\xe3\xdd\x03\x12\x11\n\x0b\x44\x41QSAMPLE_C\x10\xe4\xdd\x03\x12\x11\n\x0b\x44\x41QSAMPLE_D\x10\xe5\xdd\x03\x12\x15\n\x0f\x44\x41QCHARGESAMPLE\x10\xe6\xdd\x03')
+  serialized_pb=_b('\n\x08L0.proto\x12\tDataModel\x1a\x12\x43oreMessages.proto\"\xa8\x02\n\x0cWaveFormData\x12$\n\x07samples\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rpixelsIndices\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x66irstSplIdx\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x16\n\x0bnum_samples\x18\x04 \x01(\x07:\x01\x30\x12&\n\tbaselines\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rpeak_time_pos\x18\x32 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x30\n\x13time_over_threshold\x18\x33 \x01(\x0b\x32\x13.DataModel.AnyArray\"\x84\x02\n\x0cIntegralData\x12\"\n\x05gains\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12)\n\x0cmaximumTimes\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\ttailTimes\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\'\n\nraiseTimes\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rpixelsIndices\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x66irstSplIdx\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\"g\n\rPixelsChannel\x12*\n\twaveforms\x18\x01 \x01(\x0b\x32\x17.DataModel.WaveFormData\x12*\n\tintegrals\x18\x02 \x01(\x0b\x32\x17.DataModel.IntegralData\"7\n\x0e\x43\x61meraCounters\x12%\n\x08\x63ounters\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"3\n\x0cModuleStatus\x12#\n\x06status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"6\n\rPixelPresence\x12%\n\x08presence\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"-\n\x08UCTSdata\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\",\n\x07TIBdata\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"-\n\x08SWATdata\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"/\n\nChipsFlags\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"6\n\x11\x46irstCapacitorIds\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\"D\n\x07\x44rsTags\x12!\n\x04\x64\x61ta\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x16\n\x0bnum_samples\x18\x02 \x01(\x07:\x01\x30\"k\n\rCameraTrigger\x12\x16\n\x0btelescopeID\x18\x01 \x01(\x0f:\x01\x30\x12\x12\n\x07timeSec\x18\x02 \x01(\x10:\x01\x30\x12\x16\n\x0btimeNanoSec\x18\x03 \x01(\x10:\x01\x30\x12\x16\n\x0b\x65ventNumber\x18\x04 \x01(\x07:\x01\x30\"f\n\x0c\x41rrayTrigger\x12\x16\n\x0b\x61rrayEvtNum\x18\x01 \x01(\x07:\x01\x30\x12\x13\n\x0bnum_cameras\x18\x02 \x01(\x07\x12)\n\x07\x63\x61meras\x18\x03 \x03(\x0b\x32\x18.DataModel.CameraTrigger\"\xbf\x01\n\x17nectarcam_specific_head\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x19\n\x11\x63\x61mtoactl_version\x18\x02 \x01(\t\x12\x18\n\x10\x61\x63quisition_mode\x18\x03 \x01(\r\x12\x13\n\x0bnum_modules\x18\x04 \x01(\r\x12\x30\n\x13\x65xpected_modules_id\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x06 \x01(\r\"\xbf\x01\n\x14lstcam_specific_head\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x19\n\x11\x63\x61mtoactl_version\x18\x02 \x01(\t\x12\x13\n\x0bnum_modules\x18\x03 \x01(\r\x12\x30\n\x13\x65xpected_modules_id\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x05 \x01(\r\x12\x1b\n\x13pre_proc_algorithms\x18\x06 \x01(\r\"\xeb\x06\n\x0f\x43\x61meraRunHeader\x12\x17\n\x0btelescopeID\x18\x01 \x01(\x0f:\x02-1\x12\x14\n\trunNumber\x18\x02 \x01(\x07:\x01\x30\x12\x12\n\x07\x64\x61teMJD\x18\x03 \x01(\x07:\x01\x30\x12\x16\n\x0btimeNanoSec\x18\x04 \x01(\x06:\x01\x30\x12;\n\x0cimgReducMode\x18\x05 \x01(\x0e\x32\x17.DataModel.ImgReducMode:\x0cNO_IMG_REDUC\x12=\n\revtsReducMode\x18\x06 \x01(\x0e\x32\x18.DataModel.EvtsReducMode:\x0cNO_EVT_REDUC\x12\x15\n\tnumTraces\x18\x07 \x01(\x0f:\x02-1\x12\x1b\n\x0fnumGainChannels\x18\x08 \x01(\x0f:\x02-1\x12\x1b\n\x0fintegWindowSize\x18\t \x01(\x0f:\x02-1\x12\x1a\n\x0eintegThreshold\x18\n \x01(\x0f:\x02-1\x12\x1d\n\x11zeroSuppThreshold\x18\x0b \x01(\x0f:\x02-1\x12\x10\n\x04\x61\x64\x63s\x18\x14 \x01(\x0f:\x02-1\x12\x14\n\x08triggers\x18\x15 \x01(\x0f:\x02-1\x12\x13\n\x07\x61\x64\x63\x62its\x18\x16 \x01(\x0f:\x02-1\x12\x15\n\tsumlength\x18\x17 \x01(\x0f:\x02-1\x12\x17\n\x0b\x62lprecision\x18\x18 \x01(\x0f:\x02-1\x12\x17\n\x0bmastercards\x18\x19 \x01(\x0f:\x02-1\x12\x18\n\x0ctriggercards\x18\x1a \x01(\x0f:\x02-1\x12\x14\n\x08\x61\x64\x63\x63\x61rds\x18\x1b \x01(\x0f:\x02-1\x12\x10\n\x04gpss\x18\x1c \x01(\x0f:\x02-1\x12\x15\n\x0ctelescope_id\x18\x80\x04 \x01(\r\x12\x12\n\tcs_serial\x18\x81\x04 \x01(\t\x12\x0f\n\x06run_id\x18\x82\x04 \x01(\x06\x12\r\n\x04\x64\x61te\x18\x83\x04 \x01(\x06\x12\x13\n\nnum_pixels\x18\x84\x04 \x01(\r\x12\x14\n\x0bnum_samples\x18\x85\x04 \x01(\r\x12\x30\n\x12\x65xpected_pixels_id\x18\x86\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x12\x64\x61ta_model_version\x18\x87\x04 \x01(\t\x12\x36\n\tnectarcam\x18\x88\x04 \x01(\x0b\x32\".DataModel.nectarcam_specific_head\x12\x30\n\x06lstcam\x18\x89\x04 \x01(\x0b\x32\x1f.DataModel.lstcam_specific_head\"/\n\x0c\x43ircleParams\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01r\x18\x03 \x01(\x01\"J\n\x0e\x43\x61meraLocation\x12\t\n\x01x\x18\x01 \x01(\x01\x12\t\n\x01y\x18\x02 \x01(\x01\x12\t\n\x01z\x18\x03 \x01(\x01\x12\n\n\x02\x61z\x18\x04 \x01(\x01\x12\x0b\n\x03\x61lt\x18\x05 \x01(\x01\"\xaf\x02\n\x0e\x43\x61meraGeometry\x12\x12\n\nnum_pixels\x18\x01 \x01(\x05\x12%\n\x08pixels_x\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pixels_y\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pixels_r\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x10\n\x08rotation\x18\x05 \x01(\x01\x12\x12\n\nfoc_length\x18\x06 \x01(\x01\x12\x13\n\x0bnum_mirrors\x18\x07 \x01(\x05\x12\x13\n\x0bmirror_area\x18\x08 \x01(\x01\x12+\n\x08pointing\x18\t \x01(\x0b\x32\x19.DataModel.CameraLocation\x12\x17\n\x0fsample_duration\x18\n \x01(\x01\"\xaa\x03\n\x13lstcam_specific_evt\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\r\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x63hips_flags\x18\x07 \x01(\x0b\x32\x13.DataModel.AnyArray\x12/\n\x12\x66irst_capacitor_id\x18\x08 \x01(\x0b\x32\x13.DataModel.AnyArray\x12+\n\x0e\x64rs_tag_status\x18\t \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64rs_tag\x18\n \x01(\x0b\x32\x13.DataModel.AnyArray\"\xff\x01\n\x16nectarcam_specific_evt\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\r\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\"\xe5\x03\n\rDigicamConfig\x12*\n\rprotocol_vers\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1f\n\x02sn\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1f\n\x02hv\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12)\n\x0cgateware_rev\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rgateware_vers\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rgateware_code\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\x12/\n\x12gateware_card_type\x18\x07 \x01(\x0b\x32\x13.DataModel.AnyArray\x12)\n\x0c\x66irmware_rev\x18\x08 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rfirmware_vers\x18\t \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rfirmware_code\x18\n \x01(\x0b\x32\x13.DataModel.AnyArray\x12/\n\x12\x66irmware_card_type\x18\x0b \x01(\x0b\x32\x13.DataModel.AnyArray\"\x86\x14\n\x0b\x43\x61meraEvent\x12\x17\n\x0btelescopeID\x18\x01 \x01(\x0f:\x02-1\x12\x12\n\x07\x64\x61teMJD\x18\x02 \x01(\x01:\x01\x30\x12-\n\teventType\x18\x03 \x01(\x0e\x32\x14.DataModel.EventType:\x04NONE\x12\x16\n\x0b\x65ventNumber\x18\x04 \x01(\x07:\x01\x30\x12\x16\n\x0b\x61rrayEvtNum\x18\x05 \x01(\x07:\x01\x30\x12(\n\x06hiGain\x18\x06 \x01(\x0b\x32\x18.DataModel.PixelsChannel\x12(\n\x06loGain\x18\x07 \x01(\x0b\x32\x18.DataModel.PixelsChannel\x12&\n\x04trig\x18\x08 \x01(\x0b\x32\x18.DataModel.CameraTrigger\x12(\n\x04head\x18\t \x01(\x0b\x32\x1a.DataModel.CameraRunHeader\x12%\n\x04muon\x18\n \x01(\x0b\x32\x17.DataModel.CircleParams\x12+\n\x08geometry\x18\x0b \x01(\x0b\x32\x19.DataModel.CameraGeometry\x12\x13\n\x0bhilo_offset\x18\x0c \x01(\x0f\x12\x12\n\nhilo_scale\x18\r \x01(\x0f\x12\x31\n\x0e\x63\x61meraCounters\x18\x0e \x01(\x0b\x32\x19.DataModel.CameraCounters\x12-\n\x0cmoduleStatus\x18\x0f \x01(\x0b\x32\x17.DataModel.ModuleStatus\x12/\n\rpixelPresence\x18\x10 \x01(\x0b\x32\x18.DataModel.PixelPresence\x12\x33\n\x0f\x61\x63quisitionMode\x18\x11 \x01(\x0e\x32\x1a.DataModel.AcquisitionMode\x12\x18\n\x10uctsDataPresence\x18\x12 \x01(\x08\x12%\n\x08uctsData\x18\x13 \x01(\x0b\x32\x13.DataModel.UCTSdata\x12\x17\n\x0ftibDataPresence\x18\x14 \x01(\x08\x12#\n\x07tibData\x18\x15 \x01(\x0b\x32\x12.DataModel.TIBdata\x12\x18\n\x10swatDataPresence\x18\x16 \x01(\x08\x12%\n\x08swatData\x18\x17 \x01(\x0b\x32\x13.DataModel.SWATdata\x12)\n\nchipsFlags\x18\x19 \x01(\x0b\x32\x15.DataModel.ChipsFlags\x12\x37\n\x11\x66irstCapacitorIds\x18\x1a \x01(\x0b\x32\x1c.DataModel.FirstCapacitorIds\x12)\n\rdrsTagsHiGain\x18\x1b \x01(\x0b\x32\x12.DataModel.DrsTags\x12)\n\rdrsTagsLoGain\x18\x1c \x01(\x0b\x32\x12.DataModel.DrsTags\x12\x1a\n\x12local_time_nanosec\x18\x1e \x01(\x06\x12\x16\n\x0elocal_time_sec\x18\x1f \x01(\x06\x12)\n\x0cpixels_flags\x18  \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0btrigger_map\x18! \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nevent_type\x18\" \x01(\x07\x12\x31\n\x14trigger_input_traces\x18# \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x32\n\x15trigger_output_patch7\x18$ \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x33\n\x16trigger_output_patch19\x18% \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x30\n\x13trigger_output_muon\x18& \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x30\n\x0e\x64igicam_config\x18\' \x01(\x0b\x32\x18.DataModel.DigicamConfig\x12\x12\n\ngps_status\x18\x33 \x01(\x08\x12%\n\x08time_utc\x18\x34 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0f\n\x07time_ns\x18\x35 \x01(\x07\x12\x0e\n\x06time_s\x18\x36 \x01(\x07\x12\r\n\x05\x66lags\x18\x37 \x01(\x07\x12\x0b\n\x03ssc\x18\x38 \x01(\x07\x12\x0f\n\x07pkt_len\x18\x39 \x01(\x07\x12\x10\n\x08muon_tag\x18: \x01(\x08\x12\"\n\x05trpdm\x18; \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmdt\x18< \x01(\x0b\x32\x13.DataModel.AnyArray\x12!\n\x04pdmt\x18= \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64\x61qtime\x18> \x01(\x0b\x32\x13.DataModel.AnyArray\x12 \n\x03ptm\x18? \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07trpxlid\x18@ \x01(\x0b\x32\x13.DataModel.AnyArray\x12#\n\x06pdmdac\x18\x41 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmpc\x18\x42 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmhi\x18\x43 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\"\n\x05pdmlo\x18\x44 \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64\x61qmode\x18\x45 \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07varsamp\x18\x46 \x01(\x0b\x32\x13.DataModel.AnyArray\x12#\n\x06pdmsum\x18G \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pdmsumsq\x18H \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0e\n\x06pulser\x18P \x01(\x02\x12(\n\x0b\x66timeoffset\x18Q \x01(\x0b\x32\x13.DataModel.AnyArray\x12\'\n\nftimestamp\x18R \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0f\n\x06run_id\x18\x80\x04 \x01(\x06\x12\x11\n\x08\x65vent_id\x18\x81\x04 \x01(\x06\x12\x15\n\x0ctel_event_id\x18\x82\x04 \x01(\x06\x12\x17\n\x0etrigger_time_s\x18\x83\x04 \x01(\x07\x12\x19\n\x10trigger_time_qns\x18\x84\x04 \x01(\x07\x12\x15\n\x0ctrigger_type\x18\x85\x04 \x01(\r\x12&\n\x08waveform\x18\x86\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\x0cpixel_status\x18\x87\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x13\n\nped_sub_id\x18\x88\x04 \x01(\x06\x12\x35\n\tnectarcam\x18\x89\x04 \x01(\x0b\x32!.DataModel.nectarcam_specific_evt\x12/\n\x06lstcam\x18\x8a\x04 \x01(\x0b\x32\x1e.DataModel.lstcam_specific_evt\x12\x12\n\tnum_gains\x18\x80\x08 \x01(\x07\"\x1d\n\rPacketLibData\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"i\n\x0cShowerParams\x12\x0f\n\x07\x61zimuth\x18\x01 \x01(\x02\x12\x10\n\x08\x61ltitude\x18\x02 \x01(\x02\x12\x11\n\tstart_alt\x18\x03 \x01(\x02\x12\x0f\n\x07max_alt\x18\x04 \x01(\x02\x12\x12\n\nch_max_alt\x18\x05 \x01(\x02\"\x8a\x01\n\x14MCCalibrationChannel\x12!\n\x04gain\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08pedestal\x18\x02 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0bpulse_shape\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\"\xcd\x01\n\rMCCalibration\x12\x14\n\x0ctelescope_id\x18\x01 \x01(\x07\x12\x30\n\x07hi_gain\x18\x02 \x01(\x0b\x32\x1f.DataModel.MCCalibrationChannel\x12\x30\n\x07lo_gain\x18\x03 \x01(\x0b\x32\x1f.DataModel.MCCalibrationChannel\x12*\n\rbroken_pixels\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x16\n\x0eref_pulse_step\x18\x05 \x01(\x01\"\x96\x01\n\nArrayEvent\x12,\n\x0btriggerData\x18\x01 \x01(\x0b\x32\x17.DataModel.ArrayTrigger\x12*\n\ncameraData\x18\x02 \x03(\x0b\x32\x16.DataModel.CameraEvent\x12.\n\rshower_params\x18\x03 \x01(\x0b\x32\x17.DataModel.ShowerParams*[\n\x0cImgReducMode\x12\x10\n\x0cNO_IMG_REDUC\x10\x00\x12\x0e\n\nZERO_SUPPR\x10\x01\x12\x0f\n\x0bINTEGRATION\x10\x02\x12\x18\n\x14INTEG_AND_ZERO_SUPPR\x10\x03*]\n\rEvtsReducMode\x12\x10\n\x0cNO_EVT_REDUC\x10\x00\x12\x14\n\x10TIME_COINCIDENCE\x10\x01\x12\x10\n\x0cIMAGE_PARAMS\x10\x02\x12\x12\n\x0eHIGH_LEVEL_ANA\x10\x03*C\n\tEventType\x12\x08\n\x04NONE\x10\x00\x12\x0c\n\x08PHYSICAL\x10\x01\x12\x0c\n\x08PEDESTAL\x10\x02\x12\x10\n\x0cLIGHT_PULSER\x10\x03*\x90\x01\n\x0f\x41\x63quisitionMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0f\n\tDAQCHARGE\x10\xe0\xdd\x03\x12\x11\n\x0b\x44\x41QCHARGE_T\x10\xe1\xdd\x03\x12\x0f\n\tDAQSAMPLE\x10\xe3\xdd\x03\x12\x11\n\x0b\x44\x41QSAMPLE_C\x10\xe4\xdd\x03\x12\x11\n\x0b\x44\x41QSAMPLE_D\x10\xe5\xdd\x03\x12\x15\n\x0f\x44\x41QCHARGESAMPLE\x10\xe6\xdd\x03*B\n\x0f\x44igicamCardType\x12\x0b\n\x07TRIGGER\x10\x00\x12\x0f\n\x0b\x46\x41\x44\x43_ANALOG\x10\x01\x12\x11\n\rFADC_INTERSIL\x10\x02')
   ,
   dependencies=[CoreMessages_pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -50,8 +50,8 @@ _IMGREDUCMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=6947,
-  serialized_end=7038,
+  serialized_start=7485,
+  serialized_end=7576,
 )
 _sym_db.RegisterEnumDescriptor(_IMGREDUCMODE)
 
@@ -81,8 +81,8 @@ _EVTSREDUCMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=7040,
-  serialized_end=7133,
+  serialized_start=7578,
+  serialized_end=7671,
 )
 _sym_db.RegisterEnumDescriptor(_EVTSREDUCMODE)
 
@@ -112,8 +112,8 @@ _EVENTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=7135,
-  serialized_end=7202,
+  serialized_start=7673,
+  serialized_end=7740,
 )
 _sym_db.RegisterEnumDescriptor(_EVENTTYPE)
 
@@ -155,12 +155,39 @@ _ACQUISITIONMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=7205,
-  serialized_end=7349,
+  serialized_start=7743,
+  serialized_end=7887,
 )
 _sym_db.RegisterEnumDescriptor(_ACQUISITIONMODE)
 
 AcquisitionMode = enum_type_wrapper.EnumTypeWrapper(_ACQUISITIONMODE)
+_DIGICAMCARDTYPE = _descriptor.EnumDescriptor(
+  name='DigicamCardType',
+  full_name='DataModel.DigicamCardType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='TRIGGER', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FADC_ANALOG', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='FADC_INTERSIL', index=2, number=2,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=7889,
+  serialized_end=7955,
+)
+_sym_db.RegisterEnumDescriptor(_DIGICAMCARDTYPE)
+
+DigicamCardType = enum_type_wrapper.EnumTypeWrapper(_DIGICAMCARDTYPE)
 NO_IMG_REDUC = 0
 ZERO_SUPPR = 1
 INTEGRATION = 2
@@ -180,6 +207,9 @@ DAQSAMPLE = 61155
 DAQSAMPLE_C = 61156
 DAQSAMPLE_D = 61157
 DAQCHARGESAMPLE = 61158
+TRIGGER = 0
+FADC_ANALOG = 1
+FADC_INTERSIL = 2
 
 
 
@@ -1445,6 +1475,106 @@ _NECTARCAM_SPECIFIC_EVT = _descriptor.Descriptor(
 )
 
 
+_DIGICAMCONFIG = _descriptor.Descriptor(
+  name='DigicamConfig',
+  full_name='DataModel.DigicamConfig',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='protocol_vers', full_name='DataModel.DigicamConfig.protocol_vers', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='sn', full_name='DataModel.DigicamConfig.sn', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='hv', full_name='DataModel.DigicamConfig.hv', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gateware_rev', full_name='DataModel.DigicamConfig.gateware_rev', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gateware_vers', full_name='DataModel.DigicamConfig.gateware_vers', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gateware_code', full_name='DataModel.DigicamConfig.gateware_code', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gateware_card_type', full_name='DataModel.DigicamConfig.gateware_card_type', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='firmware_rev', full_name='DataModel.DigicamConfig.firmware_rev', index=7,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='firmware_vers', full_name='DataModel.DigicamConfig.firmware_vers', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='firmware_code', full_name='DataModel.DigicamConfig.firmware_code', index=9,
+      number=10, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='firmware_card_type', full_name='DataModel.DigicamConfig.firmware_card_type', index=10,
+      number=11, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3789,
+  serialized_end=4274,
+)
+
+
 _CAMERAEVENT = _descriptor.Descriptor(
   name='CameraEvent',
   full_name='DataModel.CameraEvent',
@@ -1705,259 +1835,266 @@ _CAMERAEVENT = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='gps_status', full_name='DataModel.CameraEvent.gps_status', index=36,
+      name='digicam_config', full_name='DataModel.CameraEvent.digicam_config', index=36,
+      number=39, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='gps_status', full_name='DataModel.CameraEvent.gps_status', index=37,
       number=51, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='time_utc', full_name='DataModel.CameraEvent.time_utc', index=37,
+      name='time_utc', full_name='DataModel.CameraEvent.time_utc', index=38,
       number=52, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='time_ns', full_name='DataModel.CameraEvent.time_ns', index=38,
+      name='time_ns', full_name='DataModel.CameraEvent.time_ns', index=39,
       number=53, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='time_s', full_name='DataModel.CameraEvent.time_s', index=39,
+      name='time_s', full_name='DataModel.CameraEvent.time_s', index=40,
       number=54, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='flags', full_name='DataModel.CameraEvent.flags', index=40,
+      name='flags', full_name='DataModel.CameraEvent.flags', index=41,
       number=55, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ssc', full_name='DataModel.CameraEvent.ssc', index=41,
+      name='ssc', full_name='DataModel.CameraEvent.ssc', index=42,
       number=56, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pkt_len', full_name='DataModel.CameraEvent.pkt_len', index=42,
+      name='pkt_len', full_name='DataModel.CameraEvent.pkt_len', index=43,
       number=57, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='muon_tag', full_name='DataModel.CameraEvent.muon_tag', index=43,
+      name='muon_tag', full_name='DataModel.CameraEvent.muon_tag', index=44,
       number=58, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='trpdm', full_name='DataModel.CameraEvent.trpdm', index=44,
+      name='trpdm', full_name='DataModel.CameraEvent.trpdm', index=45,
       number=59, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmdt', full_name='DataModel.CameraEvent.pdmdt', index=45,
+      name='pdmdt', full_name='DataModel.CameraEvent.pdmdt', index=46,
       number=60, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmt', full_name='DataModel.CameraEvent.pdmt', index=46,
+      name='pdmt', full_name='DataModel.CameraEvent.pdmt', index=47,
       number=61, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='daqtime', full_name='DataModel.CameraEvent.daqtime', index=47,
+      name='daqtime', full_name='DataModel.CameraEvent.daqtime', index=48,
       number=62, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ptm', full_name='DataModel.CameraEvent.ptm', index=48,
+      name='ptm', full_name='DataModel.CameraEvent.ptm', index=49,
       number=63, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='trpxlid', full_name='DataModel.CameraEvent.trpxlid', index=49,
+      name='trpxlid', full_name='DataModel.CameraEvent.trpxlid', index=50,
       number=64, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmdac', full_name='DataModel.CameraEvent.pdmdac', index=50,
+      name='pdmdac', full_name='DataModel.CameraEvent.pdmdac', index=51,
       number=65, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmpc', full_name='DataModel.CameraEvent.pdmpc', index=51,
+      name='pdmpc', full_name='DataModel.CameraEvent.pdmpc', index=52,
       number=66, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmhi', full_name='DataModel.CameraEvent.pdmhi', index=52,
+      name='pdmhi', full_name='DataModel.CameraEvent.pdmhi', index=53,
       number=67, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmlo', full_name='DataModel.CameraEvent.pdmlo', index=53,
+      name='pdmlo', full_name='DataModel.CameraEvent.pdmlo', index=54,
       number=68, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='daqmode', full_name='DataModel.CameraEvent.daqmode', index=54,
+      name='daqmode', full_name='DataModel.CameraEvent.daqmode', index=55,
       number=69, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='varsamp', full_name='DataModel.CameraEvent.varsamp', index=55,
+      name='varsamp', full_name='DataModel.CameraEvent.varsamp', index=56,
       number=70, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmsum', full_name='DataModel.CameraEvent.pdmsum', index=56,
+      name='pdmsum', full_name='DataModel.CameraEvent.pdmsum', index=57,
       number=71, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pdmsumsq', full_name='DataModel.CameraEvent.pdmsumsq', index=57,
+      name='pdmsumsq', full_name='DataModel.CameraEvent.pdmsumsq', index=58,
       number=72, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pulser', full_name='DataModel.CameraEvent.pulser', index=58,
+      name='pulser', full_name='DataModel.CameraEvent.pulser', index=59,
       number=80, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ftimeoffset', full_name='DataModel.CameraEvent.ftimeoffset', index=59,
+      name='ftimeoffset', full_name='DataModel.CameraEvent.ftimeoffset', index=60,
       number=81, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ftimestamp', full_name='DataModel.CameraEvent.ftimestamp', index=60,
+      name='ftimestamp', full_name='DataModel.CameraEvent.ftimestamp', index=61,
       number=82, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='run_id', full_name='DataModel.CameraEvent.run_id', index=61,
+      name='run_id', full_name='DataModel.CameraEvent.run_id', index=62,
       number=512, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='event_id', full_name='DataModel.CameraEvent.event_id', index=62,
+      name='event_id', full_name='DataModel.CameraEvent.event_id', index=63,
       number=513, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='tel_event_id', full_name='DataModel.CameraEvent.tel_event_id', index=63,
+      name='tel_event_id', full_name='DataModel.CameraEvent.tel_event_id', index=64,
       number=514, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='trigger_time_s', full_name='DataModel.CameraEvent.trigger_time_s', index=64,
+      name='trigger_time_s', full_name='DataModel.CameraEvent.trigger_time_s', index=65,
       number=515, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='trigger_time_qns', full_name='DataModel.CameraEvent.trigger_time_qns', index=65,
+      name='trigger_time_qns', full_name='DataModel.CameraEvent.trigger_time_qns', index=66,
       number=516, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='trigger_type', full_name='DataModel.CameraEvent.trigger_type', index=66,
+      name='trigger_type', full_name='DataModel.CameraEvent.trigger_type', index=67,
       number=517, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='waveform', full_name='DataModel.CameraEvent.waveform', index=67,
+      name='waveform', full_name='DataModel.CameraEvent.waveform', index=68,
       number=518, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pixel_status', full_name='DataModel.CameraEvent.pixel_status', index=68,
+      name='pixel_status', full_name='DataModel.CameraEvent.pixel_status', index=69,
       number=519, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='ped_sub_id', full_name='DataModel.CameraEvent.ped_sub_id', index=69,
+      name='ped_sub_id', full_name='DataModel.CameraEvent.ped_sub_id', index=70,
       number=520, type=6, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='nectarcam', full_name='DataModel.CameraEvent.nectarcam', index=70,
+      name='nectarcam', full_name='DataModel.CameraEvent.nectarcam', index=71,
       number=521, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='lstcam', full_name='DataModel.CameraEvent.lstcam', index=71,
+      name='lstcam', full_name='DataModel.CameraEvent.lstcam', index=72,
       number=522, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='num_gains', full_name='DataModel.CameraEvent.num_gains', index=72,
+      name='num_gains', full_name='DataModel.CameraEvent.num_gains', index=73,
       number=1024, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -1974,8 +2111,8 @@ _CAMERAEVENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3789,
-  serialized_end=6305,
+  serialized_start=4277,
+  serialized_end=6843,
 )
 
 
@@ -2004,8 +2141,8 @@ _PACKETLIBDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6307,
-  serialized_end=6336,
+  serialized_start=6845,
+  serialized_end=6874,
 )
 
 
@@ -2062,8 +2199,8 @@ _SHOWERPARAMS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6338,
-  serialized_end=6443,
+  serialized_start=6876,
+  serialized_end=6981,
 )
 
 
@@ -2106,8 +2243,8 @@ _MCCALIBRATIONCHANNEL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6446,
-  serialized_end=6584,
+  serialized_start=6984,
+  serialized_end=7122,
 )
 
 
@@ -2164,8 +2301,8 @@ _MCCALIBRATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6587,
-  serialized_end=6792,
+  serialized_start=7125,
+  serialized_end=7330,
 )
 
 
@@ -2208,8 +2345,8 @@ _ARRAYEVENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6795,
-  serialized_end=6945,
+  serialized_start=7333,
+  serialized_end=7483,
 )
 
 _WAVEFORMDATA.fields_by_name['samples'].message_type = CoreMessages_pb2._ANYARRAY
@@ -2261,6 +2398,17 @@ _NECTARCAM_SPECIFIC_EVT.fields_by_name['tib_data'].message_type = CoreMessages_p
 _NECTARCAM_SPECIFIC_EVT.fields_by_name['cdts_data'].message_type = CoreMessages_pb2._ANYARRAY
 _NECTARCAM_SPECIFIC_EVT.fields_by_name['swat_data'].message_type = CoreMessages_pb2._ANYARRAY
 _NECTARCAM_SPECIFIC_EVT.fields_by_name['counters'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['protocol_vers'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['sn'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['hv'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['gateware_rev'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['gateware_vers'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['gateware_code'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['gateware_card_type'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['firmware_rev'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['firmware_vers'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['firmware_code'].message_type = CoreMessages_pb2._ANYARRAY
+_DIGICAMCONFIG.fields_by_name['firmware_card_type'].message_type = CoreMessages_pb2._ANYARRAY
 _CAMERAEVENT.fields_by_name['eventType'].enum_type = _EVENTTYPE
 _CAMERAEVENT.fields_by_name['hiGain'].message_type = _PIXELSCHANNEL
 _CAMERAEVENT.fields_by_name['loGain'].message_type = _PIXELSCHANNEL
@@ -2285,6 +2433,7 @@ _CAMERAEVENT.fields_by_name['trigger_input_traces'].message_type = CoreMessages_
 _CAMERAEVENT.fields_by_name['trigger_output_patch7'].message_type = CoreMessages_pb2._ANYARRAY
 _CAMERAEVENT.fields_by_name['trigger_output_patch19'].message_type = CoreMessages_pb2._ANYARRAY
 _CAMERAEVENT.fields_by_name['trigger_output_muon'].message_type = CoreMessages_pb2._ANYARRAY
+_CAMERAEVENT.fields_by_name['digicam_config'].message_type = _DIGICAMCONFIG
 _CAMERAEVENT.fields_by_name['time_utc'].message_type = CoreMessages_pb2._ANYARRAY
 _CAMERAEVENT.fields_by_name['trpdm'].message_type = CoreMessages_pb2._ANYARRAY
 _CAMERAEVENT.fields_by_name['pdmdt'].message_type = CoreMessages_pb2._ANYARRAY
@@ -2337,6 +2486,7 @@ DESCRIPTOR.message_types_by_name['CameraLocation'] = _CAMERALOCATION
 DESCRIPTOR.message_types_by_name['CameraGeometry'] = _CAMERAGEOMETRY
 DESCRIPTOR.message_types_by_name['lstcam_specific_evt'] = _LSTCAM_SPECIFIC_EVT
 DESCRIPTOR.message_types_by_name['nectarcam_specific_evt'] = _NECTARCAM_SPECIFIC_EVT
+DESCRIPTOR.message_types_by_name['DigicamConfig'] = _DIGICAMCONFIG
 DESCRIPTOR.message_types_by_name['CameraEvent'] = _CAMERAEVENT
 DESCRIPTOR.message_types_by_name['PacketLibData'] = _PACKETLIBDATA
 DESCRIPTOR.message_types_by_name['ShowerParams'] = _SHOWERPARAMS
@@ -2347,6 +2497,7 @@ DESCRIPTOR.enum_types_by_name['ImgReducMode'] = _IMGREDUCMODE
 DESCRIPTOR.enum_types_by_name['EvtsReducMode'] = _EVTSREDUCMODE
 DESCRIPTOR.enum_types_by_name['EventType'] = _EVENTTYPE
 DESCRIPTOR.enum_types_by_name['AcquisitionMode'] = _ACQUISITIONMODE
+DESCRIPTOR.enum_types_by_name['DigicamCardType'] = _DIGICAMCARDTYPE
 
 WaveFormData = _reflection.GeneratedProtocolMessageType('WaveFormData', (_message.Message,), dict(
   DESCRIPTOR = _WAVEFORMDATA,
@@ -2501,6 +2652,13 @@ nectarcam_specific_evt = _reflection.GeneratedProtocolMessageType('nectarcam_spe
   # @@protoc_insertion_point(class_scope:DataModel.nectarcam_specific_evt)
   ))
 _sym_db.RegisterMessage(nectarcam_specific_evt)
+
+DigicamConfig = _reflection.GeneratedProtocolMessageType('DigicamConfig', (_message.Message,), dict(
+  DESCRIPTOR = _DIGICAMCONFIG,
+  __module__ = 'L0_pb2'
+  # @@protoc_insertion_point(class_scope:DataModel.DigicamConfig)
+  ))
+_sym_db.RegisterMessage(DigicamConfig)
 
 CameraEvent = _reflection.GeneratedProtocolMessageType('CameraEvent', (_message.Message,), dict(
   DESCRIPTOR = _CAMERAEVENT,

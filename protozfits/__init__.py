@@ -5,6 +5,8 @@ from warnings import warn
 import numpy as np
 from astropy.io import fits
 
+import sys
+
 # Beware:
 #     for some reason rawzfitsreader needs to be imported before
 #     GeneratedProtocolMessageType
@@ -130,13 +132,16 @@ class Table:
     def __iter__(self):
         return self
 
+#FIXME There is a bug here. For some reason, the EOFError raised by readEvent
+#is first a system error here, and triggers an EOFError only later on
+#I am catching everything now to discard the EOFError
     def __next__(self):
         row = self.__pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent(self.__file_id))
-        except EOFError:
+        except: #Exception as e: #EOFError:
             raise StopIteration
-
+            
         if not self.pure_protobuf:
             return make_namedtuple(row)
         else:
@@ -235,8 +240,22 @@ class MultiZFitsFiles:
             self._eof[path] = False
             try:
                 self._events[path] = next(self._files[path]) 
-            except EOFError:
+            except StopIteration:
                 self.__eof[path] = True
+                
+                        
+    def __len__(self):
+        total_length=0
+        for table in self._events:
+            total_length += table.__desc.znaxis2
+            
+        return total_length
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.next_event();
                 
     def next_event(self):
         #check for the minimal event id
@@ -255,14 +274,14 @@ class MultiZFitsFiles:
                 min_path=path
         
         if min_event_id == -1:
-            raise eofError 
+            raise StopIteration 
         
         #return the minimal event id
         to_return = self._events[min_path]
         try:
             self._events[min_path] = next(self._files[min_path])
-        except EOFError:
-            self.__eof[min_path] = True
+        except StopIteration:
+            self._eof[min_path] = True
             
         return to_return;
         

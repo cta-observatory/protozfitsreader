@@ -10,7 +10,6 @@ from astropy.io import fits
 #     GeneratedProtocolMessageType
 from . import rawzfitsreader
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
-from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 
 
@@ -24,29 +23,123 @@ __version__ = resource_string('protozfits', 'VERSION').decode().strip()
 
 __all__ = [
     'File',
-    'make_namedtuple',
     'any_array_to_numpy',
 ]
 
-pb2_modules = {
-    'L0': L0_pb2,
-    'DataModel': L0_pb2,
-    'R1': R1_pb2,
-    'R1_DigiCam': R1_DigiCam_pb2,
-    'R1_NectarCam': R1_NectarCam_pb2,
-    'R1_LSTCam': R1_LSTCam_pb2,
-}
+pb2_modules = [
+    L0_pb2,
+    R1_pb2,
+    R1_DigiCam_pb2,
+    R1_NectarCam_pb2,
+    R1_LSTCam_pb2,
+]
+
+klasses = {}
+
+
+def make_convert_any_array(fd):
+    def convert_any_array(self):
+        return any_array_to_numpy(getattr(self._message, fd.name))
+    return convert_any_array
+
+
+def make_wrap_in_class(fd):
+    def wrap_in_class(self):
+        klass = klasses[fd.message_type.full_name]
+        return klass(getattr(self._message, fd.name))
+    return wrap_in_class
+
+
+def make_return_normal_field(fd):
+    def return_normal_field(self):
+        return getattr(self._message, fd.name)
+    return return_normal_field
+
+
+def make_return_enum_field(field):
+    et = field.enum_type
+    enum = Enum(
+        field.name,
+        zip(et.values_by_name, et.values_by_number)
+    )
+
+    def return_enum_field(self):
+        return enum(getattr(self._message, field.name))
+    return return_enum_field
+
+
+def make__repr__(msg):
+    fields = [n for n in msg.DESCRIPTOR.fields_by_name]
+
+    def nice_repr(self):
+        '''a nicer repr for messages containing big numpy arrays'''
+        old_print_options = np.get_printoptions()
+        np.set_printoptions(precision=3, threshold=50, edgeitems=2)
+        delim = '\n    '
+        s = self.__class__.__name__ + '(' + delim
+
+        s += delim.join([
+            '{0}={1}'.format(
+                key,
+                repr(
+                    getattr(self, key)
+                ).replace('\n', delim)
+            )
+            for key in fields
+        ])
+        s += ')'
+        np.set_printoptions(**old_print_options)
+        return s
+
+    return nice_repr
+
+
+def message_to_class(msg):
+    d = msg.DESCRIPTOR
+    fields = {}
+
+    def __init__(self, message):
+        self._message = message
+    fields['__init__'] = __init__
+    fields['__repr__'] = make__repr__(msg)
+
+    for fd in d.fields:
+        if fd.enum_type is not None:
+            fields[fd.name] = property(fget=make_return_enum_field(fd))
+        elif fd.message_type is not None:
+            if fd.message_type.name == 'AnyArray':
+                fields[fd.name] = property(fget=make_convert_any_array(fd))
+            else:
+                fields[fd.name] = property(fget=make_wrap_in_class(fd))
+        else:
+            fields[fd.name] = property(fget=make_return_normal_field(fd))
+
+    return type(d.full_name, (object, ), fields)
+
+for module in pb2_modules:
+    for name in dir(module):
+        thing = getattr(module, name)
+        if isinstance(thing, GeneratedProtocolMessageType):
+            klasses[thing.DESCRIPTOR.full_name] = message_to_class(thing)
 
 
 def get_class_from_PBFHEAD(pbfhead):
-    module_name, class_name = pbfhead.split('.')
-    return getattr(pb2_modules[module_name], class_name)
+    package, msg_name = pbfhead.split('.')
+    for module in pb2_modules:
+        if module.DESCRIPTOR.package == package:
+            try:
+                return getattr(module, msg_name)
+            except Exception as e:
+                print(e)
+    raise KeyError('Could not find {} in package: {}'.format(
+        msg_name, package)
+    )
 
 
 class File:
     instances = 0
 
-    def __init__(self, path, pure_protobuf=False):
+    def __init__(self, path):
         File.instances += 1
         if File.instances > 1:
             warn('''\
@@ -57,7 +150,7 @@ class File:
         Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
-            self.__dict__[btd.extname] = Table(btd, pure_protobuf)
+            self.__dict__[btd.extname] = Table(btd)
 
     def __repr__(self):
         return "%s(%r)" % (
@@ -121,14 +214,14 @@ class Table:
     They open it.
     '''
 
-    def __init__(self, desc, pure_protobuf=False):
+    def __init__(self, desc):
         '''
         desc: BinTableDescription
         '''
         self.__desc = desc
         self.__pbuf_class = get_class_from_PBFHEAD(desc.pbfhead)
+        self.__klass = klasses[desc.pbfhead]
         self.header = self.__desc.header
-        self.pure_protobuf = pure_protobuf
 
     def __len__(self):
         return self.__desc.znaxis2
@@ -143,99 +236,12 @@ class Table:
         row = self.__pbuf_class()
         try:
             row.ParseFromString(rawzfitsreader.readEvent())
+            return self.__klass(row)
         except EOFError:
             raise StopIteration
-
-        if not self.pure_protobuf:
-            return make_namedtuple(row)
-        else:
-            return row
 
     def __repr__(self):
         return '{cn}({d.znaxis2}x{d.pbfhead})'.format(
             cn=self.__class__.__name__,
             d=self.__desc
         )
-
-
-def make_namedtuple(message):
-    namedtuple_class = named_tuples[message.__class__]
-    return namedtuple_class._make(
-        message_getitem(message, name)
-        for name in namedtuple_class._fields
-    )
-
-
-def message_getitem(msg, name):
-    value = msg.__getattribute__(name)
-    if isinstance(value, AnyArray):
-        value = any_array_to_numpy(value)
-    elif (msg.__class__, name) in enum_types:
-        value = enum_types[(msg.__class__, name)](value)
-    elif type(value) in named_tuples:
-        value = make_namedtuple(value)
-    return value
-
-
-messages = set()
-for module in pb2_modules.values():
-    for name in dir(module):
-        thing = getattr(module, name)
-        if isinstance(thing, GeneratedProtocolMessageType):
-            messages.add(thing)
-
-
-def namedtuple_repr2(self):
-    '''a nicer repr for big namedtuples containing big numpy arrays'''
-    old_print_options = np.get_printoptions()
-    np.set_printoptions(precision=3, threshold=50, edgeitems=2)
-    delim = '\n    '
-    s = self.__class__.__name__ + '(' + delim
-
-    s += delim.join([
-        '{0}={1}'.format(
-            key,
-            repr(
-                getattr(self, key)
-            ).replace('\n', delim)
-        )
-        for key in self._fields
-    ])
-    s += ')'
-    np.set_printoptions(**old_print_options)
-    return s
-
-
-def nt(m):
-    '''create namedtuple class from protobuf.message type'''
-    _nt = namedtuple(
-        m.__name__,
-        list(m.DESCRIPTOR.fields_by_name)
-    )
-    _nt.__repr__ = namedtuple_repr2
-    return _nt
-
-
-named_tuples = {m: nt(m) for m in messages}
-
-enum_types = {}
-for m in messages:
-    d = m.DESCRIPTOR
-    for field in d.fields:
-        if field.enum_type is not None:
-            et = field.enum_type
-            enum = Enum(
-                field.name,
-                zip(et.values_by_name, et.values_by_number)
-            )
-            enum_types[(m, field.name)] = enum
-
-
-def rewind_table():
-    # rawzfitsreader.rewindTable() has a bug at the moment,
-    # it always throws a SystemError
-    # we let that one pass
-    try:
-        rawzfitsreader.rewindTable()
-    except SystemError:
-        pass

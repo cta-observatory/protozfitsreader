@@ -1,14 +1,13 @@
 from pkg_resources import resource_string
 from enum import Enum
 from collections import namedtuple
-from warnings import warn
 import numpy as np
 from astropy.io import fits
 
 # Beware:
-#     for some reason rawzfitsreader needs to be imported before
+#     for some reason rawzfits needs to be imported before
 #     GeneratedProtocolMessageType
-from . import rawzfitsreader
+from . import rawzfits
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
@@ -42,12 +41,10 @@ def get_class_from_PBFHEAD(pbfhead):
     module_name, class_name = pbfhead.split('.')
     return getattr(pb2_modules[module_name], class_name)
 
+
 class File:
-    instances = 0
 
     def __init__(self, path, pure_protobuf=False):
-        File.instances += 1
-        Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
             self.__dict__[btd.extname] = Table(btd, pure_protobuf)
@@ -65,7 +62,7 @@ class File:
         self.close()
 
     def close(self):
-        File.instances -= 1
+        pass
 
     def __del__(self):
         self.close()
@@ -105,41 +102,31 @@ def detect_bintables(path):
 class Table:
     '''Iterable Table
     '''
-    __last_opened = None
-    '''the rawzfitsreader has a "bug" which is: It cannot have two open
-    hdus. So when the File would open all N tables at construction time,
-    every `rawzfitsreader.readEvent()` would act on the last opened table.
-
-    So the Tables remember which hdu was opened last, and if it was not them.
-    They open it.
-    '''
 
     def __init__(self, desc, pure_protobuf=False):
         '''
         desc: BinTableDescription
         '''
         self.__desc = desc
+        self.protobuf_i_fits = rawzfits.ProtobufIFits(
+            self.__desc.path,
+            self.__desc.extname
+        )
         self.__pbuf_class = get_class_from_PBFHEAD(desc.pbfhead)
         self.header = self.__desc.header
         self.pure_protobuf = pure_protobuf
-        self.__file_id = rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
-        
+
     def __len__(self):
         return self.__desc.znaxis2
 
     def __iter__(self):
+        self.protobuf_i_fits.rewind()
         return self
 
-#FIXME There is a bug here. For some reason, the EOFError raised by readEvent
-#is first a system error here, and triggers an EOFError only later on
-#I am catching everything now to discard the EOFError
     def __next__(self):
         row = self.__pbuf_class()
-        try:
-            row.ParseFromString(rawzfitsreader.readEvent(self.__file_id))
-        except: #Exception as e: #EOFError:
-            raise StopIteration
-            
+        row.ParseFromString(self.protobuf_i_fits.read_event())
+
         if not self.pure_protobuf:
             return make_namedtuple(row)
         else:
@@ -226,70 +213,44 @@ for m in messages:
 
 
 class MultiZFitsFiles:
-    
+
     def __init__(self, path):
-        self._paths=path.split(':')
+        self._paths = path.split(':')
         self._files = {}
-        self._eof = {}
         self._events = {}
-        
+
         for path in self._paths:
             self._files[path] = File(path).Events
-            self._eof[path] = False
             try:
-                self._events[path] = next(self._files[path]) 
+                self._events[path] = next(self._files[path])
             except StopIteration:
-                self.__eof[path] = True
-                
-                        
+                pass
+
     def __len__(self):
-        total_length=0
-        for table in self._events:
-            total_length += table.__desc.znaxis2
-            
+        total_length = sum([len(table) for table in self._events])
         return total_length
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        return self.next_event();
-                
+        return self.next_event()
+
     def next_event(self):
-        #check for the minimal event id
-        min_event_id = -1; 
-        min_path=""
-        for path in self._paths:
-            if self._eof[path] == True:
-                continue
-            
-            if min_event_id == -1:
-                min_event_id = self._events[path].event_id
-                min_path=path
-                
-            if min_event_id > self._events[path].event_id:
-                min_event_id = self._events[path].event_id
-                min_path=path
-        
-        if min_event_id == -1:
-            raise StopIteration 
-        
-        #return the minimal event id
+        # check for the minimal event id
+        min_path = min(
+            self._events.items(),
+            key=lambda item: item[1].event_id,
+            default=None
+        )[0]
+        if min_path is None:
+            raise StopIteration
+
+        # return the minimal event id
         to_return = self._events[min_path]
         try:
             self._events[min_path] = next(self._files[min_path])
         except StopIteration:
-            self._eof[min_path] = True
-            
-        return to_return;
-        
+            del self._events[min_path]
 
-
-def rewind_table():
-    # rawzfitsreader.rewindTable() has a bug at the moment,
-    # it always throws a SystemError
-    # we let that one pass
-    try:
-        rawzfitsreader.rewindTable()
-    except SystemError:
-        pass
+        return to_return

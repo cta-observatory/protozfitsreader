@@ -255,3 +255,9 @@ class MultiZFitsFiles:
             del self._events[min_path]
 
         return to_return
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        del self._files

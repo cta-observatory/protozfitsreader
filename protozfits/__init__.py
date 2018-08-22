@@ -215,6 +215,20 @@ for m in messages:
 
 
 class MultiZFitsFiles:
+    '''
+    In LST they have multiple file writers, which save the incoming events
+    into different files, so in case one has 10 events and 4 files,
+    it might look like this:
+
+        f1 = [0, 4]
+        f2 = [1, 5, 8]
+        f3 = [2, 6, 9]
+        f4 = [3, 7]
+
+    The task of MultiZFitsFiles is to open these 4 files simultaneously
+    and return the events in the correct order, so the user does not really
+    have to know about these existence of 4 files.
+    '''
 
     def __init__(self, paths):
         self._files = {}

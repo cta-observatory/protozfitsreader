@@ -214,12 +214,11 @@ for m in messages:
 
 class MultiZFitsFiles:
 
-    def __init__(self, path):
-        self._paths = path.split(':')
+    def __init__(self, paths):
         self._files = {}
         self._events = {}
 
-        for path in self._paths:
+        for path in paths:
             self._files[path] = File(path).Events
             try:
                 self._events[path] = next(self._files[path])

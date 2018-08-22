@@ -46,87 +46,111 @@ def to_numpy(a):
 
 
 def test_import_only():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
 
 def test_import_and_open():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
     relative_test_file_path = os.path.relpath(example_file_path)
-    rawzfitsreader.open(relative_test_file_path + ':Events')
+    rawzfits.ProtobufIFits(
+        fname=relative_test_file_path,
+        tablename="Events"
+    )
 
 
 def test_import_open_and_read():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
     relative_test_file_path = os.path.relpath(example_file_path)
-    rawzfitsreader.open(relative_test_file_path + ':Events')
-    raw = rawzfitsreader.readEvent()
+    ifits = rawzfits.ProtobufIFits(
+        fname=relative_test_file_path,
+        tablename="Events"
+    )
+    raw = ifits.read_event()
 
 
 def test_import_open_read_and_parse():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
     relative_test_file_path = os.path.relpath(example_file_path)
-    rawzfitsreader.open(relative_test_file_path + ':Events')
-    raw = rawzfitsreader.readEvent()
+    ifits = rawzfits.ProtobufIFits(
+        fname=relative_test_file_path,
+        tablename="Events"
+    )
+    raw = ifits.read_event()
 
     event = L0_pb2.CameraEvent()
     event.ParseFromString(raw)
 
 
 def test_rawreader_can_work_with_relative_path():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
     relative_test_file_path = os.path.relpath(example_file_path)
-    rawzfitsreader.open(relative_test_file_path + ':Events')
-    raw = rawzfitsreader.readEvent()
-    assert rawzfitsreader.getNumRows() == EVENTS_IN_EXAMPLE_FILE
+    ifits = rawzfits.ProtobufIFits(
+        fname=relative_test_file_path,
+        tablename="Events"
+    )
+    assert ifits.num_rows() == EVENTS_IN_EXAMPLE_FILE
+
+    raw = ifits.read_event()
 
     event = L0_pb2.CameraEvent()
     event.ParseFromString(raw)
 
 
-@pytest.mark.skip(reason="This is currently SegFaulting")
 def test_examplefile_has_no_runheader():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
-    rawzfitsreader.open(example_file_path + ':RunHeader')
+    with pytest.raises(RuntimeError):
+        ifits = rawzfits.ProtobufIFits(
+            fname=example_file_path,
+            tablename="RunHeader"
+        )
+        assert ifits.num_rows() == EVENTS_IN_EXAMPLE_FILE
 
-    raw = rawzfitsreader.readEvent()
-    assert raw < 0
+        raw = ifits.read_event()
+        assert raw < 0
 
-    header = L0_pb2.CameraRunHeader()
-    with pytest.raises(TypeError):
-        header.ParseFromString(raw)
+        header = L0_pb2.CameraRunHeader()
+        with pytest.raises(TypeError):
+            header.ParseFromString(raw)
 
 
 def test_rawreader_can_work_with_absolute_path():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
-    rawzfitsreader.open(example_file_path + ':Events')
-    raw = rawzfitsreader.readEvent()
-    assert rawzfitsreader.getNumRows() == EVENTS_IN_EXAMPLE_FILE
+    ifits = rawzfits.ProtobufIFits(
+        fname=example_file_path,
+        tablename="Events"
+    )
+    assert ifits.num_rows() == EVENTS_IN_EXAMPLE_FILE
+
+    raw = ifits.read_event()
 
     event = L0_pb2.CameraEvent()
     event.ParseFromString(raw)
 
 
 def test_rawreader_can_iterate():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
+    ifits = rawzfits.ProtobufIFits(
+        fname=example_file_path,
+        tablename="Events"
+    )
+    for i in range(ifits.num_rows()):
         event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
+        event.ParseFromString(ifits.read_event())
 
 
 #  We know the iteration part works so we do not want to
@@ -134,13 +158,16 @@ def test_rawreader_can_iterate():
 
 
 def iterate():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
+    ifits = rawzfits.ProtobufIFits(
+        fname=example_file_path,
+        tablename="Events"
+    )
+    for i in range(ifits.num_rows()):
         event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
+        event.ParseFromString(ifits.read_event())
         yield i, event
 
 
@@ -278,17 +305,20 @@ def test_trigger_output_patch19():
 
 
 def test_no_crash_when_iterating_too_far():
-    from protozfits import rawzfitsreader
+    from protozfits import rawzfits
     from protozfits import L0_pb2
 
-    rawzfitsreader.open(example_file_path + ':Events')
-    for i in range(rawzfitsreader.getNumRows()):
+    ifits = rawzfits.ProtobufIFits(
+        fname=example_file_path,
+        tablename="Events"
+    )
+    for i in range(ifits.num_rows()):
         event = L0_pb2.CameraEvent()
-        event.ParseFromString(rawzfitsreader.readEvent())
+        event.ParseFromString(ifits.read_event())
 
     # At this point we iterated through the entire file.
     # In version 0.43 we got a crash (seg fault or so) when iterating too
     # far. This test should ensure this behaviour is fixed in 0.44
 
-    with pytest.raises(EOFError):
-        rawzfitsreader.readEvent()
+    with pytest.raises(StopIteration):
+        ifits.read_event()

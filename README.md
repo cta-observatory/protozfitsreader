@@ -1,10 +1,6 @@
 # Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
 
-## Usage example:
-
-**Note**: At the moment multiple open files at the same time are not supported.
-
 
 If you are just starting with proto-z-fits files and would like to explore the file contents, try this:
 
@@ -142,8 +138,8 @@ CameraEvent(
 # [...]
 ```
 ### Multiple input files reading in parallel
-Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field. 
-For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the 
+Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field.
+For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the
 same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
 ```
 >>> from protozfits import MultiZFitsFiles
@@ -270,20 +266,21 @@ And then you'll have to (put it in your .bashrc for example)
 
 - Missing GLIBC version, message along the lines of:
 
-    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20' not found 
+    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20` not found
 
-Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly. 
-Solution: add <path_to_anaconda>/envs/<your_environment_name>/lib/ to your LD_LIBRARY_PATH
+Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly.
+Solution: add `<path_to_anaconda>/envs/<your_environment_name>/lib/` to your LD_LIBRARY_PATH
 
-- Cannot import _message, message along the lines of:
-
+- Cannot import `_message`, message along the lines of:
+```
     from google.protobuf.pyext import _message
-    ImportError: cannot import name '_message' 
+    ImportError: cannot import name _message
+```
+Caused by missing protobuf for python (or badly installed).
+Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it,
+or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version.
+In my case the conda install did not work (no idea why), while the pip one did.
 
-Caused by missing protobuf for python (or badly installed). 
-Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it, 
-or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version. 
-In my case the conda install did not work (no idea why), while the pip one did. 
 ### Miniconda & Faster installation?
 
 If you use **Ana**conda this is not interesting for you, but if you use **Mini**conda,
@@ -295,7 +292,7 @@ But `pip install <some package>` is sometimes much slower than `conda install <s
 Two of the requirements of this package are `numpy` and `protobuf`.
 We think installing them with `pip` is very slow, so we recommend to
 
-    conda install numpy protobuf astropy
+    conda install numpy astropy
 
 before `pip`-installing this package for your convenience.
 

@@ -39,16 +39,39 @@ we opened above like this (replace RunHeader with CameraConfig for LST data):
 
 ### Getting an event
 
-There is no random access to events, like this:
-
-    event_17 = file.Events[17]  # <<--- this does not work, yet.
-
-To get an event you'll iterate over the `Table`:
+Usually people just iterate over a whole `Table` like this:
 ```python
 for event in file.Events:
     # do something with the event
     pass
 ```
+
+But if you happen to know exactly which event you want, you can also
+directly get an event, like this:
+```python
+event_17 = file.Events[17]
+```
+
+You can also get a range of events, like this:
+```python
+for event in file.Events[100:200]:
+    # do something events 100 until 200
+    pass
+```
+
+It is not yet possible to specify negative indices, like `file.Events[:-10]`
+does *not work*.
+
+If you happen to have a list or any iterable or a generator with event ids
+you are interested in you can get the events in question like this:
+
+```python
+interesting_event_ids = range(100, 200, 3)
+for event in file.Events[interesting_event_ids]:
+    # do something with intesting events
+    pass
+```
+
 
 For now, I will just get the next event
 ```

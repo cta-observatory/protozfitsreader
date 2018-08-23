@@ -15,6 +15,7 @@ example_file_path = pkg_resources.resource_filename(
 EVENTS_IN_EXAMPLE_FILE = 10
 EXPECTED_NUMBER_OF_PIXELS = 1296
 EXPECTED_NUMBER_OF_SAMPLES = 50
+FIRST_EVENT_NUMBER = 97750287
 
 
 def to_numpy(a):
@@ -151,6 +152,21 @@ def test_rawreader_can_iterate():
     for i in range(ifits.num_rows()):
         event = L0_pb2.CameraEvent()
         event.ParseFromString(ifits.read_event())
+
+
+def test_ProtobufIFits_read_a_given_event():
+    from protozfits import rawzfits
+    from protozfits import L0_pb2
+
+    ifits = rawzfits.ProtobufIFits(
+        fname=example_file_path,
+        tablename="Events"
+    )
+
+    for random_id in [7, 1, 10, 2]:
+        event = L0_pb2.CameraEvent()
+        event.ParseFromString(ifits.read_a_given_event(random_id))
+        assert event.eventNumber == FIRST_EVENT_NUMBER + random_id - 1
 
 
 #  We know the iteration part works so we do not want to

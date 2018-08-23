@@ -3,6 +3,7 @@ from enum import Enum
 from collections import namedtuple
 import numpy as np
 from astropy.io import fits
+import numbers
 
 # Beware:
 #     for some reason rawzfits needs to be imported before
@@ -128,7 +129,9 @@ class Table:
     def __next__(self):
         row = self.__pbuf_class()
         row.ParseFromString(self.protobuf_i_fits.read_event())
+        return self.convert(row)
 
+    def convert(self, row):
         if not self.pure_protobuf:
             return make_namedtuple(row)
         else:
@@ -139,6 +142,37 @@ class Table:
             cn=self.__class__.__name__,
             d=self.__desc
         )
+
+    def __getitem__(self, item):
+        # getitem can get numbers, slices or iterables of numbers
+        if isinstance(item, numbers.Integral):
+            return self.__read_a_given_event(item)
+        elif isinstance(item, slice):
+            def inner():
+                for event_id in range(
+                    item.start or 0,
+                    item.stop or len(self),
+                    item.step or 1
+                ):
+                    yield self.__read_a_given_event(event_id)
+            return inner()
+        else:
+            # I assume we got a iterable of event_ids
+            def inner():
+                for event_id in item:
+                    yield self.__read_a_given_event(event_id)
+            return inner()
+
+    def __read_a_given_event(self, index):
+        ''' return a given event id
+        id starting at 0 not at 1
+        '''
+        row = self.__pbuf_class()
+        row.ParseFromString(
+            # counting starts at one, so we add 1
+            self.protobuf_i_fits.read_a_given_event(index + 1)
+        )
+        return self.convert(row)
 
 
 def make_namedtuple(message):

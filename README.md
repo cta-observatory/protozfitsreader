@@ -20,23 +20,6 @@ From this we learn, the `file` contains two `Table` named `RunHeader` and `Event
 contains 9 rows of type `CameraEvent`. There might be more tables with
 other types of rows in other files. For instance LST has its `RunHeader` called `CameraConfig`.
 
-### RunHeader
-
-Even though there is usually **only one** run header per file, technically
-this single run header is stored in a Table. This table could contain multiple
-"rows" and to me it is not clear what this would mean... but technically it is
-possible.
-
-At the moment I would recommend getting the run header out of the file
-we opened above like this (replace RunHeader with CameraConfig for LST data):
-
-```
->>> # because we do not know what to do, if there are 2 run headers
->>> assert len(file.RunHeader) == 1
->>> # Tables need to be iterated over ... next gives the next row ...
->>> header = next(file.RunHeader)
-```
-
 ### Getting an event
 
 Usually people just iterate over a whole `Table` like this:
@@ -72,22 +55,35 @@ for event in file.Events[interesting_event_ids]:
     pass
 ```
 
+### RunHeader
+
+Even though there is usually **only one** run header per file, technically
+this single run header is stored in a Table. This table could contain multiple
+"rows" and to me it is not clear what this would mean... but technically it is
+possible.
+
+At the moment I would recommend getting the run header out of the file
+we opened above like this (replace RunHeader with CameraConfig for LST data):
+
+```python
+assert len(file.RunHeader) == 1
+header = file.RunHeader[0]
+```
+
 
 For now, I will just get the next event
-```
->>> event = next(file.Events)
->>> type(event)
+```python
+event = file.Events[0]
+type(event)
 <class 'protozfits.CameraEvent'>
->>> event._fields
+event._fields
 ('telescopeID', 'dateMJD', 'eventType', 'eventNumber', 'arrayEvtNum', 'hiGain', 'loGain', 'trig', 'head', 'muon', 'geometry', 'hilo_offset', 'hilo_scale', 'cameraCounters', 'moduleStatus', 'pixelPresence', 'acquisitionMode', 'uctsDataPresence', 'uctsData', 'tibDataPresence', 'tibData', 'swatDataPresence', 'swatData', 'chipsFlags', 'firstCapacitorIds', 'drsTagsHiGain', 'drsTagsLoGain', 'local_time_nanosec', 'local_time_sec', 'pixels_flags', 'trigger_map', 'event_type', 'trigger_input_traces', 'trigger_output_patch7', 'trigger_output_patch19', 'trigger_output_muon', 'gps_status', 'time_utc', 'time_ns', 'time_s', 'flags', 'ssc', 'pkt_len', 'muon_tag', 'trpdm', 'pdmdt', 'pdmt', 'daqtime', 'ptm', 'trpxlid', 'pdmdac', 'pdmpc', 'pdmhi', 'pdmlo', 'daqmode', 'varsamp', 'pdmsum', 'pdmsumsq', 'pulser', 'ftimeoffset', 'ftimestamp', 'num_gains')
->>> event.hiGain.waveforms.samples
+event.hiGain.waveforms.samples
 array([241, 245, 248, ..., 218, 214, 215], dtype=int16)
->>>
 ```
 
 An LST event will look something like so:
-```
->>> event = next(file.Events)
+```python
 >>> event
 CameraEvent(
     configuration_id=1
@@ -134,7 +130,7 @@ array([  0,   0,   0, ..., 292, 288, 263], dtype=uint16)
 It is implemented using [`collections.namedtuple`](https://docs.python.org/3.6/library/collections.html#collections.namedtuple).
 I tried to create a useful string represenation, it is very long, yes ... but I
 hope you can still enjoy it:
-```
+```python
 >>> event
 CameraEvent(
     telescopeID=1
@@ -160,13 +156,18 @@ CameraEvent(
             firstSplIdx=array([], dtype=float64)))
 # [...]
 ```
+
 ### Multiple input files reading in parallel
+
 Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field.
 For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the
 same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
-```
+```python
 >>> from protozfits import MultiZFitsFiles
->>> multi_files = MultiZFitsFiles('/local/etienne/streamer1_20180427_000.fits.fz:/local/etienne/streamer1_20180427_001.fits.fz')
+>>> multi_files = MultiZFitsFiles(
+        '/local/etienne/streamer1_20180427_000.fits.fz',
+        '/local/etienne/streamer1_20180427_001.fits.fz'
+    )
 >>> event = multi_files.next_event()
 >>> event.event_id
 1

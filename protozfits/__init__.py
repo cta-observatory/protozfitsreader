@@ -265,18 +265,31 @@ class MultiZFitsFiles:
     '''
 
     def __init__(self, paths):
-        self._files = {}
+        self._event_tables = {}
         self._events = {}
+        __headers = {}
 
         for path in paths:
-            self._files[path] = File(path).Events
+            self._event_tables[path] = File(path).Events
+            __headers[path] = File(path).Events.header
             try:
-                self._events[path] = next(self._files[path])
+                self._events[path] = next(self._event_tables[path])
             except StopIteration:
                 pass
 
+        self.headers = {}
+        for path, h in __headers.items():
+            for key in h.keys():
+                if key not in self.headers:
+                    self.headers[key] = {}
+
+                self.headers[key][path] = h[key]
+
     def __len__(self):
-        total_length = sum([len(table) for table in self._events])
+        total_length = sum(
+            len(table)
+            for table in self._event_tables.values()
+        )
         return total_length
 
     def __iter__(self):
@@ -287,25 +300,25 @@ class MultiZFitsFiles:
 
     def next_event(self):
         # check for the minimal event id
+        if not self._events:
+            raise StopIteration
+
         min_path = min(
             self._events.items(),
             key=lambda item: item[1].event_id,
-            default=None
         )[0]
-        if min_path is None:
-            raise StopIteration
 
         # return the minimal event id
-        to_return = self._events[min_path]
+        next_event = self._events[min_path]
         try:
-            self._events[min_path] = next(self._files[min_path])
+            self._events[min_path] = next(self._event_tables[min_path])
         except StopIteration:
             del self._events[min_path]
 
-        return to_return
+        return next_event
 
     def __enter__(self):
         return self
 
     def __exit__(self, type, value, tb):
-        del self._files
+        del self._event_tables

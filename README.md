@@ -157,33 +157,6 @@ CameraEvent(
 # [...]
 ```
 
-### Multiple input files reading in parallel
-
-Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field.
-For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the
-same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
-```python
->>> from protozfits import MultiZFitsFiles
->>> multi_files = MultiZFitsFiles(
-        '/local/etienne/streamer1_20180427_000.fits.fz',
-        '/local/etienne/streamer1_20180427_001.fits.fz'
-    )
->>> event = multi_files.next_event()
->>> event.event_id
-1
->>> event = multi_files.next_event()
->>> event.event_id
-2
->>> for i_evt, event in enumerate(multi_files):
->>>    print(event.event_id)
-3
-4
-5
-6
-...
-
-```
-
 ### Table header
 
 `fits.fz` files are still normal [FITS files](https://fits.gsfc.nasa.gov/) and
@@ -217,6 +190,56 @@ TIMESYS = 'UTC'                / Time system
 <class 'astropy.io.fits.header.Header'>
 ```
 The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers).
+
+
+### Multiple input files reading in parallel
+
+Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field.
+For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the
+same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
+```python
+>>> from protozfits import MultiZFitsFiles
+>>> multi_files = MultiZFitsFiles(
+        '/local/etienne/streamer1_20180427_000.fits.fz',
+        '/local/etienne/streamer1_20180427_001.fits.fz'
+    )
+>>> event = multi_files.next_event()
+>>> event.event_id
+1
+>>> event = multi_files.next_event()
+>>> event.event_id
+2
+>>> for i_evt, event in enumerate(multi_files):
+>>>    print(event.event_id)
+3
+4
+5
+6
+...
+
+```
+
+**Table Headers** in case of `MultiZFitsFiles`
+
+You can access the Table Headers of the "Events" Tables when using `MultiZFitsFiles`.
+`headers` is a dict-of-dicts, the first key is the original FITS key
+and only the second key is the file path.
+So if you would like to check e.g. the "PBFHEAD" of all used files you can do this:
+```python
+from protozfits import MultiZFitsFiles
+from glob import glob
+
+multi_files = MultiZFitsFiles(glob('Run0027.*.fits.fz'))
+print(multi_files.headers['PBFHEAD'])
+# Result:
+# {'Run0027.0003.fits.fz': 'R1.CameraEvent',
+#  'Run0027.0000.fits.fz': 'R1.CameraEvent',
+#  'Run0027.0001.fits.fz': 'R1.CameraEvent',
+#  'Run0027.0002.fits.fz': 'R1.CameraEvent'}
+
+# or
+assert all(v=='R1.CameraEvent' for v in multi_files.headers['PBFHEAD'].values())
+```
 
 ### Isn't this a little slow?
 

@@ -1,10 +1,6 @@
 # Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
 
-## Usage example:
-
-**Note**: At the moment multiple open files at the same time are not supported.
-
 
 If you are just starting with proto-z-fits files and would like to explore the file contents, try this:
 
@@ -24,6 +20,41 @@ From this we learn, the `file` contains two `Table` named `RunHeader` and `Event
 contains 9 rows of type `CameraEvent`. There might be more tables with
 other types of rows in other files. For instance LST has its `RunHeader` called `CameraConfig`.
 
+### Getting an event
+
+Usually people just iterate over a whole `Table` like this:
+```python
+for event in file.Events:
+    # do something with the event
+    pass
+```
+
+But if you happen to know exactly which event you want, you can also
+directly get an event, like this:
+```python
+event_17 = file.Events[17]
+```
+
+You can also get a range of events, like this:
+```python
+for event in file.Events[100:200]:
+    # do something events 100 until 200
+    pass
+```
+
+It is not yet possible to specify negative indices, like `file.Events[:-10]`
+does *not work*.
+
+If you happen to have a list or any iterable or a generator with event ids
+you are interested in you can get the events in question like this:
+
+```python
+interesting_event_ids = range(100, 200, 3)
+for event in file.Events[interesting_event_ids]:
+    # do something with intesting events
+    pass
+```
+
 ### RunHeader
 
 Even though there is usually **only one** run header per file, technically
@@ -34,41 +65,25 @@ possible.
 At the moment I would recommend getting the run header out of the file
 we opened above like this (replace RunHeader with CameraConfig for LST data):
 
-```
->>> # because we do not know what to do, if there are 2 run headers
->>> assert len(file.RunHeader) == 1
->>> # Tables need to be iterated over ... next gives the next row ...
->>> header = next(file.RunHeader)
-```
-
-### Getting an event
-
-There is no random access to events, like this:
-
-    event_17 = file.Events[17]  # <<--- this does not work, yet.
-
-To get an event you'll iterate over the `Table`:
 ```python
-for event in file.Events:
-    # do something with the event
-    pass
+assert len(file.RunHeader) == 1
+header = file.RunHeader[0]
 ```
+
 
 For now, I will just get the next event
-```
->>> event = next(file.Events)
->>> type(event)
+```python
+event = file.Events[0]
+type(event)
 <class 'protozfits.CameraEvent'>
->>> event._fields
+event._fields
 ('telescopeID', 'dateMJD', 'eventType', 'eventNumber', 'arrayEvtNum', 'hiGain', 'loGain', 'trig', 'head', 'muon', 'geometry', 'hilo_offset', 'hilo_scale', 'cameraCounters', 'moduleStatus', 'pixelPresence', 'acquisitionMode', 'uctsDataPresence', 'uctsData', 'tibDataPresence', 'tibData', 'swatDataPresence', 'swatData', 'chipsFlags', 'firstCapacitorIds', 'drsTagsHiGain', 'drsTagsLoGain', 'local_time_nanosec', 'local_time_sec', 'pixels_flags', 'trigger_map', 'event_type', 'trigger_input_traces', 'trigger_output_patch7', 'trigger_output_patch19', 'trigger_output_muon', 'gps_status', 'time_utc', 'time_ns', 'time_s', 'flags', 'ssc', 'pkt_len', 'muon_tag', 'trpdm', 'pdmdt', 'pdmt', 'daqtime', 'ptm', 'trpxlid', 'pdmdac', 'pdmpc', 'pdmhi', 'pdmlo', 'daqmode', 'varsamp', 'pdmsum', 'pdmsumsq', 'pulser', 'ftimeoffset', 'ftimestamp', 'num_gains')
->>> event.hiGain.waveforms.samples
+event.hiGain.waveforms.samples
 array([241, 245, 248, ..., 218, 214, 215], dtype=int16)
->>>
 ```
 
 An LST event will look something like so:
-```
->>> event = next(file.Events)
+```python
 >>> event
 CameraEvent(
     configuration_id=1
@@ -115,7 +130,7 @@ array([  0,   0,   0, ..., 292, 288, 263], dtype=uint16)
 It is implemented using [`collections.namedtuple`](https://docs.python.org/3.6/library/collections.html#collections.namedtuple).
 I tried to create a useful string represenation, it is very long, yes ... but I
 hope you can still enjoy it:
-```
+```python
 >>> event
 CameraEvent(
     telescopeID=1
@@ -175,6 +190,56 @@ TIMESYS = 'UTC'                / Time system
 <class 'astropy.io.fits.header.Header'>
 ```
 The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers).
+
+
+### Multiple input files reading in parallel
+
+Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field.
+For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the
+same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
+```python
+>>> from protozfits import MultiZFitsFiles
+>>> multi_files = MultiZFitsFiles(
+        '/local/etienne/streamer1_20180427_000.fits.fz',
+        '/local/etienne/streamer1_20180427_001.fits.fz'
+    )
+>>> event = multi_files.next_event()
+>>> event.event_id
+1
+>>> event = multi_files.next_event()
+>>> event.event_id
+2
+>>> for i_evt, event in enumerate(multi_files):
+>>>    print(event.event_id)
+3
+4
+5
+6
+...
+
+```
+
+### Table Headers in case of `MultiZFitsFiles`
+
+You can access the Table Headers of the "Events" Tables when using `MultiZFitsFiles`.
+`headers` is a dict-of-dicts, the first key is the original FITS key
+and only the second key is the file path.
+So if you would like to check e.g. the "PBFHEAD" of all used files you can do this:
+```python
+from protozfits import MultiZFitsFiles
+from glob import glob
+
+multi_files = MultiZFitsFiles(glob('Run0027.*.fits.fz'))
+print(multi_files.headers['PBFHEAD'])
+# Result:
+# {'Run0027.0003.fits.fz': 'R1.CameraEvent',
+#  'Run0027.0000.fits.fz': 'R1.CameraEvent',
+#  'Run0027.0001.fits.fz': 'R1.CameraEvent',
+#  'Run0027.0002.fits.fz': 'R1.CameraEvent'}
+
+# or
+assert all(v=='R1.CameraEvent' for v in multi_files.headers['PBFHEAD'].values())
+```
 
 ### Isn't this a little slow?
 
@@ -244,6 +309,25 @@ And then you'll have to (put it in your .bashrc for example)
 
     export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
 
+### Most common issues and possible remedies
+
+- Missing GLIBC version, message along the lines of:
+
+    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20` not found
+
+Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly.
+Solution: add `<path_to_anaconda>/envs/<your_environment_name>/lib/` to your LD_LIBRARY_PATH
+
+- Cannot import `_message`, message along the lines of:
+```
+    from google.protobuf.pyext import _message
+    ImportError: cannot import name _message
+```
+Caused by missing protobuf for python (or badly installed).
+Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it,
+or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version.
+In my case the conda install did not work (no idea why), while the pip one did.
+
 ### Miniconda & Faster installation?
 
 If you use **Ana**conda this is not interesting for you, but if you use **Mini**conda,
@@ -255,7 +339,7 @@ But `pip install <some package>` is sometimes much slower than `conda install <s
 Two of the requirements of this package are `numpy` and `protobuf`.
 We think installing them with `pip` is very slow, so we recommend to
 
-    conda install numpy protobuf astropy
+    conda install numpy astropy
 
 before `pip`-installing this package for your convenience.
 

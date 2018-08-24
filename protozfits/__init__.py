@@ -1,14 +1,16 @@
 from pkg_resources import resource_string
 from enum import Enum
 from collections import namedtuple
-from warnings import warn
 import numpy as np
 from astropy.io import fits
+import numbers
 
 # Beware:
-#     for some reason rawzfitsreader needs to be imported before
+#     for some reason rawzfits needs to be imported before
 #     GeneratedProtocolMessageType
-from . import rawzfitsreader
+from . import rawzfits
+# If you would like to learn more about the contents of the compiled
+# rawzfits extension. Please have a look into protozfits/rawzfits.pyx
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
@@ -44,17 +46,8 @@ def get_class_from_PBFHEAD(pbfhead):
 
 
 class File:
-    instances = 0
 
     def __init__(self, path, pure_protobuf=False):
-        File.instances += 1
-        if File.instances > 1:
-            warn('''\
-        Multiple open zfits files at the same time are not supported.
-        Reading from mutliple open tables at the same time will reset these
-        tables continously and you will read always the same events.
-        ''')
-        Table._Table__last_opened = None
         bintable_descriptions = detect_bintables(path)
         for btd in bintable_descriptions:
             self.__dict__[btd.extname] = Table(btd, pure_protobuf)
@@ -72,7 +65,7 @@ class File:
         self.close()
 
     def close(self):
-        File.instances -= 1
+        pass
 
     def __del__(self):
         self.close()
@@ -112,20 +105,16 @@ def detect_bintables(path):
 class Table:
     '''Iterable Table
     '''
-    __last_opened = None
-    '''the rawzfitsreader has a "bug" which is: It cannot have two open
-    hdus. So when the File would open all N tables at construction time,
-    every `rawzfitsreader.readEvent()` would act on the last opened table.
-
-    So the Tables remember which hdu was opened last, and if it was not them.
-    They open it.
-    '''
 
     def __init__(self, desc, pure_protobuf=False):
         '''
         desc: BinTableDescription
         '''
         self.__desc = desc
+        self.protobuf_i_fits = rawzfits.ProtobufIFits(
+            self.__desc.path,
+            self.__desc.extname
+        )
         self.__pbuf_class = get_class_from_PBFHEAD(desc.pbfhead)
         self.header = self.__desc.header
         self.pure_protobuf = pure_protobuf
@@ -134,18 +123,15 @@ class Table:
         return self.__desc.znaxis2
 
     def __iter__(self):
+        self.protobuf_i_fits.rewind()
         return self
 
     def __next__(self):
-        if not Table.__last_opened == self.__desc:
-            rawzfitsreader.open(self.__desc.path+":"+self.__desc.extname)
-            Table.__last_opened = self.__desc
         row = self.__pbuf_class()
-        try:
-            row.ParseFromString(rawzfitsreader.readEvent())
-        except EOFError:
-            raise StopIteration
+        row.ParseFromString(self.protobuf_i_fits.read_event())
+        return self.convert(row)
 
+    def convert(self, row):
         if not self.pure_protobuf:
             return make_namedtuple(row)
         else:
@@ -156,6 +142,37 @@ class Table:
             cn=self.__class__.__name__,
             d=self.__desc
         )
+
+    def __getitem__(self, item):
+        # getitem can get numbers, slices or iterables of numbers
+        if isinstance(item, numbers.Integral):
+            return self.__read_a_given_event(item)
+        elif isinstance(item, slice):
+            def inner():
+                for event_id in range(
+                    item.start or 0,
+                    item.stop or len(self),
+                    item.step or 1
+                ):
+                    yield self.__read_a_given_event(event_id)
+            return inner()
+        else:
+            # I assume we got a iterable of event_ids
+            def inner():
+                for event_id in item:
+                    yield self.__read_a_given_event(event_id)
+            return inner()
+
+    def __read_a_given_event(self, index):
+        ''' return a given event id
+        id starting at 0 not at 1
+        '''
+        row = self.__pbuf_class()
+        row.ParseFromString(
+            # counting starts at one, so we add 1
+            self.protobuf_i_fits.read_a_given_event(index + 1)
+        )
+        return self.convert(row)
 
 
 def make_namedtuple(message):
@@ -231,11 +248,77 @@ for m in messages:
             enum_types[(m, field.name)] = enum
 
 
-def rewind_table():
-    # rawzfitsreader.rewindTable() has a bug at the moment,
-    # it always throws a SystemError
-    # we let that one pass
-    try:
-        rawzfitsreader.rewindTable()
-    except SystemError:
-        pass
+class MultiZFitsFiles:
+    '''
+    In LST they have multiple file writers, which save the incoming events
+    into different files, so in case one has 10 events and 4 files,
+    it might look like this:
+
+        f1 = [0, 4]
+        f2 = [1, 5, 8]
+        f3 = [2, 6, 9]
+        f4 = [3, 7]
+
+    The task of MultiZFitsFiles is to open these 4 files simultaneously
+    and return the events in the correct order, so the user does not really
+    have to know about these existence of 4 files.
+    '''
+
+    def __init__(self, paths):
+        self._event_tables = {}
+        self._events = {}
+        __headers = {}
+
+        for path in paths:
+            self._event_tables[path] = File(path).Events
+            __headers[path] = File(path).Events.header
+            try:
+                self._events[path] = next(self._event_tables[path])
+            except StopIteration:
+                pass
+
+        self.headers = {}
+        for path, h in __headers.items():
+            for key in h.keys():
+                if key not in self.headers:
+                    self.headers[key] = {}
+
+                self.headers[key][path] = h[key]
+
+    def __len__(self):
+        total_length = sum(
+            len(table)
+            for table in self._event_tables.values()
+        )
+        return total_length
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return self.next_event()
+
+    def next_event(self):
+        # check for the minimal event id
+        if not self._events:
+            raise StopIteration
+
+        min_path = min(
+            self._events.items(),
+            key=lambda item: item[1].event_id,
+        )[0]
+
+        # return the minimal event id
+        next_event = self._events[min_path]
+        try:
+            self._events[min_path] = next(self._event_tables[min_path])
+        except StopIteration:
+            del self._events[min_path]
+
+        return next_event
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        del self._event_tables

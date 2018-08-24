@@ -219,7 +219,7 @@ same one as for the iteratable File object (just iterate on a multifile object),
 
 ```
 
-**Table Headers** in case of `MultiZFitsFiles`
+### Table Headers in case of `MultiZFitsFiles`
 
 You can access the Table Headers of the "Events" Tables when using `MultiZFitsFiles`.
 `headers` is a dict-of-dicts, the first key is the original FITS key

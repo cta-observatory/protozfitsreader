@@ -199,10 +199,10 @@ For this use the MultiZFitsFiles class, still from protozfits. There is currentl
 same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
 ```python
 >>> from protozfits import MultiZFitsFiles
->>> multi_files = MultiZFitsFiles(
+>>> multi_files = MultiZFitsFiles([
         '/local/etienne/streamer1_20180427_000.fits.fz',
         '/local/etienne/streamer1_20180427_001.fits.fz'
-    )
+    ])
 >>> event = multi_files.next_event()
 >>> event.event_id
 1

@@ -1,5 +1,6 @@
 import pkg_resources
 import os
+from glob import glob
 from protozfits import File
 
 example_file_path = pkg_resources.resource_filename(
@@ -47,6 +48,40 @@ def test_File_getitem_with_iterable():
 def test_File_getitem_with_range():
     f = File(example_file_path)
     interesting_event_ids = range(10, 1, -2)
-    expected_event_numbers = [FIRST_EVENT_NUMBER + i for i in interesting_event_ids]
+    expected_event_numbers = [FIRST_EVENT_NUMBER + i for i in
+                              interesting_event_ids]
     for i, event in enumerate(f.Events[interesting_event_ids]):
         assert event.eventNumber == expected_event_numbers[i]
+
+
+def test_File_geteventid_with_string():
+
+    files = pkg_resources.resource_filename('protozfits', os.path.join(
+                                            'tests',
+                                            'resources',
+                                            '*.fits.fz')
+                                            )
+    files = glob(files)
+
+    expected_event_numbers = {'example_100evts.fits.fz': '97750287',
+                              'example_SST1M_20180822.fits.fz': '1027888',
+                              'example_LST_R1_10_evts.fits.fz': '1',
+                              'example_10evts.fits.fz': '97750287',
+                              'example_9evts_NectarCAM.fits.fz': '1'}
+
+    for j, file in enumerate(files):
+
+        f = File(file)
+        file = os.path.basename(file)
+
+        for i, event in enumerate(f.Events[expected_event_numbers[file]]):
+
+            expected_event_number = int(expected_event_numbers[file])
+
+            try:
+
+                assert event.eventNumber == expected_event_number + i
+
+            except AttributeError:
+
+                assert event.event_id == expected_event_number + i

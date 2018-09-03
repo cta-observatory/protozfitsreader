@@ -162,7 +162,7 @@ class Table:
             event_id = int(item)
 
             first_event_id = _get_event_id(self, 0)
-            last_event_id = _get_event_id(self, len(self) -1)
+            last_event_id = _get_event_id(self, len(self) - 1)
             index_of_event = _binary_search(self, event_id)
 
             if not first_event_id <= event_id <= last_event_id:
@@ -275,6 +275,7 @@ def _binary_search(table, item):
                     first = mid_point+1
 
     return mid_point
+
 
 def nt(m):
     '''create namedtuple class from protobuf.message type'''

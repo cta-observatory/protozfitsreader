@@ -161,9 +161,8 @@ class Table:
 
             event_id = int(item)
 
-            first_event_id = self[0].eventNumber
-            last_event_id = self[len(self) - 1].eventNumber
-
+            first_event_id = _get_event_id(self, 0)
+            last_event_id = _get_event_id(self, len(self) -1)
             index_of_event = _binary_search(self, event_id)
 
             if not first_event_id <= event_id <= last_event_id:

@@ -1,5 +1,6 @@
 import pkg_resources
 import os
+from glob import glob
 from protozfits import File
 
 example_file_path = pkg_resources.resource_filename(
@@ -54,11 +55,27 @@ def test_File_getitem_with_range():
 
 def test_File_geteventid_with_string():
 
-    f = File(example_file_path)
+    files = pkg_resources.resource_filename('protozfits', os.path.join(
+                                            'tests',
+                                            'resources',
+                                            '*.fits.fz')
+                                            )
+    files = glob(files)
 
-    expected_event_numbers = FIRST_EVENT_NUMBER
-    expected_event_numbers = str(expected_event_numbers)
+    from protozfits import _get_event_id
 
-    for i, event in enumerate(f.Events[expected_event_numbers]):
+    expected_event_numbers = ['97750287', '97750287', '1027888', '1', '1']
 
-        assert event.eventNumber == int(expected_event_numbers) + i
+    for j, file in enumerate(files):
+
+        f = File(file)
+
+        for i, event in enumerate(f.Events[expected_event_numbers[j]]):
+
+            try:
+
+                assert event.eventNumber == int(expected_event_numbers[j]) + i
+
+            except AttributeError:
+
+                assert event.event_id == int(expected_event_numbers[j]) + i

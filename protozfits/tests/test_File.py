@@ -50,3 +50,15 @@ def test_File_getitem_with_range():
     expected_event_numbers = [FIRST_EVENT_NUMBER + i for i in interesting_event_ids]
     for i, event in enumerate(f.Events[interesting_event_ids]):
         assert event.eventNumber == expected_event_numbers[i]
+
+
+def test_File_geteventid_with_string():
+
+    f = File(example_file_path)
+
+    expected_event_numbers = FIRST_EVENT_NUMBER
+    expected_event_numbers = str(expected_event_numbers)
+
+    for i, event in enumerate(f.Events[expected_event_numbers]):
+
+        assert event.eventNumber == int(expected_event_numbers) + i

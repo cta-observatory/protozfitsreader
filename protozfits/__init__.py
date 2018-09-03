@@ -156,6 +156,25 @@ class Table:
                 ):
                     yield self.__read_a_given_event(event_id)
             return inner()
+
+        elif isinstance(item, str):
+
+            event_id = int(item)
+
+            first_event_id = self[0].eventNumber
+            last_event_id = self[len(self) - 1].eventNumber
+
+            index_of_event = _binary_search(self, event_id)
+
+            if not first_event_id <= event_id <= last_event_id:
+                raise IndexError('Cannot find event ID {} in Table {}\n'
+                                 'First event ID : {}\n'
+                                 'Last event ID : {}'.format(event_id,
+                                                             self.__name__,
+                                                             first_event_id,
+                                                             last_event_id))
+            return self[index_of_event:]
+
         else:
             # I assume we got a iterable of event_ids
             def inner():
@@ -222,6 +241,41 @@ def namedtuple_repr2(self):
     np.set_printoptions(**old_print_options)
     return s
 
+
+def _get_event_id(table, index):
+
+    try:
+
+        event_id = table[index].eventNumber
+
+    except AttributeError:
+
+        event_id = table[index].event_id
+
+    return event_id
+
+
+def _binary_search(table, item):
+
+    first = 0
+    last = len(table) - 1
+    found = False
+
+    while first <= last and not found:
+
+            mid_point = (first + last) // 2
+
+            event_id = _get_event_id(table, mid_point)
+
+            if event_id == item:
+                found = True
+            else:
+                if item < event_id:
+                    last = mid_point-1
+                else:
+                    first = mid_point+1
+
+    return mid_point
 
 def nt(m):
     '''create namedtuple class from protobuf.message type'''

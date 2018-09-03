@@ -169,7 +169,7 @@ class Table:
                 raise IndexError('Cannot find event ID {} in Table {}\n'
                                  'First event ID : {}\n'
                                  'Last event ID : {}'.format(event_id,
-                                                             self.__name__,
+                                                             self.__class__,
                                                              first_event_id,
                                                              last_event_id))
             return self[index_of_event:]

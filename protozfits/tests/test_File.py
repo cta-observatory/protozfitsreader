@@ -63,18 +63,25 @@ def test_File_geteventid_with_string():
                                             )
     files = glob(files)
 
-    expected_event_numbers = ['97750287', '97750287', '1027888', '1', '1']
+    expected_event_numbers = {'example_100evts.fits.fz': '97750287',
+                              'example_SST1M_20180822.fits.fz': '1027888',
+                              'example_LST_R1_10_evts.fits.fz': '1',
+                              'example_10evts.fits.fz': '97750287',
+                              'example_9evts_NectarCAM.fits.fz': '1'}
 
     for j, file in enumerate(files):
 
         f = File(file)
+        file = os.path.basename(file)
 
-        for i, event in enumerate(f.Events[expected_event_numbers[j]]):
+        for i, event in enumerate(f.Events[expected_event_numbers[file]]):
+
+            expected_event_number = int(expected_event_numbers[file])
 
             try:
 
-                assert event.eventNumber == int(expected_event_numbers[j]) + i
+                assert event.eventNumber == expected_event_number + i
 
             except AttributeError:
 
-                assert event.event_id == int(expected_event_numbers[j]) + i
+                assert event.event_id == expected_event_number + i

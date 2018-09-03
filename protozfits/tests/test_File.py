@@ -62,8 +62,6 @@ def test_File_geteventid_with_string():
                                             )
     files = glob(files)
 
-    from protozfits import _get_event_id
-
     expected_event_numbers = ['97750287', '97750287', '1027888', '1', '1']
 
     for j, file in enumerate(files):

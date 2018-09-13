@@ -286,48 +286,22 @@ against Anaconda. You can [download anaconda](https://www.anaconda.com/download)
 
 You do not have to use a [conda environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) to use this package. It cleanly installs and uninstalls with [pip](https://docs.python.org/3.6/installing/). If you plan to play around with different versions of this package your might want to use environments though.
 
-### Linux (with anaconda)
+### Linux / OSX (with anaconda)
 
     pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
-
-### OSX (with anaconda)
-
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
-
-To use it you'll have to find your `site-packages` folder, e.g. like this:
-
-    dneise@lair:~$ python -m site
-    sys.path = [
-        '/home/dneise',
-        '/home/dneise/anaconda3/lib/python36.zip',
-        '/home/dneise/anaconda3/lib/python3.6',
-        '/home/dneise/anaconda3/lib/python3.6/lib-dynload',
-        '/home/dneise/anaconda3/lib/python3.6/site-packages',   <----- this one <-----
-    ]
-
-And then you'll have to (put it in your .bashrc for example)
-
-    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
 
 ### Most common issues and possible remedies
-
-- Missing GLIBC version, message along the lines of:
-
-    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20` not found
-
-Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly.
-Solution: add `<path_to_anaconda>/envs/<your_environment_name>/lib/` to your LD_LIBRARY_PATH
 
 - Cannot import `_message`, message along the lines of:
 ```
     from google.protobuf.pyext import _message
     ImportError: cannot import name _message
 ```
-Caused by missing protobuf for python (or badly installed).
-Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it,
-or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version.
-In my case the conda install did not work (no idea why), while the pip one did.
+Try uninstalling conda-protobuf and reinstalling from pypi, like this:
 
+    conda uninstall protobuf --yes
+    pip install protobuf
+    
 ### Miniconda & Faster installation?
 
 If you use **Ana**conda this is not interesting for you, but if you use **Mini**conda,

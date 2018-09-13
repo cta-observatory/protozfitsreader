@@ -288,7 +288,7 @@ You do not have to use a [conda environment](https://conda.io/docs/user-guide/ta
 
 ### Linux / OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.4.0.tar.gz
 
 ### Most common issues and possible remedies
 

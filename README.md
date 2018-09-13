@@ -1,6 +1,11 @@
 # Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
+Table of Contents
 
+* [Open a file](#open_a_file)
+* [Getting an event](#getting_an_event)
+* [RunHeader](#RunHeader)
+(to_be_completed .. just a test)
 
 If you are just starting with proto-z-fits files and would like to explore the file contents, try this:
 

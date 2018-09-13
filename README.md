@@ -1,6 +1,17 @@
 # Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
+Table of Contents
 
+* [Usage](#usage)
+   * [Open a file](#open-a-file)
+   * [Get an event](#getting-an-event)
+   * [RunHeader](#runHeader)
+   * [Table header](#table-header)
+* [Performance](#isnt-this-a-little-slow)
+* [Installation](#installation)
+* [Where does this come from?](#where-does-this-come-from)
+
+## Usage
 
 If you are just starting with proto-z-fits files and would like to explore the file contents, try this:
 
@@ -192,55 +203,6 @@ TIMESYS = 'UTC'                / Time system
 The header is provided by [`astropy`](http://docs.astropy.org/en/stable/io/fits/#working-with-fits-headers).
 
 
-### Multiple input files reading in parallel
-
-Reading multiple files in parallel is possible only for the R1 datamodel, sorting incoming events by their event_id field.
-For this use the MultiZFitsFiles class, still from protozfits. There is currently two syntaxes available. Either the
-same one as for the iteratable File object (just iterate on a multifile object), or by directly calling the next_event() method. For instance the following code reads two files in parallel, in two different ways:
-```python
->>> from protozfits import MultiZFitsFiles
->>> multi_files = MultiZFitsFiles([
-        '/local/etienne/streamer1_20180427_000.fits.fz',
-        '/local/etienne/streamer1_20180427_001.fits.fz'
-    ])
->>> event = multi_files.next_event()
->>> event.event_id
-1
->>> event = multi_files.next_event()
->>> event.event_id
-2
->>> for i_evt, event in enumerate(multi_files):
->>>    print(event.event_id)
-3
-4
-5
-6
-...
-
-```
-
-### Table Headers in case of `MultiZFitsFiles`
-
-You can access the Table Headers of the "Events" Tables when using `MultiZFitsFiles`.
-`headers` is a dict-of-dicts, the first key is the original FITS key
-and only the second key is the file path.
-So if you would like to check e.g. the "PBFHEAD" of all used files you can do this:
-```python
-from protozfits import MultiZFitsFiles
-from glob import glob
-
-multi_files = MultiZFitsFiles(glob('Run0027.*.fits.fz'))
-print(multi_files.headers['PBFHEAD'])
-# Result:
-# {'Run0027.0003.fits.fz': 'R1.CameraEvent',
-#  'Run0027.0000.fits.fz': 'R1.CameraEvent',
-#  'Run0027.0001.fits.fz': 'R1.CameraEvent',
-#  'Run0027.0002.fits.fz': 'R1.CameraEvent'}
-
-# or
-assert all(v=='R1.CameraEvent' for v in multi_files.headers['PBFHEAD'].values())
-```
-
 ### Isn't this a little slow?
 
 Well, indeed, converting the original google protobuf instances into namedtuples full of
@@ -279,55 +241,29 @@ which is optimized for your telescope.
 If you have questions, please open an issue or a pull request to improve this documentation.
 
 
-## Installation:
+## Installation
 
 We all use [Anaconda](https://www.anaconda.com/) and this package is tested
 against Anaconda. You can [download anaconda](https://www.anaconda.com/download) for your system for free.
 
 You do not have to use a [conda environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) to use this package. It cleanly installs and uninstalls with [pip](https://docs.python.org/3.6/installing/). If you plan to play around with different versions of this package your might want to use environments though.
 
-### Linux (with anaconda)
+### Linux / OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
-
-### OSX (with anaconda)
-
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.0.2.tar.gz
-
-To use it you'll have to find your `site-packages` folder, e.g. like this:
-
-    dneise@lair:~$ python -m site
-    sys.path = [
-        '/home/dneise',
-        '/home/dneise/anaconda3/lib/python36.zip',
-        '/home/dneise/anaconda3/lib/python3.6',
-        '/home/dneise/anaconda3/lib/python3.6/lib-dynload',
-        '/home/dneise/anaconda3/lib/python3.6/site-packages',   <----- this one <-----
-    ]
-
-And then you'll have to (put it in your .bashrc for example)
-
-    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/dneise/anaconda3/lib/python3.6/site-packages
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.4.0.tar.gz
 
 ### Most common issues and possible remedies
-
-- Missing GLIBC version, message along the lines of:
-
-    ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20` not found
-
-Caused by anaconda not setting up your LD_LIBRARY_PATH env variable properly.
-Solution: add `<path_to_anaconda>/envs/<your_environment_name>/lib/` to your LD_LIBRARY_PATH
 
 - Cannot import `_message`, message along the lines of:
 ```
     from google.protobuf.pyext import _message
     ImportError: cannot import name _message
 ```
-Caused by missing protobuf for python (or badly installed).
-Solution: either conda or pip installations of protobuf (whichever version) is badly installed. Try uninstalling / reinstalling it,
-or if it did not work, try pip instead of conda or the other way around. If it really does not work, try another version.
-In my case the conda install did not work (no idea why), while the pip one did.
+Try uninstalling conda-protobuf and reinstalling from pypi, like this:
 
+    conda uninstall protobuf --yes
+    pip install protobuf
+    
 ### Miniconda & Faster installation?
 
 If you use **Ana**conda this is not interesting for you, but if you use **Mini**conda,

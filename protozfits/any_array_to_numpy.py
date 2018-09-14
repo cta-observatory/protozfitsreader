@@ -11,8 +11,8 @@ def any_array_to_numpy(any_array):
         6: np.uint32,
         7: np.int64,
         8: np.uint64,
-        9: np.float,
-        10: np.double,
+        9: np.float32,
+        10: np.float64,
     }
     if any_array.type == 0:
         if any_array.data:

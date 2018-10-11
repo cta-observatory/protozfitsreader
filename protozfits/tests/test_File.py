@@ -46,7 +46,7 @@ def test_File_getitem_with_iterable():
 
 def test_File_getitem_with_range():
     f = File(example_file_path)
-    interesting_event_ids = range(10, 1, -2)
+    interesting_event_ids = range(9, 1, -2)
     expected_event_numbers = [FIRST_EVENT_NUMBER + i for i in interesting_event_ids]
     for i, event in enumerate(f.Events[interesting_event_ids]):
         assert event.eventNumber == expected_event_numbers[i]

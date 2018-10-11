@@ -11,7 +11,7 @@ import numbers
 from . import rawzfits
 # If you would like to learn more about the contents of the compiled
 # rawzfits extension. Please have a look into protozfits/rawzfits.pyx
-from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
+from google.protobuf.reflection import GeneratedProtocolMessageType
 from .CoreMessages_pb2 import AnyArray
 from .any_array_to_numpy import any_array_to_numpy
 

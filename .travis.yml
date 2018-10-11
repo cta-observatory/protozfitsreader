@@ -27,6 +27,12 @@ matrix:
       env:
         - PYTHON_VERSION=3.6
         - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+    - os: osx
+      python: 3.7
+      env:
+        - PYTHON_VERSION=3.7
+        - MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+
 
 install:
   - wget $MINICONDA_URL -O miniconda.sh
@@ -38,7 +44,7 @@ install:
   - conda info -a
   - conda create -q -n pz python=$PYTHON_VERSION pip numpy astropy # pytest
   - source activate pz
-  - pip install -r requirements.txt
+  - pip install -v -r requirements.txt
   - pip install pytest
 
 script:

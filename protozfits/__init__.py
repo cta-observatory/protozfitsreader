@@ -1,9 +1,10 @@
+import re
+import numbers
 from pkg_resources import resource_string
 from enum import Enum
 from collections import namedtuple
 import numpy as np
 from astropy.io import fits
-import numbers
 
 # Beware:
 #     for some reason rawzfits needs to be imported before
@@ -13,7 +14,7 @@ from . import rawzfits
 # rawzfits extension. Please have a look into protozfits/rawzfits.pyx
 from google.protobuf.reflection import GeneratedProtocolMessageType
 from .CoreMessages_pb2 import AnyArray
-from .any_array_to_numpy import any_array_to_numpy
+from .any_array_to_numpy import any_array_to_numpy, assign_numpy_array_to_pbuf
 
 
 from . import L0_pb2
@@ -43,6 +44,64 @@ pb2_modules = {
 def get_class_from_PBFHEAD(pbfhead):
     module_name, class_name = pbfhead.split('.')
     return getattr(pb2_modules[module_name], class_name)
+
+
+class FileWriter:
+    def __init__(self, path, tablename='Events'):
+        '''
+
+        path: string
+            to outfile
+        msg_type: string
+            type name of protobuf message to write into table e.g.:
+                R1_CAMERA_CONFIG
+                R1_CAMERA_EVENT
+                DL0_RUN_HEADER
+                DL0_CAMERA_EVENT
+        '''
+        self.path = str(path)
+        self.zo_fits = rawzfits.ProtoSerialZOFits(self.path)
+        self.current_table_name = tablename
+        self.current_msg_type = None
+
+    def close(self):
+        self.zo_fits.close()
+        del self.zo_fits
+
+    def append(self, item):
+        if isnamedtupleinstance(item):
+            pbuf = named_tuple_back_to_pbuf(item)
+        else:
+            pbuf = item
+        self.__append_pbuf(pbuf)
+
+    def __append_pbuf(self, pbuf):
+        msg_type_name = cpp_message_type(pbuf)
+        if self.current_msg_type is None:
+            try:
+                self.zo_fits.move_to_new_table(
+                    tablename=self.current_table_name,
+                    message_name=msg_type_name,
+                )
+            except RuntimeError as e:
+                raise type(e)(
+                    str(e)
+                    + '\n mesg type is: {}'.format(msg_type_name)
+                )
+            self.current_msg_type = msg_type_name
+
+        if self.current_msg_type != msg_type_name:
+            raise ValueError(
+                'can only write type: {}'.format(self.current_msg_type)
+            )
+
+        self.zo_fits.write_serialized_message(pbuf.SerializeToString())
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, tb):
+        self.close()
 
 
 class File:
@@ -230,6 +289,7 @@ def nt(m):
         list(m.DESCRIPTOR.fields_by_name)
     )
     _nt.__repr__ = namedtuple_repr2
+    _nt.__descriptor_full_name = m.DESCRIPTOR.full_name
     return _nt
 
 
@@ -322,3 +382,62 @@ class MultiZFitsFiles:
 
     def __exit__(self, type, value, tb):
         del self._event_tables
+
+
+def camelcase_to_upper_underscore(name):
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).upper()
+
+
+def cpp_message_type(pbuf):
+    '''
+    pbuf: an instance of a protobuf message class
+    '''
+    full_name = pbuf.__class__.DESCRIPTOR.full_name.replace('.', '')
+    result = camelcase_to_upper_underscore(full_name)
+
+    # special treatment
+    result = result.replace('CONFIGURATION', 'CONFIG')
+    result = result.replace('CAMERA_RUN_HEADER', 'RUN_HEADER')
+    result = result.replace('L0', 'DL0')
+    result = result.replace('DATA_MODEL', 'DL0')
+
+    return result
+
+
+def named_tuple_back_to_pbuf(nt):
+    module, message_name = nt.__descriptor_full_name.split('.', 1)
+    cls = getattr(pb2_modules[module], message_name)
+    pbuf = cls()
+    assign_named_tuple_fields_to_pbuf(nt, pbuf)
+    return pbuf
+
+
+def assign_named_tuple_fields_to_pbuf(nt, pbuf):
+
+    for k in nt._fields:
+        v = getattr(nt, k)
+
+        if isinstance(v, Enum):
+            setattr(pbuf, k, v.value)
+        elif isnamedtupleinstance(v):
+            assign_named_tuple_fields_to_pbuf(v, getattr(pbuf, k))
+        elif isinstance(v, np.ndarray):
+            if len(v) > 0:
+                assign_numpy_array_to_pbuf(v, getattr(pbuf, k))
+        else:
+            fd = pbuf.DESCRIPTOR.fields_by_name[k]
+            if not (fd.has_default_value and v == fd.default_value):
+                setattr(pbuf, k, v)
+
+
+def isnamedtupleinstance(x):
+    '''helper for comparing namedtuples'''
+    t = type(x)
+    b = t.__bases__
+    if len(b) != 1 or b[0] != tuple:
+        return False
+    f = getattr(t, '_fields', None)
+    if not isinstance(f, tuple):
+        return False
+    return all(isinstance(n, str) for n in f)

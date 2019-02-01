@@ -19,6 +19,16 @@ cdef extern from "ProtobufIFits.h" namespace "ACTL::IO":
         int getNumMessagesInTable()
         string readSerializedMessage(int number)
 
+
+cdef extern from "ProtoSerialZOFits.h" namespace "ACTL::IO":
+    cdef cppclass _ProtoSerialZOFits "ACTL::IO::ProtoSerialZOFits":
+        _ProtoSerialZOFits() except +
+        void open(const char* filename) except +
+        bool_t close() except +
+        void moveToNewTable(string tablename, string message_name) except +
+        void writeSerializedMessage(string& serializedMessage) except +
+
+
 cdef class ProtobufIFits:
     cdef _ProtobufIFits* c_protobufifits
     cdef int n_events
@@ -58,3 +68,27 @@ cdef class ProtobufIFits:
 
     def rewind(self):
         self.n_events = 0
+
+
+cdef class ProtoSerialZOFits:
+    cdef _ProtoSerialZOFits* c_proto_serial_zofits
+
+    def __cinit__(self, fname):
+        self.c_proto_serial_zofits = new _ProtoSerialZOFits()
+        self.c_proto_serial_zofits.open(bytes(fname, 'ascii'))
+
+    def __dealloc__(self):
+        self.close()
+        del self.c_proto_serial_zofits
+
+    def close(self):
+        return self.c_proto_serial_zofits.close()
+
+    def move_to_new_table(self, tablename, message_name):
+        self.c_proto_serial_zofits.moveToNewTable(
+            bytes(tablename, 'ascii'),
+            bytes(message_name, 'ascii')
+        )
+
+    def write_serialized_message(self, msg):
+        self.c_proto_serial_zofits.writeSerializedMessage(msg)

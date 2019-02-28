@@ -250,7 +250,7 @@ You do not have to use a [conda environment](https://conda.io/docs/user-guide/ta
 
 ### Linux / OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.4.1.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.4.2.tar.gz
 
 ### Most common issues and possible remedies
 

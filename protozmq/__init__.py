@@ -4,17 +4,17 @@ from collections import namedtuple
 import numpy as np
 
 from google.protobuf.pyext.cpp_message import GeneratedProtocolMessageType
-from .CoreMessages_pb2 import AnyArray
-from .any_array_to_numpy import any_array_to_numpy
+from protozfits.CoreMessages_pb2 import AnyArray
+from protozfits.any_array_to_numpy import any_array_to_numpy
 
 import zmq
 
-from . import CoreMessages_pb2
-from . import L0_pb2
-from . import R1_pb2
-from . import R1_LSTCam_pb2
-from . import R1_NectarCam_pb2
-from . import R1_DigiCam_pb2
+from protozfits import CoreMessages_pb2
+from protozfits import L0_pb2
+from protozfits import R1_pb2
+from protozfits import R1_LSTCam_pb2
+from protozfits import R1_NectarCam_pb2
+from protozfits import R1_DigiCam_pb2
 
 __version__ = resource_string('protozmq', 'VERSION').decode().strip()
 
@@ -43,7 +43,7 @@ class EventSource:
     cta_message = CoreMessages_pb2.CTAMessage()
     L0_message = L0_pb2.CameraEvent()
     R1_message = R1_pb2.CameraEvent()
-    forward_messages = False 
+    forward_messages = False
 
     def __init__(self, zmq_in_config, zmq_out_config=""):
         '''
@@ -54,25 +54,25 @@ class EventSource:
         if zmq_out_config != "":
             self.forward_messages = True
             self.out_socket.bind(zmq_out_config)
-                    
+
     def receive_message(self):
         binary_message = self.in_socket.recv()
         if self.forward_messages == True:
             self.out_socket.send(binary_message)
-        
+
         self.cta_message.ParseFromString(binary_message)
-        
+
         if self.cta_message.payload_type[0] == 16:
             self.R1_message.ParseFromString(self.cta_message.payload_data[0])
             return make_namedtuple(self.R1_message)
-        
+
         if self.cta_message.payload_type[0] == 8:
             self.L0_message.ParseFromString(self.cta_message.payload_data[0])
             return make_namedtuple(self.L0_message)
-        
+
         print("Message type " + str(self.cta_message.payload_type[0]) + " not handled yet")
 
-        return "" 
+        return ""
 
 # Everything below is strictly identical to what is in protozfits.__init__
 # Will be moved into its own package soon.

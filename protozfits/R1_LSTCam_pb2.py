@@ -19,7 +19,7 @@ from . import CoreMessages_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='R1_LSTCam.proto',
   package='DataModel',
-  serialized_pb=_b('\n\x0fR1_LSTCam.proto\x12\tDataModel\x1a\x12\x43oreMessages.proto\"\xb2\x01\n\x0cLstCamConfig\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x14\n\x0c\x63\x64hs_version\x18\x02 \x01(\t\x12\x13\n\x0bnum_modules\x18\x03 \x01(\x07\x12\x30\n\x13\x65xpected_modules_id\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x05 \x01(\x07\x12\x1b\n\x13pre_proc_algorithms\x18\x06 \x01(\x07\"\xa2\x03\n\x0bLstCamEvent\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\x07\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x63hips_flags\x18\x07 \x01(\x0b\x32\x13.DataModel.AnyArray\x12/\n\x12\x66irst_capacitor_id\x18\x08 \x01(\x0b\x32\x13.DataModel.AnyArray\x12+\n\x0e\x64rs_tag_status\x18\t \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64rs_tag\x18\n \x01(\x0b\x32\x13.DataModel.AnyArray')
+  serialized_pb=_b('\n\x0fR1_LSTCam.proto\x12\tDataModel\x1a\x12\x43oreMessages.proto\"\xc2\x01\n\x0cLstCamConfig\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x14\n\x0c\x63\x64hs_version\x18\x02 \x01(\t\x12\x13\n\x0bnum_modules\x18\x03 \x01(\x07\x12\x30\n\x13\x65xpected_modules_id\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x05 \x01(\x07\x12\x1b\n\x13pre_proc_algorithms\x18\x06 \x01(\x07\x12\x0e\n\x06run_id\x18\x07 \x01(\x06\"\xb2\x03\n\x0bLstCamEvent\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\x07\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\x12(\n\x0b\x63hips_flags\x18\x07 \x01(\x0b\x32\x13.DataModel.AnyArray\x12/\n\x12\x66irst_capacitor_id\x18\x08 \x01(\x0b\x32\x13.DataModel.AnyArray\x12+\n\x0e\x64rs_tag_status\x18\t \x01(\x0b\x32\x13.DataModel.AnyArray\x12$\n\x07\x64rs_tag\x18\n \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0e\n\x06run_id\x18\x0b \x01(\x06')
   ,
   dependencies=[CoreMessages_pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -76,6 +76,13 @@ _LSTCAMCONFIG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='run_id', full_name='DataModel.LstCamConfig.run_id', index=6,
+      number=7, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -88,7 +95,7 @@ _LSTCAMCONFIG = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=51,
-  serialized_end=229,
+  serialized_end=245,
 )
 
 
@@ -169,6 +176,13 @@ _LSTCAMEVENT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='run_id', full_name='DataModel.LstCamEvent.run_id', index=10,
+      number=11, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -180,8 +194,8 @@ _LSTCAMEVENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=232,
-  serialized_end=650,
+  serialized_start=248,
+  serialized_end=682,
 )
 
 _LSTCAMCONFIG.fields_by_name['expected_modules_id'].message_type = CoreMessages_pb2._ANYARRAY

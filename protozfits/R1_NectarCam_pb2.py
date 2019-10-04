@@ -19,7 +19,7 @@ from . import CoreMessages_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='R1_NectarCam.proto',
   package='DataModel',
-  serialized_pb=_b('\n\x12R1_NectarCam.proto\x12\tDataModel\x1a\x12\x43oreMessages.proto\"\xb2\x01\n\x0fNectarCamConfig\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x14\n\x0c\x63\x64hs_version\x18\x02 \x01(\t\x12\x18\n\x10\x61\x63quisition_mode\x18\x03 \x01(\x07\x12\x13\n\x0bnum_modules\x18\x04 \x01(\x07\x12\x30\n\x13\x65xpected_modules_id\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x06 \x01(\x07\"\xf7\x01\n\x0eNectarCamEvent\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\x07\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray')
+  serialized_pb=_b('\n\x12R1_NectarCam.proto\x12\tDataModel\x1a\x12\x43oreMessages.proto\"\xc2\x01\n\x0fNectarCamConfig\x12\x14\n\x0cidaq_version\x18\x01 \x01(\t\x12\x14\n\x0c\x63\x64hs_version\x18\x02 \x01(\t\x12\x18\n\x10\x61\x63quisition_mode\x18\x03 \x01(\x07\x12\x13\n\x0bnum_modules\x18\x04 \x01(\x07\x12\x30\n\x13\x65xpected_modules_id\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x12\n\nalgorithms\x18\x06 \x01(\x07\x12\x0e\n\x06run_id\x18\x07 \x01(\x06\"\xdf\x02\n\x0eNectarCamEvent\x12*\n\rmodule_status\x18\x01 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x1b\n\x13\x65xtdevices_presence\x18\x02 \x01(\x07\x12%\n\x08tib_data\x18\x03 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tcdts_data\x18\x04 \x01(\x0b\x32\x13.DataModel.AnyArray\x12&\n\tswat_data\x18\x05 \x01(\x0b\x32\x13.DataModel.AnyArray\x12%\n\x08\x63ounters\x18\x06 \x01(\x0b\x32\x13.DataModel.AnyArray\x12\x0e\n\x06run_id\x18\x07 \x01(\x06\x12*\n\rcharges_gain1\x18\x08 \x01(\x0b\x32\x13.DataModel.AnyArray\x12*\n\rcharges_gain2\x18\t \x01(\x0b\x32\x13.DataModel.AnyArray')
   ,
   dependencies=[CoreMessages_pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -76,6 +76,13 @@ _NECTARCAMCONFIG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='run_id', full_name='DataModel.NectarCamConfig.run_id', index=6,
+      number=7, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -88,7 +95,7 @@ _NECTARCAMCONFIG = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=54,
-  serialized_end=232,
+  serialized_end=248,
 )
 
 
@@ -141,6 +148,27 @@ _NECTARCAMEVENT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='run_id', full_name='DataModel.NectarCamEvent.run_id', index=6,
+      number=7, type=6, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='charges_gain1', full_name='DataModel.NectarCamEvent.charges_gain1', index=7,
+      number=8, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='charges_gain2', full_name='DataModel.NectarCamEvent.charges_gain2', index=8,
+      number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -152,8 +180,8 @@ _NECTARCAMEVENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=235,
-  serialized_end=482,
+  serialized_start=251,
+  serialized_end=602,
 )
 
 _NECTARCAMCONFIG.fields_by_name['expected_modules_id'].message_type = CoreMessages_pb2._ANYARRAY
@@ -162,6 +190,8 @@ _NECTARCAMEVENT.fields_by_name['tib_data'].message_type = CoreMessages_pb2._ANYA
 _NECTARCAMEVENT.fields_by_name['cdts_data'].message_type = CoreMessages_pb2._ANYARRAY
 _NECTARCAMEVENT.fields_by_name['swat_data'].message_type = CoreMessages_pb2._ANYARRAY
 _NECTARCAMEVENT.fields_by_name['counters'].message_type = CoreMessages_pb2._ANYARRAY
+_NECTARCAMEVENT.fields_by_name['charges_gain1'].message_type = CoreMessages_pb2._ANYARRAY
+_NECTARCAMEVENT.fields_by_name['charges_gain2'].message_type = CoreMessages_pb2._ANYARRAY
 DESCRIPTOR.message_types_by_name['NectarCamConfig'] = _NECTARCAMCONFIG
 DESCRIPTOR.message_types_by_name['NectarCamEvent'] = _NECTARCAMEVENT
 

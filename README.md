@@ -244,13 +244,13 @@ If you have questions, please open an issue or a pull request to improve this do
 ## Installation
 
 We all use [Anaconda](https://www.anaconda.com/) and this package is tested
-against Anaconda. You can [download anaconda](https://www.anaconda.com/download) for your system for free.
+against Anaconda and python 3.5, 3.6 and 3.7. You can [download anaconda](https://www.anaconda.com/download) for your system for free.
 
 You do not have to use a [conda environment](https://conda.io/docs/user-guide/tasks/manage-environments.html) to use this package. It cleanly installs and uninstalls with [pip](https://docs.python.org/3.6/installing/). If you plan to play around with different versions of this package your might want to use environments though.
 
 ### Linux / OSX (with anaconda)
 
-    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.4.2.tar.gz
+    pip install https://github.com/cta-sst-1m/protozfitsreader/archive/v1.5.0.tar.gz
 
 ### Most common issues and possible remedies
 

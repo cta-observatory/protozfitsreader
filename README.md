@@ -1,3 +1,12 @@
+**This repository has been archived and moved to the CTA gitlab. Releases are available via pypi:**
+
+New URL: https://gitlab.cta-observatory.org/cta-computing/common/acada-array-elements/adh-apis
+
+```
+pip install protozfits
+```
+
+
 # Protozfits [![Build Status](https://travis-ci.org/cta-sst-1m/protozfitsreader.svg?branch=master)](https://travis-ci.org/cta-sst-1m/protozfitsreader)
 
 Table of Contents

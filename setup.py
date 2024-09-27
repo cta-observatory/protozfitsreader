@@ -6,7 +6,7 @@ with open('protozfits/VERSION') as f:
 
 setup(
     name='protozfits',
-    packages=['protozfits'],
+    packages=['protozfits', 'protozmq'],
     version=__version__,
     description='Basic python bindings for protobuf zfits reader',
     author="Etienne Lyard et al.",
@@ -21,7 +21,12 @@ setup(
             'tests/resources/*'
         ],
     },
-    install_requires=['numpy', 'protobuf', 'astropy'],
+    install_requires=[
+        'numpy',
+        'protobuf',
+        'astropy',
+        'pyzmq'
+    ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
 )

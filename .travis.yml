@@ -44,7 +44,7 @@ install:
   - conda info -a
   - conda create -q -n pz python=$PYTHON_VERSION pip numpy astropy # pytest
   - source activate pz
-  - pip install -v -r requirements.txt
+  - pip install .
   - pip install pytest
 
 script:
